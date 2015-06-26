@@ -7,6 +7,8 @@
 #include "opengl/gl_core_4_4.h"
 #include "common.h"
 
+const int MULTISAMPLING_COUNT = 4;
+
 /**
 * OpenGL call checking
 * @return whether the last call to OpenGL has failed

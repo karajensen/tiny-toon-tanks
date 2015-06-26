@@ -95,5 +95,7 @@ void Application::InitialiseInput()
 
     m_input->AddCallback(GLFW_KEY_E, true, 
         [this](){ m_camera->Up(-m_timer->GetDeltaTime()); });
-   
+
+    m_input->AddCallback(GLFW_KEY_F1, false, 
+        [this](){ m_gui->Toggle(); });
 }

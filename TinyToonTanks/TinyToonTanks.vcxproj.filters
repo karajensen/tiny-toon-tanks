@@ -10,10 +10,61 @@
     <Filter Include="External Libraries">
       <UniqueIdentifier>{70fbc5ff-cab1-4d69-b1c8-7bd437ecff0a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{323b3f36-b2f8-40bf-af6a-07b85b191518}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\.gitignore" />
     <None Include="..\readme.txt" />
+    <None Include="resources\ps.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="resources\psMask.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="resources\psProxy.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="resources\psShadow.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="resources\psTexture.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="resources\psToon.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="resources\psToonLine.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="resources\psToonPost.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="resources\vs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="resources\vsMask.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="resources\vsProxy.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="resources\vsShadow.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="resources\vsTexture.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="resources\vsToon.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="resources\vsToonLine.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="resources\vsToonPost.glsl">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BulletPhysics.cpp">
@@ -51,6 +102,24 @@
     </ClCompile>
     <ClCompile Include="opengl\gl_core_4_4.c">
       <Filter>External Libraries</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Meshdata.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Quad.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Rendertarget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -101,6 +170,27 @@
     </ClInclude>
     <ClInclude Include="opengl\gl_core_4_4.h">
       <Filter>External Libraries</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Meshdata.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Quad.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Rendertarget.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="glcommon.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

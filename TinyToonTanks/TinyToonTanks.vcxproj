@@ -13,6 +13,22 @@
   <ItemGroup>
     <None Include="..\.gitignore" />
     <None Include="..\readme.txt" />
+    <None Include="resources\ps.glsl" />
+    <None Include="resources\psMask.glsl" />
+    <None Include="resources\psProxy.glsl" />
+    <None Include="resources\psShadow.glsl" />
+    <None Include="resources\psTexture.glsl" />
+    <None Include="resources\psToon.glsl" />
+    <None Include="resources\psToonLine.glsl" />
+    <None Include="resources\psToonPost.glsl" />
+    <None Include="resources\vs.glsl" />
+    <None Include="resources\vsMask.glsl" />
+    <None Include="resources\vsProxy.glsl" />
+    <None Include="resources\vsShadow.glsl" />
+    <None Include="resources\vsTexture.glsl" />
+    <None Include="resources\vsToon.glsl" />
+    <None Include="resources\vsToonLine.glsl" />
+    <None Include="resources\vsToonPost.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -21,10 +37,16 @@
     <ClCompile Include="Gui.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="Meshdata.cpp" />
     <ClCompile Include="OpenGL.cpp" />
     <ClCompile Include="opengl\gl_core_4_4.c" />
+    <ClCompile Include="Quad.cpp" />
     <ClCompile Include="RandomGenerator.cpp" />
+    <ClCompile Include="Rendertarget.cpp" />
+    <ClCompile Include="Shader.cpp" />
     <ClCompile Include="SoundEngine.cpp" />
+    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Tweaker.cpp" />
   </ItemGroup>
@@ -35,14 +57,21 @@
     <ClInclude Include="CollisionEvent.h" />
     <ClInclude Include="common.h" />
     <ClInclude Include="float3.h" />
+    <ClInclude Include="glcommon.h" />
     <ClInclude Include="Gui.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="matrix.h" />
+    <ClInclude Include="Mesh.h" />
+    <ClInclude Include="Meshdata.h" />
     <ClInclude Include="OpenGL.h" />
     <ClInclude Include="opengl\GL.h" />
     <ClInclude Include="opengl\gl_core_4_4.h" />
+    <ClInclude Include="Quad.h" />
     <ClInclude Include="RandomGenerator.h" />
+    <ClInclude Include="Rendertarget.h" />
+    <ClInclude Include="Shader.h" />
     <ClInclude Include="SoundEngine.h" />
+    <ClInclude Include="Texture.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Tweaker.h" />
   </ItemGroup>

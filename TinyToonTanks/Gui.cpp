@@ -79,26 +79,37 @@ Gui::~Gui()
     TwTerminate();
 }
 
+void Gui::Toggle()
+{
+    m_show = !m_show;
+}
+
 void Gui::Render()
 {
-    TwDraw();
+    if (m_show)
+    {
+        TwDraw();
+    }
 }
 
 void Gui::Update(const Input& input)
 {
-    m_tweaker->Update();
+    if (m_show)
+    {
+        m_tweaker->Update();
 
-    if (input.IsMouseMovedThisTick())
-    {
-        TwMouseMotion(input.GetMouseX(), input.GetMouseY());
-    }
-    else if (input.IsLeftMousePressedThisTick())
-    {
-        TwMouseButton(TW_MOUSE_PRESSED, TW_MOUSE_LEFT);
-    }
-    else if (input.IsLeftMouseReleasedThisTick())
-    {
-        TwMouseButton(TW_MOUSE_RELEASED, TW_MOUSE_LEFT);
+        if (input.IsMouseMovedThisTick())
+        {
+            TwMouseMotion(input.GetMouseX(), input.GetMouseY());
+        }
+        else if (input.IsLeftMousePressedThisTick())
+        {
+            TwMouseButton(TW_MOUSE_PRESSED, TW_MOUSE_LEFT);
+        }
+        else if (input.IsLeftMouseReleasedThisTick())
+        {
+            TwMouseButton(TW_MOUSE_RELEASED, TW_MOUSE_LEFT);
+        }
     }
 }
 

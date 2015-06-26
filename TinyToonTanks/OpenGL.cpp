@@ -5,9 +5,14 @@
 #include "opengl.h"
 #include "glcommon.h"
 #include "camera.h"
+#include "Quad.h"
+#include "Rendertarget.h"
 
 OpenGL::OpenGL(const Camera& camera) :
-    m_camera(camera)
+    m_camera(camera),
+    m_quad(std::make_unique<Quad>("PostQuad")),
+    m_backBuffer(std::make_unique<RenderTarget>("BackBuffer")),
+    m_sceneTarget(std::make_unique<RenderTarget>("SceneTarget", false))
 {
 }
 
@@ -19,6 +24,9 @@ OpenGL::~OpenGL()
 void OpenGL::Release()
 {
     // All resources must be destroyed before the engine
+    m_quad.reset();
+    m_sceneTarget.reset();
+    m_backBuffer.reset();
 
     if (m_window)
     {
@@ -44,7 +52,7 @@ bool OpenGL::Initialise()
     }
 
     m_window = glfwCreateWindow(WINDOW_WIDTH, 
-        WINDOW_HEIGHT, "Computer Graphics", nullptr, nullptr);
+        WINDOW_HEIGHT, "Tiny Toon Tanks", nullptr, nullptr);
 
     if (!m_window)
     {
@@ -70,6 +78,19 @@ bool OpenGL::Initialise()
     glEnable(GL_CULL_FACE);
     glDepthMask(GL_TRUE);
 
+    if (!m_backBuffer->Initialise() ||
+        !m_sceneTarget->Initialise())
+    {
+        LogError("OpenGL: Failed to initialise render targets");
+        return false;
+    }
+
+    if (!m_quad->Initialise())
+    {
+        LogError("OpenGL: Failed to initialise quad");
+        return false;
+    }
+
     if (HasCallFailed())
     {
         LogError("OpenGL: Failed to initialise scene");
@@ -90,6 +111,7 @@ GLFWwindow& OpenGL::GetWindow() const
 
 void OpenGL::RenderScene()
 {
+    m_backBuffer->SetActive();
 }
 
 void OpenGL::EndRender()

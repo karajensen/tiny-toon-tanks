@@ -47,6 +47,11 @@ public:
     */
     void Update(const Input& input);
 
+    /**
+    * Toggles the tweak bar
+    */
+    void Toggle();
+
 private:
 
     /**
@@ -63,6 +68,7 @@ private:
     Camera& m_camera;                      ///< Allows modifying the view
     CTwBar* m_tweakbar = nullptr;          ///< Tweak bar for manipulating the scene
     Timer& m_timer;                        ///< Allows viewing the application times
+    bool m_show = false;                   ///< Whether the GUI is displayed
     std::unique_ptr<Tweaker> m_tweaker;    ///< Helper for modifying the tweak bar
     std::function<void(void)> m_wireframe; ///< Callback for toggle wireframe
 };                     

@@ -9,7 +9,9 @@
 #include <memory>
 
 struct GLFWwindow;
+class Quad;
 class Camera;
+class RenderTarget;
 
 /**
 * Engine for initialising and managing OpenGL
@@ -101,4 +103,8 @@ private:
     bool m_isBlendMultiply = false;  ///< Whether to multiply the blend colours
     bool m_isDepthWrite = true;      ///< Whether writing to the depth buffer is active
     int m_selectedShader = -1;       ///< Currently active shader for rendering
+
+    std::unique_ptr<Quad> m_quad;                ///< Post processing quad
+    std::unique_ptr<RenderTarget> m_backBuffer;  ///< Back buffer target
+    std::unique_ptr<RenderTarget> m_sceneTarget; ///< Main scene target
 };
