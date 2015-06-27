@@ -1,0 +1,16 @@
+////////////////////////////////////////////////////////////////////////////////////////
+// Kara Jensen - mail@karajensen.com - sprite_glsl_frag.fx
+////////////////////////////////////////////////////////////////////////////////////////
+
+#version 150
+
+in vec2 ex_UVs;
+out vec4 out_Color;
+
+uniform sampler2D DiffuseSampler;
+ 
+void main(void)
+{
+    out_Color.rgb = texture(DiffuseSampler, ex_UVs).rgb;
+    out_Color.a = 1.0;
+}

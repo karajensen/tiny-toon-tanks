@@ -11,9 +11,7 @@
 
 OpenGL::OpenGL(const Camera& camera) :
     m_camera(camera),
-    m_quad(std::make_unique<Quad>("PostQuad")),
-    m_backBuffer(std::make_unique<RenderTarget>("BackBuffer")),
-    m_sceneTarget(std::make_unique<RenderTarget>("SceneTarget", false))
+    m_quad(std::make_unique<Quad>("PostQuad"))
 {
 }
 
@@ -27,6 +25,7 @@ void OpenGL::Release()
     // All resources must be destroyed before the engine
     m_quad.reset();
     m_sceneTarget.reset();
+    m_normalTarget.reset();
     m_backBuffer.reset();
 
     if (m_window)
@@ -69,7 +68,7 @@ bool OpenGL::Initialise()
         return false;
     }
 
-    glClearColor(0.22f, 0.49f, 0.85f, 0.0f);
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
     glClearDepth(1.0f);
     glDepthFunc(GL_LEQUAL);
@@ -79,8 +78,13 @@ bool OpenGL::Initialise()
     glEnable(GL_CULL_FACE);
     glDepthMask(GL_TRUE);
 
+    m_backBuffer = std::make_unique<RenderTarget>("BackBuffer");
+    m_sceneTarget = std::make_unique<RenderTarget>("Scene", 1, true);
+    m_normalTarget = std::make_unique<RenderTarget>("Normal", 1, false);
+
     if (!m_backBuffer->Initialise() ||
-        !m_sceneTarget->Initialise())
+        !m_sceneTarget->Initialise() ||
+        !m_normalTarget->Initialise())
     {
         LogError("OpenGL: Failed to initialise render targets");
         return false;

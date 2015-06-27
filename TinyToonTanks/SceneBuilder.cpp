@@ -44,6 +44,7 @@ bool SceneBuilder::InitialiseShaderConstants()
 {
     Shader::ShaderConstants constants = 
     {
+        std::make_pair("MAX_LIGHTS", "1"),
         std::make_pair("WINDOW_WIDTH", std::to_string(WINDOW_WIDTH)),
         std::make_pair("WINDOW_HEIGHT", std::to_string(WINDOW_HEIGHT)),
         std::make_pair("SAMPLES", std::to_string(MULTISAMPLING_COUNT))

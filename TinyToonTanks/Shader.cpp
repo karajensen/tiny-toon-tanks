@@ -498,9 +498,9 @@ void Shader::ClearTexture(const std::string& sampler, bool multisample)
     }
 }
 
-void Shader::SendTexture(const std::string& sampler, const RenderTarget& target)
+void Shader::SendTexture(const std::string& sampler, const RenderTarget& target, int ID)
 {
-    SendTexture(sampler, target.GetTexture(), target.IsMultisampled());
+    SendTexture(sampler, target.GetTexture(ID), target.IsMultisampled());
 }
 
 void Shader::ClearTexture(const std::string& sampler, const RenderTarget& target)

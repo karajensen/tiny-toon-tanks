@@ -12,11 +12,15 @@ RenderTarget::RenderTarget(const std::string& name) :
 }
 
 RenderTarget::RenderTarget(const std::string& name, 
+                           int textures, 
                            bool multisampled) :
 
     m_multisampled(multisampled),
-    m_name(name)
+    m_name(name),
+    m_count(textures)
 {
+    m_attachments.resize(m_count);
+    m_textures.resize(m_count);
 }
 
 RenderTarget::~RenderTarget()
@@ -29,15 +33,18 @@ void RenderTarget::Release()
     if(m_initialised && !m_isBackBuffer)
     {
         glDeleteFramebuffers(1, &m_frameBuffer);
-        glDeleteTextures(1, &m_texture);
+        for (GLuint texture : m_textures)
+        {
+            glDeleteTextures(1, &texture);
+        }
         glDeleteRenderbuffers(1, &m_renderBuffer);
     }
     m_initialised = false;
 }
 
-GLuint RenderTarget::GetTexture() const
+GLuint RenderTarget::GetTexture(int index) const
 { 
-    return m_texture;
+    return m_textures[index];
 }
 
 bool RenderTarget::Initialise()
@@ -56,18 +63,22 @@ bool RenderTarget::Initialise()
         const unsigned int textureType = m_multisampled ?
             GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
 
-        if (!CreateTexture(m_texture, textureType))
+        for (unsigned int i = 0; i < m_textures.size(); ++i)
         {
-            return false;
-        }
+            if (!CreateTexture(m_textures[i], textureType))
+            {
+                return false;
+            }
 
-        m_attachment = GetTextureAttachment(0);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, m_attachment, textureType, m_texture, 0);
+            m_attachments[i] = GetTextureAttachment(i);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, 
+                m_attachments[i], textureType, m_textures[i], 0);
 
-        if(HasCallFailed())
-        {
-            LogError(m_name + " Failed to create texture buffer");
-            return false;
+            if(HasCallFailed())
+            {
+                LogError(m_name + " Failed to create texture buffer" + std::to_string(i));
+                return false;
+            }
         }
 
         // Create the render buffer to hold depth information
@@ -157,7 +168,7 @@ void RenderTarget::SetActive()
         glBindFramebuffer(GL_FRAMEBUFFER, m_frameBuffer);
         glBindRenderbuffer(GL_RENDERBUFFER, m_renderBuffer);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glDrawBuffers(1, &m_attachment);
+        glDrawBuffers(m_count, &m_attachments[0]);
     }
 
     if(HasCallFailed())

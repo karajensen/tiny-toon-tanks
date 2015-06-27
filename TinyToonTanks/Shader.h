@@ -99,8 +99,9 @@ public:
     * Sends the render target texture to the shader
     * @param sampler Name of the shader texture sampler to use
     * @param target The render target to send
+    * @param ID the id of the target texture to send
     */
-    void SendTexture(const std::string& sampler, const RenderTarget& target);
+    void SendTexture(const std::string& sampler, const RenderTarget& target, int ID = 0);
 
     /**
     * Clears the render target texture from the shader

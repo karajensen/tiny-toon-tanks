@@ -17,52 +17,40 @@
   <ItemGroup>
     <None Include="..\.gitignore" />
     <None Include="..\readme.txt" />
-    <None Include="resources\ps.glsl">
+    <None Include="resources\proxy_glsl_frag.fx">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="resources\psMask.glsl">
+    <None Include="resources\shadow_glsl_frag.fx">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="resources\psProxy.glsl">
+    <None Include="resources\toon_glsl_frag.fx">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="resources\psShadow.glsl">
+    <None Include="resources\proxy_glsl_vert.fx">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="resources\psTexture.glsl">
+    <None Include="resources\shadow_glsl_vert.fx">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="resources\psToon.glsl">
+    <None Include="resources\toon_glsl_vert.fx">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="resources\psToonLine.glsl">
+    <None Include="resources\sprite_glsl_vert.fx">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="resources\psToonPost.glsl">
+    <None Include="resources\sprite_glsl_frag.fx">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="resources\vs.glsl">
+    <None Include="resources\post_glsl_frag.fx">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="resources\vsMask.glsl">
+    <None Include="resources\post_glsl_vert.fx">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="resources\vsProxy.glsl">
+    <None Include="resources\normal_glsl_vert.fx">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="resources\vsShadow.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="resources\vsTexture.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="resources\vsToon.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="resources\vsToonLine.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="resources\vsToonPost.glsl">
+    <None Include="resources\normal_glsl_frag.fx">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
