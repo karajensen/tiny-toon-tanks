@@ -2,9 +2,10 @@
 // Kara Jensen - mail@karajensen.com - OpenGL.cpp
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#include "opengl.h"
-#include "glcommon.h"
-#include "camera.h"
+#include "OpenGL.h"
+#include "Common.h"
+#include "Glcommon.h"
+#include "Camera.h"
 #include "Quad.h"
 #include "Rendertarget.h"
 

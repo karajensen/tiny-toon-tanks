@@ -6,7 +6,7 @@
 
 #include <unordered_map>
 #include <functional>
-#include "glm\glm.hpp"
+#include "Float3.h"
 
 struct GLFWwindow;
 
@@ -41,7 +41,7 @@ public:
     /**
     * @return the normalized direction the mouse is moving
     */
-    const glm::vec2& GetMouseDirection() const;
+    const Float2& GetMouseDirection() const;
 
     /**
     * @return whether the mouse is currently being held down
@@ -143,7 +143,7 @@ private:
 
     KeyMap m_keys;                        ///< Key states and callbacks
     GLFWwindow& m_window;                 ///< The window to get input from
-    glm::vec2 m_mouseDirection;           ///< Direction mouse has moved (normalized) between ticks
+    Float2 m_mouseDirection;              ///< Direction mouse has moved (normalized) between ticks
     int m_mouseX = 0;                     ///< X screen coordinate of the mouse
     int m_mouseY = 0;                     ///< Y screen coordinate of the mouse
     bool m_leftMousePressed = false;      ///< Whether the mouse is currently being pressed

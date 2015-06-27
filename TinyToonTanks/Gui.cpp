@@ -2,12 +2,13 @@
 // Kara Jensen - mail@karajensen.com - gui.cpp
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#include "gui.h"
-#include "common.h"
-#include "tweaker.h"
-#include "input.h"
-#include "camera.h"
-#include "timer.h"
+#include "Gui.h"
+#include "Common.h"
+#include "Tweaker.h"
+#include "Input.h"
+#include "Camera.h"
+#include "Timer.h"
+#include "Glcommon.h"
 #include <sstream>
 
 Gui::Gui(Camera& camera,

@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 
 #include "input.h"
-#include "glfw/glfw3.h"
+#include "Glcommon.h"
 
 Input::Input(GLFWwindow& window) :
     m_window(window)
@@ -40,10 +40,11 @@ void Input::UpdateMouse()
     m_mouseDirection.x = static_cast<float>(m_mouseX) - x;
     m_mouseDirection.y = static_cast<float>(m_mouseY) - y;
 
-    const float length = glm::length(m_mouseDirection);
+    const float length = m_mouseDirection.Length();
     if (length != 0.0f)
     {
-        m_mouseDirection /= length;
+        m_mouseDirection.x /= length;
+        m_mouseDirection.y /= length;
         m_mouseState |= MOVED;
     }
 
@@ -114,7 +115,7 @@ void Input::AddCallback(unsigned int key, bool onContinous, KeyFn onKeyFn)
     m_keys[key].onKeyFn = onKeyFn;
 }
 
-const glm::vec2& Input::GetMouseDirection() const
+const Float2& Input::GetMouseDirection() const
 {
     return m_mouseDirection;
 }

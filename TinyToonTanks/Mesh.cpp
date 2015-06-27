@@ -2,11 +2,12 @@
 // Kara Jensen - mail@karajensen.com - mesh.cpp
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#include "mesh.h"
+#include "Mesh.h"
+#include "Tweaker.h"
+#include "Common.h"
 #include "assimp/include/scene.h"
 #include "assimp/include/Importer.hpp"
 #include "assimp/include/postprocess.h"
-#include "tweaker.h"
 
 Mesh::Mesh(const std::string& name, 
            const std::string& shaderName,
@@ -22,7 +23,7 @@ void Mesh::AddToTweaker(Tweaker& tweaker)
 }
 
 bool Mesh::InitialiseFromFile(const std::string& path, 
-                              const glm::vec2& uvScale,
+                              const Float2& uvScale,
                               bool requiresNormals, 
                               bool requiresTangents)
 {

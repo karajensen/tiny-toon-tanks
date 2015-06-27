@@ -4,10 +4,13 @@
 
 #pragma once
 
-#include "shader.h"
-#include "rendertarget.h"
+#include "Shader.h"
+#include "Common.h"
+#include "Rendertarget.h"
+#include "Conversions.h"
 #include <string>
 #include <fstream>
+#include <algorithm>
 
 namespace
 {
@@ -40,28 +43,28 @@ Shader::Shader(const std::string& name,
 
 Shader::~Shader()
 {
-    if(m_program != NO_INDEX)
+    if(m_program != -1)
     {
-        if(m_vs != NO_INDEX)
+        if(m_vs != -1)
         {
             glDetachShader(m_program, m_vs);
         }
-        if(m_fs != NO_INDEX)
+        if(m_fs != -1)
         {
             glDetachShader(m_program, m_fs);
         }
         glDeleteProgram(m_program);
-        m_program = NO_INDEX;
+        m_program = -1;
     }
-    if(m_vs != NO_INDEX)
+    if(m_vs != -1)
     {
         glDeleteShader(m_vs);
-        m_vs = NO_INDEX;
+        m_vs = -1;
     }
-    if(m_fs != NO_INDEX)
+    if(m_fs != -1)
     {
         glDeleteShader(m_fs);
-        m_fs = NO_INDEX;
+        m_fs = -1;
     }
 }
 
@@ -105,7 +108,7 @@ bool Shader::LoadShaderFile(const std::string& loadPath, std::string& text)
         for (const auto& constant : sm_constants)
         {
             int index = line.find(constant.first);
-            while (index != NO_INDEX)
+            while (index != -1)
             {
                 const int size = static_cast<int>(constant.first.size());
                 line.replace(index, size, constant.second);
@@ -216,7 +219,7 @@ bool Shader::FindShaderUniforms()
         
         name = std::string(name.begin(), name.begin() + name.find('\0'));
         const int index = name.find("[");
-        if (index != NO_INDEX)
+        if (index != -1)
         {
             name = std::string(name.begin(), name.begin() + index);
         }
@@ -228,7 +231,7 @@ bool Shader::FindShaderUniforms()
         }
 
         GLint location = glGetUniformLocation(m_program, name.c_str());
-        if(HasCallFailed() || location == NO_INDEX)
+        if(HasCallFailed() || location == -1)
         {
             LogShader("Could not find uniform " + name);
             return false;
@@ -258,12 +261,13 @@ bool Shader::FindShaderUniforms()
     return true;
 }
 
-void Shader::SendUniform(const std::string& name, const glm::mat4& matrix)
+void Shader::SendUniform(const std::string& name, const Matrix& matrix)
 {
     auto itr = m_uniforms.find(name);
     if(itr != m_uniforms.end())
     {
-        glUniformMatrix4fv(itr->second.location, 1, GL_FALSE, &matrix[0][0]);
+        const glm::mat4 glmMatrix(Conversion::Convert(matrix));
+        glUniformMatrix4fv(itr->second.location, 1, GL_FALSE, &glmMatrix[0][0]);
 
         if (itr->second.type != GL_FLOAT_MAT4)
         {
@@ -338,30 +342,30 @@ void Shader::SendUniformFloat(const std::string& name,
     }
 }
 
-void Shader::SendUniform(const std::string& name, const glm::vec4& value, int offset)
+void Shader::SendUniform(const std::string& name, const Float4& value, int offset)
 {
-    offset == NO_INDEX ? 
+    offset == -1 ? 
         SendUniformFloat(name, &value.x, 4) :
         UpdateUniformArray(name, &value.x, 4, offset);
 }
 
-void Shader::SendUniform(const std::string& name, const glm::vec3& value, int offset)
+void Shader::SendUniform(const std::string& name, const Float3& value, int offset)
 {
-    offset == NO_INDEX ? 
+    offset == -1 ? 
         SendUniformFloat(name, &value.x, 3) :
         UpdateUniformArray(name, &value.x, 3, offset);
 }
 
-void Shader::SendUniform(const std::string& name, const glm::vec2& value, int offset)
+void Shader::SendUniform(const std::string& name, const Float2& value, int offset)
 {
-    offset == NO_INDEX ? 
+    offset == -1 ? 
         SendUniformFloat(name, &value.x, 2) :
         UpdateUniformArray(name, &value.x, 2, offset);
 }
 
 void Shader::SendUniform(const std::string& name, float value, int offset)
 {
-    offset == NO_INDEX ? 
+    offset == -1 ? 
         SendUniformFloat(name, &value, 1) :
         UpdateUniformArray(name, &value, 1, offset);
 }
@@ -407,7 +411,7 @@ bool Shader::BindVertexAttributes()
             return false;
         }
 
-        int location = NO_INDEX;
+        int location = -1;
         for (int j = 0; j < static_cast<int>(ATTRIBUTE_MAP.size()); ++j)
         {
             if (ATTRIBUTE_MAP[j] == name)
@@ -417,7 +421,7 @@ bool Shader::BindVertexAttributes()
             }
         }
 
-        if (location == NO_INDEX)
+        if (location == -1)
         {
             LogError("Unknown attribute name " + name);
             return false;
@@ -538,7 +542,7 @@ void Shader::SetActive()
 
     for (auto& sampler : m_samplers)
     {
-        sampler.second.allocated = NO_INDEX;
+        sampler.second.allocated = -1;
     }
 }
 

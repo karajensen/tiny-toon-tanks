@@ -12,11 +12,8 @@
 #include <algorithm>
 #include <functional>
 #include "RandomGenerator.h"
-#include "glm/ext.hpp"
-#include "glm/glm.hpp"
-#include "glfw/glfw3.h"
+#include "Logger.h"
 
-const int NO_INDEX = -1;
 const int WINDOW_WIDTH = 800;
 const int WINDOW_HEIGHT = 600;
 
@@ -34,24 +31,6 @@ template<typename T> T DegToRad(T degrees)
 template<typename T> T RadToDeg(T radians)
 {
     return static_cast<T>(180.0/M_PI)*radians;
-}
-
-/**
-* Logs info to the outputstream
-* @param info The information to log
-*/
-inline void LogInfo(const std::string& info)
-{
-    std::cout << "INFO: \t" << info << std::endl;
-}
-
-/**
-* Logs error to the outputstream
-* @param error The error to log
-*/
-inline void LogError(const std::string& error)
-{
-    std::cout << "ERROR: \t" << error << std::endl;
 }
 
 /**

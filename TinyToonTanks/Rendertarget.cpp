@@ -3,6 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 
 #include "rendertarget.h"
+#include "Common.h"
 
 RenderTarget::RenderTarget(const std::string& name) :
     m_isBackBuffer(true),

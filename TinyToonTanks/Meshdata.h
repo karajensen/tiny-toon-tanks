@@ -6,8 +6,8 @@
 
 #include <string>
 #include <vector>
-#include "glm\glm.hpp"
-#include "glcommon.h"
+#include <memory>
+#include "Matrix.h"
 
 class Tweaker;
 
@@ -43,7 +43,7 @@ public:
     * Ticks the mesh
     * @param cameraPosition The world position of the camera
     */
-    void Tick(const glm::vec3& cameraPosition);
+    void Tick(const Float3& cameraPosition);
 
     /**
     * Initialises the buffers for the mesh
@@ -127,19 +127,19 @@ private:
     */
     void GenerateRadius();
 
-    glm::mat4 m_world;                 ///< World matrix
-    glm::vec3 m_position;              ///< Position offset
-    glm::vec3 m_rotation;              ///< Degrees rotated around each axis
-    glm::vec3 m_scale;                 ///< Scaling of the mesh
-    int m_textureID = NO_INDEX;        ///< ID for the diffuse texture
+    Matrix m_world;                    ///< World matrix
+    Float3 m_position;                 ///< Position offset
+    Float3 m_rotation;                 ///< Degrees rotated around each axis
+    Float3 m_scale;                    ///< Scaling of the mesh
+    int m_textureID = -1;              ///< ID for the diffuse texture
     bool m_render = true;              ///< Whether to draw the mesh
     bool m_requiresUpdate = false;     ///< Whether to update the world matrix
     bool m_backfacecull = true;        ///< Whether backface culling is enabled
     const std::string m_name;          ///< Name of the mesh
     int m_shaderIndex = -1;            ///< Unique Index of the mesh shader to use
-    GLuint m_vaoID = 0;                ///< An unique ID for Vertex Array Object (VAO)
-    GLuint m_vboID = 0;                ///< Unique ID for the Vertex Buffer Object (VBO)   
-    GLuint m_iboID = 0;                ///< Unique ID for the Index Buffer Object (IBO)
+    unsigned int m_vaoID = 0;          ///< An unique ID for Vertex Array Object (VAO)
+    unsigned int m_vboID = 0;          ///< Unique ID for the Vertex Buffer Object (VBO)   
+    unsigned int m_iboID = 0;          ///< Unique ID for the Index Buffer Object (IBO)
     bool m_initialised = false;        ///< Whether the vertex buffer object is initialised or not
     const std::string m_shaderName;    ///< Name of the shader to use
     float m_radius = 0.0f;             ///< The radius of the sphere surrounding the mesh

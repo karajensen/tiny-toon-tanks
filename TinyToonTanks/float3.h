@@ -18,7 +18,20 @@ struct Float2
     * Constructor
     */
     Float2() = default;
-    Float2(float X, float Y) : x(X), y(Y) {}
+    Float2(float X, float Y) : 
+        x(X), 
+        y(Y) 
+    {
+    }
+
+    /**
+    * @return The length of the vector
+    */
+    float Length() const
+    {
+        return static_cast<float>(std::sqrt(
+            static_cast<double>((x*x)+(y*y))));
+    }
 
     /**
     * Testing equality for two vectors
@@ -28,6 +41,39 @@ struct Float2
     bool operator==(const Float2& vec) const
     {
         return x == vec.x && y == vec.y;
+    }
+};
+
+/**
+* Vector with four floats
+*/
+struct Float4
+{
+    float x = 0.0f;
+    float y = 0.0f;
+    float z = 0.0f;
+    float w = 0.0f;
+
+    /**
+    * Constructor
+    */
+    Float4() = default;
+    Float4(float X, float Y, float Z, float W) :
+        x(X), 
+        y(Y),
+        z(Z),
+        w(W)
+    {
+    }
+
+    /**
+    * Testing equality for two vectors
+    * @param vec The vector to test equality against
+    * @return Whether the two vectors are equal
+    */
+    bool operator==(const Float4& vec) const
+    {
+        return x == vec.x && y == vec.y && z == vec.z && w == vec.w;
     }
 };
 

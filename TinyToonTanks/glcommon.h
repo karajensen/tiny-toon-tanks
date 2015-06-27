@@ -5,7 +5,10 @@
 #pragma once
 
 #include "opengl/gl_core_4_4.h"
-#include "common.h"
+#include "glfw/glfw3.h"
+#include "glm/ext.hpp"
+#include "glm/glm.hpp"
+#include "logger.h"
 
 const int MULTISAMPLING_COUNT = 4;
 

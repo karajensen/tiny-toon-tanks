@@ -18,7 +18,7 @@ public:
     * @param name The name of the quad
     * @param shader The ID of the shader to use
     */
-    Quad(const std::string& name, int shader = NO_INDEX);
+    Quad(const std::string& name, int shader = -1);
 
 private:
 

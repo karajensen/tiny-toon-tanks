@@ -6,7 +6,6 @@
 
 #include <string>
 #include <vector>
-#include "glcommon.h"
 
 /**
 * Texture rendered on a mesh
@@ -38,13 +37,13 @@ public:
     /**
     * Destructor
     */
-    virtual ~Texture();
+    ~Texture();
 
     /**
     * Initialises the texture
     * @return whether initialisation was successful
     */
-    virtual bool Initialise();
+    bool Initialise();
 
     /**
     * @return the filename of the texture
@@ -59,7 +58,7 @@ public:
     /**
     * @return the unique ID for the texture
     */
-    virtual GLuint GetID() const;
+    unsigned int GetID() const;
 
 private:
 
@@ -87,11 +86,11 @@ private:
     * @param path The path to the texture
     * @return whether loading was successful
     */
-    bool LoadTexture(GLenum type, const std::string& path);
+    bool LoadTexture(int type, const std::string& path);
 
     Filter m_filter;             ///< The type of filtering for this texture
     bool m_initialised = false;  ///< Whether this texture is initialised
-    GLuint m_id = 0;             ///< Unique id for the texture
+    unsigned int m_id = 0;       ///< Unique id for the texture
     std::string m_name;          ///< Name of the texture
     std::string m_path;          ///< Path to the texture
 };

@@ -2,9 +2,10 @@
 // Kara Jensen - mail@karajensen.com - texture.cpp
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#include "texture.h"
+#include "Texture.h"
+#include "Glcommon.h"
 #include "soil/SOIL.h"
-#include "tweaker.h"
+#include "Tweaker.h"
 
 Texture::Texture(const std::string& name, 
                  const std::string& path, 
@@ -86,7 +87,7 @@ bool Texture::CreateMipMaps()
     return true;
 }
 
-bool Texture::LoadTexture(GLenum type, const std::string& path)
+bool Texture::LoadTexture(int type, const std::string& path)
 {
     int width, height;
     unsigned char* image = SOIL_load_image(path.c_str(), &width, &height, 0, SOIL_LOAD_RGBA);
@@ -102,7 +103,7 @@ bool Texture::LoadTexture(GLenum type, const std::string& path)
     return SetFiltering();
 }
 
-GLuint Texture::GetID() const
+unsigned int Texture::GetID() const
 {
     return m_id;
 }

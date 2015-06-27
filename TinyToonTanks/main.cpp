@@ -2,7 +2,7 @@
 // Kara Jensen - mail@karajensen.com - main.cpp
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#include "glcommon.h"
+#include "common.h"
 #include "Application.h"
 
 /**

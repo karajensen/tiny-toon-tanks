@@ -4,8 +4,8 @@
 
 #pragma once
 
-#include "glm\glm.hpp"
 #include <memory>
+#include "Matrix.h"
 
 class Tweaker;
 
@@ -79,37 +79,37 @@ public:
     * @param direction The normalized direction of the mouse
     * @param value The amount to rotate the camera
     */
-    void Rotate(const glm::vec2& direction, float value);
+    void Rotate(const Float2& direction, float value);
 
     /**
     * @return the view projection matrix
     */
-    const glm::mat4& ViewProjection() const;
+    const Matrix& ViewProjection() const;
 
     /**
     * @return the projection matrix
     */
-    const glm::mat4& Projection() const;
+    const Matrix& Projection() const;
 
     /**
     * @return the view matrix
     */
-    const glm::mat4& View() const;
+    const Matrix& View() const;
 
     /**
     * @return the world matrix
     */
-    const glm::mat4& World() const;
+    const Matrix& World() const;
 
     /**
     * @return the camera position
     */
-    const glm::vec3& Position() const;
+    const Float3& Position() const;
 
     /**
     * @return the camera up vector
     */
-    const glm::vec3& Up() const;
+    const Float3& Up() const;
 
 private:
 
@@ -119,21 +119,21 @@ private:
     Camera(const Camera&) = delete;
     Camera& operator=(const Camera&) = delete;
 
-    glm::mat4 m_projection;                 ///< Projection Matrix for the camera
-    glm::mat4 m_view;                       ///< View Matrix for the camera
-    glm::mat4 m_viewProjection;             ///< Combined view projection matrix
-    glm::mat4 m_world;                      ///< World Matrix for the camera
-    glm::vec3 m_initialPos;                 ///< Camera initial position in world space
-    glm::vec3 m_position;                   ///< Camera position in world space
-    glm::vec3 m_up;                         ///< Camera up vector
-    glm::vec3 m_forward;                    ///< Camera forward vector
-    glm::vec3 m_right;                      ///< Camera right vector
-    glm::vec3 m_target;                     ///< Camera Look at target
-    bool m_requiresUpdate = true;           ///< Whether the camera requires updating or not
-    float m_yaw = 0.0f;                     ///< Degrees amount of yaw
-    float m_pitch = 0.0f;                   ///< Degrees amount of pitch
-    float m_roll = 0.0f;                    ///< Degrees amount of roll
-    float m_rotationSpeed = 0.0f;           ///< Speed to rotate the camera by
-    float m_translateSpeed = 0.0f;          ///< Speed to translate the camera by
-    float m_forwardSpeed = 0.0f;            ///< Speed to move foward with
+    Matrix m_projection;                 ///< Projection Matrix for the camera
+    Matrix m_view;                       ///< View Matrix for the camera
+    Matrix m_viewProjection;             ///< Combined view projection matrix
+    Matrix m_world;                      ///< World Matrix for the camera
+    Float3 m_initialPos;                 ///< Camera initial position in world space
+    Float3 m_position;                   ///< Camera position in world space
+    Float3 m_up;                         ///< Camera up vector
+    Float3 m_forward;                    ///< Camera forward vector
+    Float3 m_right;                      ///< Camera right vector
+    Float3 m_target;                     ///< Camera Look at target
+    bool m_requiresUpdate = true;        ///< Whether the camera requires updating or not
+    float m_yaw = 0.0f;                  ///< Degrees amount of yaw
+    float m_pitch = 0.0f;                ///< Degrees amount of pitch
+    float m_roll = 0.0f;                 ///< Degrees amount of roll
+    float m_rotationSpeed = 0.0f;        ///< Speed to rotate the camera by
+    float m_translateSpeed = 0.0f;       ///< Speed to translate the camera by
+    float m_forwardSpeed = 0.0f;         ///< Speed to move foward with
 };

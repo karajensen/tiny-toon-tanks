@@ -7,7 +7,8 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
-#include "glcommon.h"
+#include "Glcommon.h"
+#include "Matrix.h"
 
 class RenderTarget;
 
@@ -46,7 +47,7 @@ public:
     * @param name Name of the matrix to send. This must match on the shader to be successful
     * @param matrix The matrix to send
     */
-    void SendUniform(const std::string& name, const glm::mat4& matrix);
+    void SendUniform(const std::string& name, const Matrix& matrix);
 
     /**
     * Sends the float to the shader
@@ -54,7 +55,7 @@ public:
     * @param value The float value to send
     * @param offset The index offset into the array if this value is apart of an array
     */
-    void SendUniform(const std::string& name, float value, int offset = NO_INDEX);
+    void SendUniform(const std::string& name, float value, int offset = -1);
 
     /**
     * Sends the vector to the shader
@@ -62,7 +63,7 @@ public:
     * @param value The vector value to send
     * @param offset The index offset into the array if this value is apart of an array
     */
-    void SendUniform(const std::string& name, const glm::vec2& value, int offset = NO_INDEX);
+    void SendUniform(const std::string& name, const Float2& value, int offset = -1);
 
     /**
     * Sends the vector to the shader
@@ -70,7 +71,7 @@ public:
     * @param value The vector value to send
     * @param offset The index offset into the array if this value is apart of an array
     */
-    void SendUniform(const std::string& name, const glm::vec3& value, int offset = NO_INDEX);
+    void SendUniform(const std::string& name, const Float3& value, int offset = -1);
 
     /**
     * Sends the vector to the shader
@@ -78,7 +79,7 @@ public:
     * @param value The vector value to send
     * @param offset The index offset into the array if this value is apart of an array
     */
-    void SendUniform(const std::string& name, const glm::vec4& value, int offset = NO_INDEX);
+    void SendUniform(const std::string& name, const Float4& value, int offset = -1);
 
     /**
     * Enables the vertex shader 'in' attributes for the shader
@@ -279,9 +280,9 @@ private:
     UniformMap m_uniforms;                    ///< Vertex and fragment non-attribute uniform data
     SamplerMap m_samplers;                    ///< Fragment shader sampler locations
     std::vector<AttributeData> m_attributes;  ///< Vertex shader input attributes
-    GLint m_program = NO_INDEX;               ///< Shader program
-    GLint m_vs = NO_INDEX;                    ///< GLSL Vertex Shader
-    GLint m_fs = NO_INDEX;                    ///< GLSL Fragment Shader
+    GLint m_program = -1;                     ///< Shader program
+    GLint m_vs = -1;                          ///< GLSL Vertex Shader
+    GLint m_fs = -1;                          ///< GLSL Fragment Shader
     GLsizei m_stride = 0;                     ///< Stride required for vertex attributes
     const std::string m_name;                 ///< name of the shader
     const std::string m_vertexFile;           ///< filename of the glsl shader

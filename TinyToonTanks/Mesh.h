@@ -40,7 +40,7 @@ public:
     * @return Whether creation was successful
     */
     bool InitialiseFromFile(const std::string& path, 
-                            const glm::vec2& uvScale,
+                            const Float2& uvScale,
                             bool requiresUVs,
                             bool requiresNormals);
 
