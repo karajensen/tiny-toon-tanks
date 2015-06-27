@@ -21,7 +21,8 @@ namespace
     std::vector<std::string> ATTRIBUTE_MAP =
     {
         "in_Position",
-        "in_UVs"
+        "in_UVs",
+        "in_Normal"
     };
 }
 

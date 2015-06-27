@@ -56,7 +56,23 @@ bool SceneBuilder::InitialiseShaderConstants()
 
 bool SceneBuilder::InitialiseShaders()
 {
-    return true;
+    auto InitialiseShader = [this](std::string name, Shader::ShaderID ID) -> bool
+    {
+        m_data.shaders[ID] = std::make_unique<Shader>(name, ASSETS_PATH + name);
+        return m_data.shaders[ID]->Initialise();
+    };
+
+    bool success = true;
+    m_data.shaders.resize(Shader::MAX_SHADERS);
+
+    success &= InitialiseShader("normal", Shader::NORMAL);
+    success &= InitialiseShader("proxy", Shader::PROXY);
+    success &= InitialiseShader("shadow", Shader::SHADOW);
+    success &= InitialiseShader("toon", Shader::TOON);
+    success &= InitialiseShader("sprite", Shader::SPRITE);
+    success &= InitialiseShader("post", Shader::POST);
+
+    return success;
 }
 
 bool SceneBuilder::InitialiseTextures()

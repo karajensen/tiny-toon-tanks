@@ -29,6 +29,7 @@ void main(void)
 
     // Sample normals of four corners around pixel
     float offset = 0.0009;
+    vec4 normal = texture(NormalSampler, ex_UVs);
     vec4 n1 = texture(NormalSampler, ex_UVs + vec2(-offset, -offset));
     vec4 n2 = texture(NormalSampler, ex_UVs + vec2( offset,  offset));
     vec4 n3 = texture(NormalSampler, ex_UVs + vec2(-offset,  offset));
@@ -45,5 +46,5 @@ void main(void)
     out_Color.rgb = final.rgb * finalMask;
     out_Color.rgb += scene.rgb * sceneMask;
     out_Color.rgb += vec3(edgeAmount) * toonlineMask;
-    out_Color.rgb += normals.rgb * normalMask;
+    out_Color.rgb += normal.rgb * normalMask;
 }

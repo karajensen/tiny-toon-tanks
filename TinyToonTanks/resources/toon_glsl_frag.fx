@@ -35,28 +35,23 @@ void main(void)
 
         vertToLight /= lightLength;
         
-        lightColour *= ((dot(vertToLight, normal) + 1.0) *
-            ((1.0 - meshDiffuse) * 0.5)) + meshDiffuse;
+        float lightAmount = (dot(vertToLight, normal) + 1.0) * 0.5;
 
 	    // Create bands of color depending on angle to light
-        if (lightColour > 0.75)
+        if (lightAmount <= 0.25)
         {
-            lightColour -= vec4(0.0, 0.0, 0.0, 0.0); 
+            lightAmount -= 0.6;
         }
-        else if (lightColour > 0.5)
+        else if (lightAmount <= 0.5)
         {
-            lightColour -= vec4(0.2, 0.2, 0.2, 0.0);
+            lightAmount -= 0.4;
         }
-        else if (lightColour > 0.25)
+        else if (lightAmount <= 0.75)
         {
-            lightColour -= vec4(0.4, 0.4, 0.4, 0.0);
-        }
-        else
-        {
-            lightColour -= vec4(0.6, 0.6, 0.6, 0.0);
+            lightAmount -= 0.2;
         }
 
-        diffuse += lightColour * attenuation * lightActive[i];
+        diffuse += lightColour * lightAmount * attenuation * lightActive[i];
     }
 
     out_Color = vec4(diffuseTex.rgb * diffuse, 1.0);
