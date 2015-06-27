@@ -2,8 +2,9 @@
 // Kara Jensen - mail@karajensen.com - BulletPhysics.cpp
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#include "bulletphysics.h"
+#include "BulletPhysics.h"
 #include "CollisionEvent.h"
+#include "Conversions.h"
 #include <algorithm>
 
 namespace
@@ -119,13 +120,14 @@ int BulletPhysicsWorld::GetCollisionAmount() const
     return m_dispatcher->getNumManifolds();
 }
 
-void BulletPhysicsWorld::AddForce(const Float3& force, const Float3& position, int rigidbody)
+void BulletPhysicsWorld::AddForce(const glm::vec3& force, const glm::vec3& position, int rigidbody)
 {
     if(!m_bodies[rigidbody]->body->isActive())
     {
         m_bodies[rigidbody]->body->activate(true);
     }
-    m_bodies[rigidbody]->body->applyForce(Float3ToBullet(force), Float3ToBullet(position));
+    m_bodies[rigidbody]->body->applyForce(
+        Conversion::Convert(force), Conversion::Convert(position));
 }
 
 float BulletPhysicsWorld::GetFriction(int rigidbody) const
@@ -133,16 +135,17 @@ float BulletPhysicsWorld::GetFriction(int rigidbody) const
     return m_bodies[rigidbody]->body->getFriction();
 }
 
-void BulletPhysicsWorld::AddImpulse(const Float3& force, const Float3& position, int rigidbody)
+void BulletPhysicsWorld::AddImpulse(const glm::vec3& force, const glm::vec3& position, int rigidbody)
 {
     if(!m_bodies[rigidbody]->body->isActive())
     {
         m_bodies[rigidbody]->body->activate(true);
     }
-    m_bodies[rigidbody]->body->applyImpulse(Float3ToBullet(force),Float3ToBullet(position));
+    m_bodies[rigidbody]->body->applyImpulse(
+        Conversion::Convert(force), Conversion::Convert(position));
 }
 
-void BulletPhysicsWorld::SetVelocity(const Float3& velocity,
+void BulletPhysicsWorld::SetVelocity(const glm::vec3& velocity,
                                      int rigidbody, 
                                      float linearDamping, 
                                      float angularDamping)
@@ -151,13 +154,13 @@ void BulletPhysicsWorld::SetVelocity(const Float3& velocity,
     {
         m_bodies[rigidbody]->body->activate(true);
     }
-    m_bodies[rigidbody]->body->setLinearVelocity(Float3ToBullet(velocity));
+    m_bodies[rigidbody]->body->setLinearVelocity(Conversion::Convert(velocity));
     m_bodies[rigidbody]->body->setDamping(linearDamping, angularDamping);
 }
 
-Float3 BulletPhysicsWorld::GetVelocity(int rigidbody) const
+glm::vec3 BulletPhysicsWorld::GetVelocity(int rigidbody) const
 {
-    return BulletToFloat3(m_bodies[rigidbody]->body->getLinearVelocity());
+    return Conversion::Convert(m_bodies[rigidbody]->body->getLinearVelocity());
 }
 
 void BulletPhysicsWorld::SetInternalDamping(int rigidbody, float linearDamp, float angDamp)
@@ -207,55 +210,41 @@ void BulletPhysicsWorld::ResetVelocityAndForce(int rigidbody)
     m_bodies[rigidbody]->body->setLinearVelocity(btVector3(0,0,0));
 }
 
-void BulletPhysicsWorld::SetMotionState(int rigidBody, const Matrix& matrix)
+void BulletPhysicsWorld::SetMotionState(int rigidBody, const glm::mat4& matrix)
 {
     btTransform& transform = m_bodies[rigidBody]->body->getWorldTransform();
-    btMatrix3x3 basis;
+    btMatrix3x3 basis(Conversion::Convert(matrix).getBasis());
 
-    basis.setValue(matrix.m11, matrix.m12, matrix.m13, 
-                   matrix.m21, matrix.m22, matrix.m23, 
-                   matrix.m31, matrix.m32, matrix.m33);
-
-    transform.setOrigin(Float3ToBullet(matrix.Position()));
+    transform.setOrigin(Conversion::Convert(Conversion::Position(matrix)));
     transform.setBasis(basis);
     m_bodies[rigidBody]->body->setWorldTransform(transform);
     m_bodies[rigidBody]->state->setWorldTransform(transform);
 }
 
-void BulletPhysicsWorld::SetBasis(int rigidBody, const Matrix& matrix)
+void BulletPhysicsWorld::SetBasis(int rigidBody, const glm::mat4& matrix)
 {
     btTransform& transform = m_bodies[rigidBody]->body->getWorldTransform();
-    btMatrix3x3 basis;
-    basis.setValue(matrix.m11, matrix.m12, matrix.m13, 
-                   matrix.m21, matrix.m22, matrix.m23, 
-                   matrix.m31, matrix.m32, matrix.m33);
+    btMatrix3x3 basis(Conversion::Convert(matrix).getBasis());
 
     transform.setBasis(basis);
     m_bodies[rigidBody]->body->setWorldTransform(transform);
     m_bodies[rigidBody]->state->setWorldTransform(transform);
 }
 
-void BulletPhysicsWorld::SetPosition(int rigidBody, const Float3& position)
+void BulletPhysicsWorld::SetPosition(int rigidBody, const glm::vec3& position)
 {
     btTransform transform;
     m_bodies[rigidBody]->state->getWorldTransform(transform);   
-    transform.setOrigin(Float3ToBullet(position));
+    transform.setOrigin(Conversion::Convert(position));
     m_bodies[rigidBody]->body->setWorldTransform(transform);
     m_bodies[rigidBody]->state->setWorldTransform(transform);
 }
 
-Matrix BulletPhysicsWorld::GetTransform(int rigidBody) const
+glm::mat4 BulletPhysicsWorld::GetTransform(int rigidBody) const
 {
     btTransform transform;
     m_bodies[rigidBody]->state->getWorldTransform(transform);
-    btMatrix3x3 basis = transform.getBasis();
-        
-    Matrix matrix;
-    matrix.SetPosition(BulletToFloat3(transform.getOrigin()));
-    matrix.SetRight(BulletToFloat3(basis.getColumn(0)));
-    matrix.SetUp(BulletToFloat3(basis.getColumn(1)));
-    matrix.SetForward(BulletToFloat3(basis.getColumn(2)));
-    return matrix;
+    return Conversion::Convert(transform);
 }
 
 void BulletPhysicsWorld::Tick(float timestep)
@@ -268,18 +257,20 @@ void BulletPhysicsWorld::Tick(float timestep)
 
 int BulletPhysicsWorld::CreateHinge(int rigidBody1, 
                                     int rigidBody2, 
-                                    const Float3& pos1local, 
-                                    const Float3& pos2local, 
-                                    const Float3& axis1,   
-                                    const Float3& axis2, 
+                                    const glm::vec3& pos1local, 
+                                    const glm::vec3& pos2local, 
+                                    const glm::vec3& axis1,   
+                                    const glm::vec3& axis2, 
                                     float breakthreshold)
 {   
     const int index = m_hinges.size();
 
     m_hinges.push_back(std::unique_ptr<btHingeConstraint>(new btHingeConstraint(
                 *m_bodies[rigidBody1]->body, *m_bodies[rigidBody2]->body,
-                Float3ToBullet(pos1local),Float3ToBullet(pos2local),
-                Float3ToBullet(axis1),Float3ToBullet(axis2))));
+                Conversion::Convert(pos1local),
+                Conversion::Convert(pos2local),
+                Conversion::Convert(axis1),
+                Conversion::Convert(axis2))));
 
     m_hinges[index]->enableAngularMotor(true, 0.0f, 10.0f);
 
@@ -340,28 +331,20 @@ void BulletPhysicsWorld::SetUserPointers()
     }
 }
 
-int BulletPhysicsWorld::LoadRigidBody(const Matrix& matrix, 
+int BulletPhysicsWorld::LoadRigidBody(const glm::mat4& matrix, 
                                       int shape, 
                                       float mass, 
                                       int group, 
                                       int userIndex, 
                                       bool createEvents, 
                                       int mask, 
-                                      const Float3 inertia)
+                                      const glm::vec3 inertia)
 {
-    btTransform transform;
-    btMatrix3x3 basis;
-    basis.setValue(matrix.m11, matrix.m12, matrix.m13, 
-                   matrix.m21, matrix.m22, matrix.m23, 
-                   matrix.m31, matrix.m32, matrix.m33);
-
-    transform.setIdentity();
-    transform.setOrigin(Float3ToBullet(matrix.Position()));
-    transform.setBasis(basis);
+    btTransform transform = Conversion::Convert(matrix);
 
     //Rigidbody is dynamic if and only if mass is non zero, otherwise static
     const bool isDynamic = mass != 0.0f;
-    btVector3 localInertia(Float3ToBullet(inertia));
+    btVector3 localInertia(Conversion::Convert(inertia));
     if (isDynamic)
     {
         m_shapes[shape]->calculateLocalInertia(mass, localInertia);
@@ -389,19 +372,4 @@ int BulletPhysicsWorld::LoadRigidBody(const Matrix& matrix,
     m_world->addRigidBody(m_bodies[index]->body.get(), group, mask);
 
     return index;
-}
-
-btVector3 BulletPhysicsWorld::Float3ToBullet(const Float3& vec) const
-{ 
-    return btVector3(btScalar(vec.x), btScalar(vec.y), btScalar(vec.z)); 
-    
-}
-btVector3 BulletPhysicsWorld::Float3ToBullet(float x, float y, float z) const
-{
-    return btVector3(btScalar(x), btScalar(y), btScalar(z)); 
-}
-
-Float3 BulletPhysicsWorld::BulletToFloat3(const btVector3 & vec) const
-{ 
-    return Float3(vec.getX(), vec.getY(), vec.getZ()); 
 }

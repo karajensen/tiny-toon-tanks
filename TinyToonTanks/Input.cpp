@@ -40,7 +40,7 @@ void Input::UpdateMouse()
     m_mouseDirection.x = static_cast<float>(m_mouseX) - x;
     m_mouseDirection.y = static_cast<float>(m_mouseY) - y;
 
-    const float length = m_mouseDirection.Length();
+    const float length = glm::length(m_mouseDirection);
     if (length != 0.0f)
     {
         m_mouseDirection.x /= length;
@@ -115,7 +115,7 @@ void Input::AddCallback(unsigned int key, bool onContinous, KeyFn onKeyFn)
     m_keys[key].onKeyFn = onKeyFn;
 }
 
-const Float2& Input::GetMouseDirection() const
+const glm::vec2& Input::GetMouseDirection() const
 {
     return m_mouseDirection;
 }

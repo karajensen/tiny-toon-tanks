@@ -8,7 +8,7 @@
 #include <vector>
 #include <unordered_map>
 #include "Glcommon.h"
-#include "Matrix.h"
+#include "glm/glm.hpp"
 
 class RenderTarget;
 
@@ -43,11 +43,11 @@ public:
     void SetActive();
 
     /**
-    * Sends a matrix to the shader
-    * @param name Name of the matrix to send. This must match on the shader to be successful
-    * @param matrix The matrix to send
+    * Sends a glm::mat4 to the shader
+    * @param name Name of the glm::mat4 to send. This must match on the shader to be successful
+    * @param glm::mat4 The glm::mat4 to send
     */
-    void SendUniform(const std::string& name, const Matrix& matrix);
+    void SendUniform(const std::string& name, const glm::mat4& matrix);
 
     /**
     * Sends the float to the shader
@@ -63,7 +63,7 @@ public:
     * @param value The vector value to send
     * @param offset The index offset into the array if this value is apart of an array
     */
-    void SendUniform(const std::string& name, const Float2& value, int offset = -1);
+    void SendUniform(const std::string& name, const glm::vec2& value, int offset = -1);
 
     /**
     * Sends the vector to the shader
@@ -71,7 +71,7 @@ public:
     * @param value The vector value to send
     * @param offset The index offset into the array if this value is apart of an array
     */
-    void SendUniform(const std::string& name, const Float3& value, int offset = -1);
+    void SendUniform(const std::string& name, const glm::vec3& value, int offset = -1);
 
     /**
     * Sends the vector to the shader
@@ -79,7 +79,7 @@ public:
     * @param value The vector value to send
     * @param offset The index offset into the array if this value is apart of an array
     */
-    void SendUniform(const std::string& name, const Float4& value, int offset = -1);
+    void SendUniform(const std::string& name, const glm::vec4& value, int offset = -1);
 
     /**
     * Enables the vertex shader 'in' attributes for the shader

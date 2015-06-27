@@ -1,7 +1,8 @@
 
 • Clean and add to new project
-
-
+    - Load all assets
+    - Create sprite quad rendering in screen space
+    - Create new unit tests
 
 • Change 'N' to '0'
 • Update GUI/Menus

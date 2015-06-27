@@ -5,32 +5,30 @@
 #include "Camera.h"
 #include "Common.h"
 #include "Tweaker.h"
-#include "Conversions.h"
+#include "GLMHelper.h"
+#include "glm/ext.hpp"
 
 namespace
 {
     const float FRUSTRUM_NEAR = 1.0f;
-    const float FRUSTRUM_FAR = 1500.0f; // Minimum value for skybox
-    const float FRUSTRUM_BOUNDS_NEAR = 0.0f;
-    const float FRUSTRUM_BOUNDS_FAR = 1500.0f;
-    const float FIELD_OF_VIEW = 60.0f;
+    const float FRUSTRUM_FAR = 1000.0f;
+    const float FIELD_OF_VIEW = 45.0f;
     const float RATIO = WINDOW_WIDTH / static_cast<float>(WINDOW_HEIGHT);
 }
 
 Camera::Camera() :
-    m_initialPos(15.0f, 1.0f, 3.0f),
+    m_initialPos(0.0f, 20.0f, 0.0f),
     m_position(m_initialPos),
     m_target(0.0f, 0.0f, 0.0f),
-    m_rotationSpeed(3.0f),
-    m_translateSpeed(20.0f),
-    m_forwardSpeed(60.0f),
+    m_rotationSpeed(0.001f),
+    m_translateSpeed(0.02f),
+    m_forwardSpeed(0.02f),
     m_pitch(0.0f),
-    m_yaw(75.0f),
+    m_yaw(0.0f),
     m_roll(0.0f),
     m_requiresUpdate(true)
 {
-    m_projection = Conversion::Convert(
-        glm::perspective(FIELD_OF_VIEW, RATIO, FRUSTRUM_NEAR, FRUSTRUM_FAR));
+    m_projection = glm::perspective(FIELD_OF_VIEW, RATIO, FRUSTRUM_NEAR, FRUSTRUM_FAR);
 }
 
 void Camera::AddToTweaker(Tweaker& tweaker)
@@ -91,17 +89,29 @@ void Camera::Reset()
     m_pitch = 0;
 }
 
+void Camera::SetTarget(const glm::vec3& position)
+{
+    m_target = position;
+}
+
 void Camera::Update(float deltatime)
 {
     if (m_requiresUpdate)
     {
         m_requiresUpdate = false;
         
+        glm::mat4 rotation, rotateX, rotateY, rotateZ;
+        rotateX = glm::rotate(rotateX, m_pitch, glm::vec3(1,0,0));
+        rotateY = glm::rotate(rotateY, m_yaw, glm::vec3(0,1,0));
+        rotateZ = glm::rotate(rotateZ, m_roll, glm::vec3(0,0,1));
+        rotation = rotateZ * rotateY * rotateX;
 
+        m_view = glm::lookAt(m_position, m_target, glm::matrix_get_up(rotation));
+        m_world = glm::inverse(m_view);
     }
 }
 
-void Camera::Rotate(const Float2& direction, float value)
+void Camera::Rotate(const glm::vec2& direction, float value)
 {
     if(direction.x != 0.0f)
     {
@@ -113,32 +123,32 @@ void Camera::Rotate(const Float2& direction, float value)
     }
 }
 
-const Matrix& Camera::ViewProjection() const
+const glm::mat4& Camera::ViewProjection() const
 {
     return m_viewProjection;
 }
 
-const Matrix& Camera::Projection() const
+const glm::mat4& Camera::Projection() const
 {
     return m_projection;
 }
 
-const Matrix& Camera::View() const
+const glm::mat4& Camera::View() const
 {
     return m_view;
 }
 
-const Matrix& Camera::World() const
+const glm::mat4& Camera::World() const
 {
     return m_world;
 }
 
-const Float3& Camera::Position() const
+const glm::vec3& Camera::Position() const
 {
     return m_position;
 }
 
-const Float3& Camera::Up() const
+const glm::vec3& Camera::Up() const
 {
     return m_up;
 }

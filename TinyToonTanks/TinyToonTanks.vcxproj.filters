@@ -121,6 +121,15 @@
     <ClCompile Include="Texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneBuilder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprite.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BulletPhysics.h">
@@ -180,22 +189,31 @@
     <ClInclude Include="Texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Float3.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Common.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Glcommon.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Matrix.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Logger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Conversions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneBuilder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GLMHelper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

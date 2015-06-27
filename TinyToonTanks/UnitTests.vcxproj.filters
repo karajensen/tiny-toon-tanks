@@ -5,6 +5,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="OutputHelper.h" />
+    <ClInclude Include="Float3.h" />
+    <ClInclude Include="Matrix.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="UnitTests.cpp" />

@@ -12,6 +12,7 @@ class Input;
 class Tweaker;
 class Timer;
 class Camera;
+class Scene;
 
 /**
 * Opens up a tweak bar for manipulating the scene
@@ -22,15 +23,15 @@ public:
 
     /**
     * Constructor
+    * @param scene Holds and managers game data
     * @param camera Allows modifying the camera
     * @param input Allows adding key callbacks
     * @param timer Allows viewing the application times
-    * @param wireframe Callback to toggle the wireframe
     */
-    Gui(Camera& camera, 
+    Gui(Scene& scene,
+        Camera& camera, 
         Input& input,
-        Timer& timer,
-        std::function<void(void)> wireframe);
+        Timer& timer);
 
     /**
     * Destructor
@@ -65,10 +66,10 @@ private:
     */
     void FillTweakBar();
 
+    Scene& m_scene;                        ///< Holds and manages game data
     Camera& m_camera;                      ///< Allows modifying the view
-    CTwBar* m_tweakbar = nullptr;          ///< Tweak bar for manipulating the scene
     Timer& m_timer;                        ///< Allows viewing the application times
+    CTwBar* m_tweakbar = nullptr;          ///< Tweak bar for manipulating the scene
     bool m_show = false;                   ///< Whether the GUI is displayed
     std::unique_ptr<Tweaker> m_tweaker;    ///< Helper for modifying the tweak bar
-    std::function<void(void)> m_wireframe; ///< Callback for toggle wireframe
 };                     

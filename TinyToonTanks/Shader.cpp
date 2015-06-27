@@ -261,13 +261,12 @@ bool Shader::FindShaderUniforms()
     return true;
 }
 
-void Shader::SendUniform(const std::string& name, const Matrix& matrix)
+void Shader::SendUniform(const std::string& name, const glm::mat4& matrix)
 {
     auto itr = m_uniforms.find(name);
     if(itr != m_uniforms.end())
     {
-        const glm::mat4 glmMatrix(Conversion::Convert(matrix));
-        glUniformMatrix4fv(itr->second.location, 1, GL_FALSE, &glmMatrix[0][0]);
+        glUniformMatrix4fv(itr->second.location, 1, GL_FALSE, &matrix[0][0]);
 
         if (itr->second.type != GL_FLOAT_MAT4)
         {
@@ -342,21 +341,21 @@ void Shader::SendUniformFloat(const std::string& name,
     }
 }
 
-void Shader::SendUniform(const std::string& name, const Float4& value, int offset)
+void Shader::SendUniform(const std::string& name, const glm::vec4& value, int offset)
 {
     offset == -1 ? 
         SendUniformFloat(name, &value.x, 4) :
         UpdateUniformArray(name, &value.x, 4, offset);
 }
 
-void Shader::SendUniform(const std::string& name, const Float3& value, int offset)
+void Shader::SendUniform(const std::string& name, const glm::vec3& value, int offset)
 {
     offset == -1 ? 
         SendUniformFloat(name, &value.x, 3) :
         UpdateUniformArray(name, &value.x, 3, offset);
 }
 
-void Shader::SendUniform(const std::string& name, const Float2& value, int offset)
+void Shader::SendUniform(const std::string& name, const glm::vec2& value, int offset)
 {
     offset == -1 ? 
         SendUniformFloat(name, &value.x, 2) :

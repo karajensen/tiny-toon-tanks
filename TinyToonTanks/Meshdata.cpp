@@ -72,24 +72,30 @@ void MeshData::GenerateRadius()
     // Assumes position is always first in a vertex
     for (unsigned int vertex = 0; vertex < m_vertices.size(); vertex += m_vertexComponentCount)
     {
-        const Float3 position(m_vertices[vertex], 
+        const glm::vec3 position(m_vertices[vertex], 
             m_vertices[vertex + 1], m_vertices[vertex + 2]);
 
-        m_radius = std::max(m_radius, position.Length());
+        m_radius = std::max(m_radius, glm::length(position));
     }
 }
 
 void MeshData::PreRender() const
 {
-    assert(m_initialised);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_iboID);
-    glBindBuffer(GL_ARRAY_BUFFER, m_vboID);
+    if (ShouldRender())
+    {
+        assert(m_initialised);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_iboID);
+        glBindBuffer(GL_ARRAY_BUFFER, m_vboID);
+    }
 }
 
 void MeshData::Render() const
 {
-    assert(m_initialised);
-    glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, 0);
+    if (ShouldRender())
+    {
+        assert(m_initialised);
+        glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, 0);
+    }
 }
 
 const std::string& MeshData::Name() const
@@ -132,7 +138,33 @@ void MeshData::BackfaceCull(bool value)
     m_backfacecull = value;
 }
 
-void MeshData::Tick(const Float3& cameraPosition)
+bool MeshData::ShouldRender() const
+{
+    return m_render;
+}
+
+void MeshData::SetShouldRender(bool render)
+{
+    m_render = render;
+}
+
+const glm::vec3& MeshData::Position() const
+{
+    return m_position;
+}
+
+const glm::vec3& MeshData::Scale() const
+{
+    return m_scale;
+}
+
+void MeshData::SetWorld(const glm::mat4& world)
+{
+    m_requiresUpdate = false;
+    m_world = world;
+}
+
+void MeshData::Tick(const glm::vec3& cameraPosition)
 {
     if (m_requiresUpdate)
     {
@@ -142,18 +174,18 @@ void MeshData::Tick(const Float3& cameraPosition)
             m_rotation.y == 0 &&
             m_rotation.z == 0)
         {
-            m_world.m11 = m_scale.x;
-            m_world.m12 = 0.0f;
-            m_world.m13 = 0.0f;
-            m_world.m14 = m_position.x;
-            m_world.m21 = 0.0f;
-            m_world.m22 = m_scale.y;
-            m_world.m23 = 0.0f;
-            m_world.m24 = m_position.y;
-            m_world.m31 = 0.0f;
-            m_world.m32 = 0.0f;
-            m_world.m33 = m_scale.z;
-            m_world.m34 = m_position.z;
+            m_world[0][0] = m_scale.x;
+            m_world[0][1] = 0.0f;
+            m_world[0][2] = 0.0f;
+            m_world[1][0] = 0.0f;
+            m_world[1][1] = m_scale.y;
+            m_world[1][2] = 0.0f;
+            m_world[2][0] = 0.0f;
+            m_world[2][1] = 0.0f;
+            m_world[2][2] = m_scale.z;
+            m_world[3][0] = m_position.x;
+            m_world[3][1] = m_position.y;
+            m_world[3][2] = m_position.z;
         }
         else
         {
@@ -172,8 +204,7 @@ void MeshData::Tick(const Float3& cameraPosition)
             rotateY = glm::rotate(rotateY, m_rotation.y, glm::vec3(0, 1, 0));
             rotateZ = glm::rotate(rotateZ, m_rotation.z, glm::vec3(0, 0, 1));
 
-            m_world = Conversion::Convert(
-                translate * (rotateZ * rotateX * rotateY) * scale);
+            m_world = translate * (rotateZ * rotateX * rotateY) * scale;
         }
     }
 }

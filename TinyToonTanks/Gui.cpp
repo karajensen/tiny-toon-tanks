@@ -8,16 +8,17 @@
 #include "Input.h"
 #include "Camera.h"
 #include "Timer.h"
+#include "Scene.h"
 #include "Glcommon.h"
 #include <sstream>
 
-Gui::Gui(Camera& camera,
+Gui::Gui(Scene& scene,
+         Camera& camera,
          Input& input,
-         Timer& timer,
-         std::function<void(void)> wireframe) :
+         Timer& timer) :
 
     m_camera(camera),
-    m_wireframe(wireframe),
+    m_scene(scene),
     m_timer(timer)
 {
     TwInit(TW_OPENGL_CORE, nullptr);
@@ -120,7 +121,7 @@ void Gui::FillTweakBar()
     m_tweaker->ClearEntries();
 
     m_tweaker->SetGroup("Scene");
-    m_tweaker->AddButton("Toggle Wireframe", m_wireframe);
+    m_scene.AddToTweaker(*m_tweaker);
 
     m_tweaker->SetGroup("Camera");
     m_camera.AddToTweaker(*m_tweaker);

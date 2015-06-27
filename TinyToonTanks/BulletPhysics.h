@@ -4,11 +4,9 @@
 
 #pragma once
 
-#include "matrix.h"
-#include "float3.h"
 #include <vector>
 #include <memory>
-
+#include "glm/glm.hpp"
 #include "bullet/include/btBulletCollisionCommon.h"
 #include "bullet/include/btBulletDynamicsCommon.h"
 #include "bullet/include/linearMath/btTransform.h"
@@ -70,14 +68,14 @@ public:
     * @param rigidBody The index for the rigid body
     * @return The velocity of the rigid body
     */
-     Float3 GetVelocity(int rigidbody) const;
+    glm::vec3 GetVelocity(int rigidbody) const;
 
     /**
     * Get the current transform of a rigid body
     * @param rigidBody The index for the rigid body
     * @return the transform of the right body
     */
-    Matrix GetTransform(int rigidBody) const;
+    glm::mat4 GetTransform(int rigidBody) const;
 
     /**
     * Removes a rigid body from the simulation world
@@ -103,21 +101,21 @@ public:
     * @param rigidBody The rigid body to set
     * @param matrix The transform to set
     */
-    void SetMotionState(int rigidBody, const Matrix& matrix);
+    void SetMotionState(int rigidBody, const glm::mat4& matrix);
 
     /**
     * Explicitly sets the position for a rigid body
     * @param rigidBody The rigid body to set
     * @param position The position to set
     */
-    void SetPosition(int rigidBody, const Float3& position);
+    void SetPosition(int rigidBody, const glm::vec3& position);
 
     /**
     * Explicitly sets the basis for a rigid body
     * @param rigidBody The rigid body to set
     * @param mat The basis transform to set
     */
-    void SetBasis(int rigidBody, const Matrix& matrix);
+    void SetBasis(int rigidBody, const glm::mat4& matrix);
 
     /**
     * Sets bullet user pointer for the Rigid Body Structures
@@ -145,7 +143,7 @@ public:
     * @param linearDamping The damping for linear velocity
     * @param angularDamping The damping for angular velocity
     */
-    void SetVelocity(const Float3& velocity, 
+    void SetVelocity(const glm::vec3& velocity, 
                      int rigidbody, 
                      float linearDamping = 0, 
                      float angularDamping = 0);
@@ -185,7 +183,7 @@ public:
     * @param position The position to apply the force at
     * @param rigidbody The index for the rigid body
     */
-    void AddForce(const Float3& force, const Float3& position, int rigidbody);
+    void AddForce(const glm::vec3& force, const glm::vec3& position, int rigidbody);
 
     /**
     * Adds an impulse to a particular rigid body
@@ -193,7 +191,7 @@ public:
     * @param position The position to apply the impulse at
     * @param rigidbody The index for the rigid body
     */
-    void AddImpulse(const Float3& force, const Float3& position, int rigidbody);
+    void AddImpulse(const glm::vec3& force, const glm::vec3& position, int rigidbody);
 
     /**
     * Adds linear damping to the current amount of a rigid body
@@ -249,10 +247,10 @@ public:
     */
     int CreateHinge(int rigidBody1, 
                     int rigidBody2, 
-                    const Float3& pos1local, 
-                    const Float3& pos2local, 
-                    const Float3& axis1, 
-                    const Float3& axis2, 
+                    const glm::vec3& pos1local, 
+                    const glm::vec3& pos2local, 
+                    const glm::vec3& axis1, 
+                    const glm::vec3& axis2, 
                     float breakthreshold = 0.0f);
 
 
@@ -276,14 +274,14 @@ public:
     * @param inertia The inertia of the body
     * @return the internal index of the rigid body
     */
-    int LoadRigidBody(const Matrix& matrix, 
+    int LoadRigidBody(const glm::mat4& matrix, 
                       int shape, 
                       float mass, 
                       int group, 
                       int userIndex, 
                       bool createEvents, 
                       int mask = NO_MASK, 
-                      const Float3 inertia = Float3());
+                      const glm::vec3 inertia = glm::vec3());
 
     /**
     * Collision Shapes avaliable for rigid bodies
@@ -305,27 +303,6 @@ public:
     static const int NO_MASK = -1; ///< No collision masking
 
 private:
-
-    /**
-    * Convert a Float3 vector to a Bullet vector
-    * @param vec the float3 vector to convert
-    * @return a bullet vector
-    */
-    btVector3 Float3ToBullet(const Float3& vec) const;
-
-    /**
-    * Convert components to a Bullet vector
-    * @param x/y/z The vector components to convert
-    * @return a bullet vector
-    */
-    btVector3 Float3ToBullet(float x, float y, float z) const;
-
-    /**
-    * Convert a Float3 vector to a Bullet vector
-    * @param vec The bullet vector to convert
-    * @return a float3 vector
-    */
-    Float3 BulletToFloat3(const btVector3& vec) const;
 
     /** 
     * Collision Masking for rigid bodies

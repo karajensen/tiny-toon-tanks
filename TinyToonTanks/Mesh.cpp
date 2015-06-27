@@ -23,7 +23,7 @@ void Mesh::AddToTweaker(Tweaker& tweaker)
 }
 
 bool Mesh::InitialiseFromFile(const std::string& path, 
-                              const Float2& uvScale,
+                              const glm::vec2& uvScale,
                               bool requiresNormals, 
                               bool requiresTangents)
 {

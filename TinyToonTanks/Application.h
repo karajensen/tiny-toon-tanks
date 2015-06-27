@@ -12,6 +12,7 @@ class Camera;
 class Input;
 class Timer;
 class Gui;
+class Scene;
 
 /**
 * Main application class
@@ -58,4 +59,5 @@ private:
     std::unique_ptr<OpenGL> m_engine;      ///< Render engine to use for application
     std::unique_ptr<Gui> m_gui;            ///< Manipulates the scene
     std::unique_ptr<Timer> m_timer;        ///< Keeps track of time between ticks and simulation
+    std::unique_ptr<Scene> m_scene;        ///< Manager of game objects
 };

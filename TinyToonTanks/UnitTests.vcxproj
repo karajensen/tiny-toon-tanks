@@ -94,6 +94,8 @@
     <Text Include="results.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Float3.h" />
+    <ClInclude Include="Matrix.h" />
     <ClInclude Include="OutputHelper.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
