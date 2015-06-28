@@ -33,6 +33,7 @@ Camera::Camera() :
 
 void Camera::AddToTweaker(Tweaker& tweaker)
 {
+    tweaker.SetGroup("Camera");
     tweaker.AddFltEntry("Rotation Speed", &m_rotationSpeed, 1.0f);
     tweaker.AddFltEntry("Translate Speed", &m_translateSpeed, 1.0f);
     tweaker.AddFltEntry("Forward Speed", &m_forwardSpeed, 1.0f);

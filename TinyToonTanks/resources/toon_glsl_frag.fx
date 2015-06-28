@@ -10,10 +10,8 @@ in vec2 ex_UVs;
 in vec3 ex_PositionWorld;
 in vec3 ex_Normal;
 
-uniform float lightActive[MAX_LIGHTS];
 uniform vec3 lightPosition[MAX_LIGHTS];
 uniform vec3 lightDiffuse[MAX_LIGHTS];
-uniform vec3 lightAttenuation[MAX_LIGHTS];
 
 uniform sampler2D DiffuseSampler;
 
@@ -25,16 +23,7 @@ void main(void)
 
     for (int i = 0; i < MAX_LIGHTS; ++i)
     {
-        vec3 lightColour = lightDiffuse[i];
-        vec3 vertToLight = lightPosition[i] - ex_PositionWorld;
-        float lightLength = length(vertToLight);
-        
-        float attenuation = 1.0 / (lightAttenuation[i].x 
-            + lightAttenuation[i].y * lightLength 
-            + lightAttenuation[i].z * lightLength * lightLength);
-
-        vertToLight /= lightLength;
-        
+        vec3 vertToLight = normalize(lightPosition[i] - ex_PositionWorld);
         float lightAmount = (dot(vertToLight, normal) + 1.0) * 0.5;
 
 	    // Create bands of color depending on angle to light
@@ -51,7 +40,7 @@ void main(void)
             lightAmount -= 0.2;
         }
 
-        diffuse += lightColour * lightAmount * attenuation * lightActive[i];
+        diffuse += lightDiffuse[i] * lightAmount;
     }
 
     out_Color = vec4(diffuseTex.rgb * diffuse, 1.0);

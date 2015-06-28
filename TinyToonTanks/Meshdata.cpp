@@ -33,6 +33,7 @@ void MeshData::AddToTweaker(Tweaker& tweaker)
 {
     tweaker.AddStrEntry("Name", m_name);
     tweaker.AddStrEntry("Shader", m_shaderName);
+    tweaker.AddEntry("Visible", &m_render, TW_TYPE_BOOLCPP);
     tweaker.AddEntry("Backface Cull", &m_backfacecull, TW_TYPE_BOOLCPP);
     tweaker.AddFltEntry("Radius", &m_radius, 0.1f, 0.1f, FLT_MAX);
 }
@@ -209,17 +210,18 @@ void MeshData::Tick(const glm::vec3& cameraPosition)
     }
 }
 
-std::unique_ptr<float[]> MeshData::CreateFloatBuffer() const
+std::vector<glm::vec3> MeshData::VertexPositions() const
 {
     const int size = static_cast<int>(m_vertices.size());
-    const int amount = size / m_vertexComponentCount;
-    std::unique_ptr<float[]> vertices(new float[amount]);
 
-    for (int i = 0, j = 0; i < size; i += m_vertexComponentCount, j += 3)
+    std::vector<glm::vec3> vertices;
+    vertices.resize(size / m_vertexComponentCount);
+
+    for (int i = 0, j = 0; i < size; i += m_vertexComponentCount, ++j)
     {
-        vertices[j] = m_vertices[i];    // x
-        vertices[j+1] = m_vertices[i];  // y
-        vertices[j+2] = m_vertices[i];  // z
+        vertices[j].x = m_vertices[i];    // x
+        vertices[j].y = m_vertices[i+1];  // y
+        vertices[j].z = m_vertices[i+2];  // z
     }
 
     return vertices;

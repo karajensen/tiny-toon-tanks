@@ -4,8 +4,9 @@
 
 #pragma once
 
-#include <string>
+#include <vector>
 
+class BulletPhysicsWorld;
 struct SceneData;
 
 /**
@@ -15,22 +16,16 @@ class SceneBuilder
 {
 public:
 
-    /**
-    * Constructor
-    * @param data All information for the scene
-    */
-    SceneBuilder(SceneData& data);
-
-    /**
-    * Destructor
-    */
+    SceneBuilder();
     ~SceneBuilder();
 
     /**
     * Initialises the scene
+    * @param data All information for the scene
+    * @param physics The physics engine
     * @return Whether the initialization was successful
     */
-    bool Initialise();
+    bool Initialise(SceneData& data, BulletPhysicsWorld& physics);
 
 private:
 
@@ -42,52 +37,63 @@ private:
 
     /**
     * Initialises all shader constants
+    * @param data All information for the scene
     * @return Whether the initialization was successful
     */
-    bool InitialiseShaderConstants();
+    bool InitialiseShaderConstants(SceneData& data);
 
     /**
     * Initiliases all shaders
+    * @param data All information for the scene
     * @return Whether the initialization was successful
     */
-    bool InitialiseShaders();
+    bool InitialiseShaders(SceneData& data);
 
     /**
     * Initialises the lighting for the scene
+    * @param data All information for the scene
     * @return Whether the initialization was successful
     */
-    bool InitialiseLighting();
+    bool InitialiseLighting(SceneData& data);
 
     /**
     * Initialises all textures required
+    * @param data All information for the scene
     * @return Whether the initialization was successful
     */
-    bool InitialiseTextures();
+    bool InitialiseTextures(SceneData& data);
 
     /**
     * Initialises the meshes for the scene
+    * @param data All information for the scene
     * @note relies on shaders initialised before
     * @return Whether the initialization was successful
     */
-    bool InitialiseMeshes();
+    bool InitialiseMeshes(SceneData& data);
 
     /**
-    * Initialises the shadows for the scene
+    * Initialises the convex hulls for the scene
+    * @param data All information for the scene
+    * @param physics The physics world
+    * @note relies on shaders initialised before
     * @return Whether the initialization was successful
     */
-    bool InitialiseShadows();
+    bool InitialiseHulls(SceneData& data, BulletPhysicsWorld& physics);
 
     /**
     * Initialises the physics for the scene
+    * @param data All information for the scene
+    * @param physics The physics world
     * @return Whether the initialization was successful
     */
-    bool InitialisePhysics();
+    bool InitialisePhysics(SceneData& data, BulletPhysicsWorld& physics);
 
     /**
     * Initialises the sprites for the scene
+    * @param data All information for the scene
     * @return Whether the initialization was successful
     */
-    bool InitialiseSprites();
+    bool InitialiseSprites(SceneData& data);
 
-    SceneData& m_data; ///< The scene to build
+    std::vector<int> m_shapeIDS;  ///< IDS for the physics collision shapes
 };                     

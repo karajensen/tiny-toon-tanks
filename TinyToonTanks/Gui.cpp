@@ -119,13 +119,7 @@ void Gui::FillTweakBar()
 {
     TwRemoveAllVars(m_tweakbar);
     m_tweaker->ClearEntries();
-
-    m_tweaker->SetGroup("Scene");
-    m_scene.AddToTweaker(*m_tweaker);
-
-    m_tweaker->SetGroup("Camera");
+    m_scene.AddToTweaker(*m_tweaker, [this](){ FillTweakBar(); });
     m_camera.AddToTweaker(*m_tweaker);
-
-    m_tweaker->SetGroup("Timer");
     m_timer.AddToTweaker(*m_tweaker);
 }

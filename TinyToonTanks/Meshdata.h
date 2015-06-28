@@ -72,14 +72,14 @@ public:
     int ShaderID() const;
 
     /**
+    * @return The positions of the vertices of this mesh
+    */
+    std::vector<glm::vec3> VertexPositions() const;
+
+    /**
     * @return The vertices constructing this mesh
     */
     const std::vector<float>& Vertices() const;
-
-    /**
-    * Generates a float buffer of vertices
-    */
-    std::unique_ptr<float[]> CreateFloatBuffer() const;
 
     /**
     * @return The indicies constructing this mesh

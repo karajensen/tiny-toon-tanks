@@ -54,34 +54,28 @@ public:
     * @param rigidBody The index for the rigid body
     * @return the friction of the given rigid body
     */
-    float GetFriction(int rigidbody) const;
+    float GetFriction(int rigidBodyID) const;
 
     /**
     * Set the collision group for the rigid body
     * @param rigidBody The index for the rigid body
     * @param group The collision group the rigid body belongs to
     */
-    void SetGroup(int rigidbody, int group);
+    void SetGroup(int rigidBodyID, int group);
 
     /**
     * Get the current velocity of a rigid body
     * @param rigidBody The index for the rigid body
     * @return The velocity of the rigid body
     */
-    glm::vec3 GetVelocity(int rigidbody) const;
+    glm::vec3 GetVelocity(int rigidBodyID) const;
 
     /**
     * Get the current transform of a rigid body
     * @param rigidBody The index for the rigid body
     * @return the transform of the right body
     */
-    glm::mat4 GetTransform(int rigidBody) const;
-
-    /**
-    * Removes a rigid body from the simulation world
-    * @param rigidbody The rigid body to remove
-    */
-    void RemoveFromWorld(int rigidbody);
+    glm::mat4 GetTransform(int rigidBodyID) const;
 
     /**
     * Reset the simulation world
@@ -89,52 +83,39 @@ public:
     void ResetSimulation();
 
     /**
-    * Adds a rigid body to the simulation world
-    * @param rigidbody The index for the rigid body to add
-    * @param group The collision group the rigid body is part of
-    * @param mask The collision mask of the rigid body
-    */
-    void AddToWorld(int rigidbody, short group, int mask = NO_MASK);
-
-    /**
     * Explicitly sets the transform for a rigid body
     * @param rigidBody The rigid body to set
     * @param matrix The transform to set
     */
-    void SetMotionState(int rigidBody, const glm::mat4& matrix);
+    void SetMotionState(int rigidBodyID, const glm::mat4& matrix);
 
     /**
     * Explicitly sets the position for a rigid body
     * @param rigidBody The rigid body to set
     * @param position The position to set
     */
-    void SetPosition(int rigidBody, const glm::vec3& position);
+    void SetPosition(int rigidBodyID, const glm::vec3& position);
 
     /**
     * Explicitly sets the basis for a rigid body
     * @param rigidBody The rigid body to set
     * @param mat The basis transform to set
     */
-    void SetBasis(int rigidBody, const glm::mat4& matrix);
-
-    /**
-    * Sets bullet user pointer for the Rigid Body Structures
-    */
-    void SetUserPointers();
+    void SetBasis(int rigidBodyID, const glm::mat4& matrix);
 
     /**
     * Sets the friction for a rigid body
     * @param rigidbody The rigid body to to set
     * @param amount The amount of friction to set
     */
-    void SetFriction(int rigidbody, float amount);
+    void SetFriction(int rigidBodyID, float amount);
 
     /**
     * Sets the gravity for a rigid body
     * @param rigidbody The rigid body to to set
     * @param gravity The amount of gravity to set
     */
-    void SetGravity(int rigidbody, float gravity);
+    void SetGravity(int rigidBodyID, float gravity);
 
     /**
     * Sets the velocity of a rigid body
@@ -144,17 +125,16 @@ public:
     * @param angularDamping The damping for angular velocity
     */
     void SetVelocity(const glm::vec3& velocity, 
-                     int rigidbody, 
+                     int rigidBodyID, 
                      float linearDamping = 0, 
                      float angularDamping = 0);
 
     /**
     * Set the mass for the rigid body
     * @param rigidbody The index for the rigid body to set
-    * @param shape The index for the shape of the rigid body
     * @param mass The mass of the rigid body
     */
-    void SetMass(int rigidbody, int shape, float mass);
+    void SetMass(int rigidBodyID, float mass);
 
     /**
     * Sets the linear and angular damping of a rigid body
@@ -162,20 +142,20 @@ public:
     * @param linearDamp The damping for linear velocity
     * @param angDamp The damping for angular velocity
     */
-    void SetInternalDamping(int rigidbody, float linearDamp, float angDamp);
+    void SetInternalDamping(int rigidBodyID, float linearDamp, float angDamp);
 
     /**
-    * Toggles whether the rigid body exists in the simulation world or not
+    * Sets whether the rigid body exists in the simulation world or not
     * @param rigidBody The index for the rigid body to set
     * @param enable Whether or not to enable the rigid body
     */
-    void ToggleEnable(int rigidBody, bool enable);
+    void AddToWorld(int rigidBodyID, bool enable);
 
     /**
     * Resets all velocity and forces for a rigid body
     * @param rigidBody The index of the rigid body to reset
     */
-    void ResetVelocityAndForce(int rigidBody);
+    void ResetVelocityAndForce(int rigidBodyID);
 
     /**
     * Adds a force to a particular rigid body
@@ -183,7 +163,7 @@ public:
     * @param position The position to apply the force at
     * @param rigidbody The index for the rigid body
     */
-    void AddForce(const glm::vec3& force, const glm::vec3& position, int rigidbody);
+    void AddForce(const glm::vec3& force, const glm::vec3& position, int rigidBodyID);
 
     /**
     * Adds an impulse to a particular rigid body
@@ -191,21 +171,21 @@ public:
     * @param position The position to apply the impulse at
     * @param rigidbody The index for the rigid body
     */
-    void AddImpulse(const glm::vec3& force, const glm::vec3& position, int rigidbody);
+    void AddImpulse(const glm::vec3& force, const glm::vec3& position, int rigidBodyID);
 
     /**
     * Adds linear damping to the current amount of a rigid body
     * @param rigidBody The index for the rigid body to set
     * @param amount The damping for linear velocity
     */
-    void AddLinearDamping(int rigidBody, float amount);
+    void AddLinearDamping(int rigidBodyID, float amount);
 
     /**
     * Adds angular damping to the current amount of a rigid body
     * @param rigidBody The index for the rigid body to set
     * @param amount The damping for angular velocity
     */
-    void AddRotationalDamping(int rigidBody, float amount);
+    void AddRotationalDamping(int rigidBodyID, float amount);
 
     /**
     * @param hinge The index for the hinge
@@ -245,8 +225,8 @@ public:
     * @param axis2 The axis for the second rigid body
     * @param breakthreshold The magnitude of force required for breakage
     */
-    int CreateHinge(int rigidBody1, 
-                    int rigidBody2, 
+    int CreateHinge(int rigidBodyID1, 
+                    int rigidBodyID2, 
                     const glm::vec3& pos1local, 
                     const glm::vec3& pos2local, 
                     const glm::vec3& axis1, 
@@ -256,11 +236,10 @@ public:
 
     /**
     * Load a custom shape from an array of vertices
-    * @param vertices The array of vertices
-    * @param amount The number of verticies
-    * @param shape The type of shape
+    * @param vertices The array of vertex positions
+    * @return the ID of the shape
     */
-    void LoadConvexShape(float* vertices, int amount, int shape);
+    int LoadConvexShape(std::vector<glm::vec3> vertices);
 
     /**
     * Create a rigid body
@@ -283,25 +262,6 @@ public:
                       int mask = NO_MASK, 
                       const glm::vec3 inertia = glm::vec3());
 
-    /**
-    * Collision Shapes avaliable for rigid bodies
-    */
-    enum Shape
-    { 
-        GROUND, 
-        WALL, 
-        TANK, 
-        GUN, 
-        BULLET, 
-        TANKP1, 
-        TANKP2, 
-        TANKP3, 
-        TANKP4, 
-        NUMBER_OF_SHAPES 
-    };
-
-    static const int NO_MASK = -1; ///< No collision masking
-
 private:
 
     /** 
@@ -319,17 +279,18 @@ private:
     };
 
     /**
-    * Structure for a single rigid body
+    * Data for a rigid body
     */
     struct RigidBody
     {
         std::unique_ptr<btRigidBody> body;           ///< Bullet rigid body object
         std::unique_ptr<btDefaultMotionState> state; ///< Motion state for movement interpolation
-        int shape = 0;                               //< The type of shape of the body
-        int index = 0;                               //< Internal index for all rigid bodies
-        int userIndex = 0;                           //< User defined index of the body
-        int group = 0;                               //< The collision filter group the body belongs to
-        bool processEvents = true;                   //< Whether or not this body requires collision checking
+        int mask = NO_MASK;                          ///< The collision mask of the body
+        int shape = 0;                               ///< The type of shape of the body
+        int index = 0;                               ///< Internal index for all rigid bodies
+        int userIndex = 0;                           ///< User defined index of the body
+        int group = 0;                               ///< The collision filter group the body belongs to
+        bool processEvents = true;                   ///< Whether or not this body requires collision checking
     };
 
     /**
@@ -338,10 +299,11 @@ private:
     BulletPhysicsWorld(const BulletPhysicsWorld&) = delete;
     BulletPhysicsWorld& operator=(const BulletPhysicsWorld&) = delete;
 
-    float m_sleepvalue = 0.0f;   ///< Threshold before a body is asleep
-    float m_iterations = 1.0f;   ///< Number of iterations for the world
+    float m_sleepvalue = 0.0f;     ///< Threshold before a body is asleep
+    float m_iterations = 1.0f;     ///< Number of iterations for the world
+    static const int NO_MASK = -1; ///< No collision masking
 
-    std::vector<std::unique_ptr<btCollisionShape>> m_shapes;             ///< Collision shapes avaliable
+    std::vector<std::unique_ptr<btConvexHullShape>> m_shapes;            ///< Collision shapes avaliable
     std::vector<std::unique_ptr<RigidBody>> m_bodies;                    ///< Rigid bodies that exist in the scene
     std::vector<std::unique_ptr<btHingeConstraint>> m_hinges;            ///< Hinges that exist between rigid bodies
     std::unique_ptr<btDiscreteDynamicsWorld> m_world;                    ///< Bullet dynamics world

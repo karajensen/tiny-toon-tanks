@@ -20,20 +20,6 @@ class Shader
 public:
 
     /**
-    * Available shaders to use
-    */
-    enum ShaderID
-    {
-        TOON,
-        NORMAL,
-        PROXY,
-        SHADOW,
-        SPRITE,
-        POST,
-        MAX_SHADERS
-    };
-
-    /**
     * Constructor
     * @param name The name of the shader
     * @param path The path to the shader

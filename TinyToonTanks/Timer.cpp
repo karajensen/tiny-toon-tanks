@@ -15,12 +15,14 @@ Timer::Timer()
 
 void Timer::AddToTweaker(Tweaker& tweaker)
 {
+    tweaker.SetGroup("Timer");
     tweaker.AddEntry("Frames Per Second", &m_fps, TW_TYPE_INT32, true);
 
     const int precision = 8;
     tweaker.AddFltEntry("Total Time", &m_deltaTime, precision);
     tweaker.AddFltEntry("Total Rendering", &m_sectionTime[RENDERING], precision);
-    tweaker.AddFltEntry("Update Scene", &m_sectionTime[SCENE_UPDATE], precision);
+    tweaker.AddFltEntry("Update Scene", &m_sectionTime[SCENE], precision);
+    tweaker.AddFltEntry("Bullet Physics", &m_sectionTime[PHYSICS], precision);
 }
 
 void Timer::UpdateTimer()

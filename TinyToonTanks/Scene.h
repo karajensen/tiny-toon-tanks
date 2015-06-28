@@ -7,8 +7,10 @@
 #include <vector>
 #include <string>
 #include <memory>
+#include <functional>
+#include "Postprocessing.h"
 
-class SceneBuilder;
+class BulletPhysicsWorld;
 class Tweaker;
 struct SceneData;
 
@@ -19,7 +21,14 @@ class Scene
 {
 public:
 
+    /**
+    * Constructor
+    */
     Scene();
+
+    /**
+    * Destructor
+    */
     ~Scene();
 
     /**
@@ -31,9 +40,10 @@ public:
 
     /**
     * Initialises the scene
+    * @param physics The physics engine
     * @return whether initialisation was successful
     */
-    bool Initialise();
+    bool Initialise(BulletPhysicsWorld& physics);
 
     /**
     * Reloads the scene
@@ -43,8 +53,15 @@ public:
     /**
     * Adds data for this element to be tweaked by the gui
     * @param tweaker The helper for adding tweakable entries
+    * @param reset Callback to reset the tweak bar
     */
-    void AddToTweaker(Tweaker& tweaker);
+    void AddToTweaker(Tweaker& tweaker, std::function<void(void)> reset);
+
+    /**
+    * Sets which post map should be rendered
+    * @param map The post map to render
+    */
+    void SetPostMap(PostProcessing::Map map);
 
 private:
 
@@ -55,5 +72,7 @@ private:
     Scene& operator=(const Scene&) = delete;
 
     std::unique_ptr<SceneData> m_data;         ///< Elements of the scene
-    std::unique_ptr<SceneBuilder> m_builder;   ///< Creates meshes, lighting and shader data
+    int m_selectedLight = 0;                   ///< Currently selected light in the tweak bar
+    int m_selectedMesh = 0;                    ///< Currently selected mesh in the tweak bar
+    int m_selectedHull = 0;                    ///< Currently selected hull in the tweak bar
 }; 

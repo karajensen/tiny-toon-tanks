@@ -5,6 +5,11 @@
 #include "common.h"
 #include "Application.h"
 
+#ifndef _DEBUG
+    // Disable console window
+    #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
+#endif
+
 /**
 * Main entry point
 */

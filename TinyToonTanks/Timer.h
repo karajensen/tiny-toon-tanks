@@ -22,7 +22,8 @@ public:
     {
         UNSECTIONED,
         RENDERING,
-        SCENE_UPDATE,
+        SCENE,
+        PHYSICS,
         MAX_SECTIONS
     };
 

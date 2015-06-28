@@ -5,33 +5,28 @@
 #include "BulletPhysics.h"
 #include "CollisionEvent.h"
 #include "Conversions.h"
+#include "GameData.h"
 #include <algorithm>
 
-namespace
+BulletPhysicsWorld::BulletPhysicsWorld()
 {
-    const float GRAVITY = -9.8f; ///< Simulated gravity
-}
+    m_collisionConfig = std::make_unique<btDefaultCollisionConfiguration>();
+    m_overlappingPairCache = std::make_unique<btDbvtBroadphase>();
+    m_solver = std::make_unique<btSequentialImpulseConstraintSolver>();
+    m_filterCallback = std::make_unique<CollisionFilterCallback>();
+    m_dispatcher = std::make_unique<btCollisionDispatcher>(m_collisionConfig.get());
 
-BulletPhysicsWorld::BulletPhysicsWorld() :
-    m_collisionConfig(new btDefaultCollisionConfiguration()),
-    m_dispatcher(new btCollisionDispatcher(m_collisionConfig.get())),
-    m_overlappingPairCache(new btDbvtBroadphase()),
-    m_solver(new btSequentialImpulseConstraintSolver()),
-    m_filterCallback(new CollisionFilterCallback())
-{
-    m_shapes.resize(NUMBER_OF_SHAPES);
+    m_world = std::make_unique<btDiscreteDynamicsWorld>(m_dispatcher.get(),
+        m_overlappingPairCache.get(), m_solver.get(), m_collisionConfig.get());
 
-    m_world.reset(new btDiscreteDynamicsWorld(m_dispatcher.get(),
-        m_overlappingPairCache.get(), m_solver.get(), m_collisionConfig.get()));
-
-    m_world->setGravity(btVector3(0.0f, GRAVITY, 0.0f));
     m_world->getPairCache()->setOverlapFilterCallback(m_filterCallback.get());
+
+    ResetSimulation();
 }
 
 BulletPhysicsWorld::~BulletPhysicsWorld()
 {
     ResetSimulation();
-    m_shapes.clear();
 }
 
 void BulletPhysicsWorld::ResetSimulation()
@@ -49,7 +44,7 @@ void BulletPhysicsWorld::ResetSimulation()
     m_hinges.clear();
     m_bodies.clear();
     m_world->clearForces();
-    m_world->setGravity(btVector3(0, GRAVITY, 0));
+    m_world->setGravity(btVector3(0, -9.8f, 0));
 }
 
 bool BulletPhysicsWorld::CollisionFilterCallback::needBroadphaseCollision(btBroadphaseProxy* proxy0, 
@@ -93,26 +88,37 @@ bool BulletPhysicsWorld::GenerateCollisionEvent(int collisionIndex, CollisionEve
     return false;
 }
 
-void BulletPhysicsWorld::SetGroup(int rigidbody, int group)
+void BulletPhysicsWorld::SetGroup(int rigidBodyID, int group)
 {
-    m_bodies[rigidbody]->group = group;
-    btBroadphaseProxy* broadphase = m_bodies[rigidbody]->body->getBroadphaseHandle();
+    m_bodies[rigidBodyID]->group = group;
+    btBroadphaseProxy* broadphase = m_bodies[rigidBodyID]->body->getBroadphaseHandle();
     if(broadphase != nullptr)
     {
         broadphase->m_collisionFilterGroup = group;
     }
 }
 
-void BulletPhysicsWorld::SetMass(int rigidbody, int shape, float mass)
+void BulletPhysicsWorld::SetMass(int rigidBodyID, float mass)
 {
     btVector3 localInertia(0,0,0);
-    m_shapes[shape]->calculateLocalInertia(mass,localInertia);
-    m_bodies[rigidbody]->body->setMassProps(mass,localInertia);
+    const int shapeID = m_bodies[rigidBodyID]->shape;
+    m_shapes[shapeID]->calculateLocalInertia(mass, localInertia);
+    m_bodies[rigidBodyID]->body->setMassProps(mass, localInertia);
 }
 
-void BulletPhysicsWorld::ToggleEnable(int rigidbody, bool enable)
+void BulletPhysicsWorld::AddToWorld(int rigidBodyID, bool enable)
 {
-    enable ? AddToWorld(rigidbody, m_bodies[rigidbody]->group) : RemoveFromWorld(rigidbody);
+    if (enable)
+    {
+        m_world->addRigidBody(
+            m_bodies[rigidBodyID]->body.get(), 
+            m_bodies[rigidBodyID]->group,
+            m_bodies[rigidBodyID]->mask);
+    }
+    else
+    {
+        m_world->removeRigidBody(m_bodies[rigidBodyID]->body.get());
+    }
 }
 
 int BulletPhysicsWorld::GetCollisionAmount() const
@@ -120,130 +126,120 @@ int BulletPhysicsWorld::GetCollisionAmount() const
     return m_dispatcher->getNumManifolds();
 }
 
-void BulletPhysicsWorld::AddForce(const glm::vec3& force, const glm::vec3& position, int rigidbody)
+void BulletPhysicsWorld::AddForce(const glm::vec3& force, const glm::vec3& position, int rigidBodyID)
 {
-    if(!m_bodies[rigidbody]->body->isActive())
+    if(!m_bodies[rigidBodyID]->body->isActive())
     {
-        m_bodies[rigidbody]->body->activate(true);
+        m_bodies[rigidBodyID]->body->activate(true);
     }
-    m_bodies[rigidbody]->body->applyForce(
+    m_bodies[rigidBodyID]->body->applyForce(
         Conversion::Convert(force), Conversion::Convert(position));
 }
 
-float BulletPhysicsWorld::GetFriction(int rigidbody) const
+float BulletPhysicsWorld::GetFriction(int rigidBodyID) const
 {
-    return m_bodies[rigidbody]->body->getFriction();
+    return m_bodies[rigidBodyID]->body->getFriction();
 }
 
-void BulletPhysicsWorld::AddImpulse(const glm::vec3& force, const glm::vec3& position, int rigidbody)
+void BulletPhysicsWorld::AddImpulse(const glm::vec3& force, const glm::vec3& position, int rigidBodyID)
 {
-    if(!m_bodies[rigidbody]->body->isActive())
+    if(!m_bodies[rigidBodyID]->body->isActive())
     {
-        m_bodies[rigidbody]->body->activate(true);
+        m_bodies[rigidBodyID]->body->activate(true);
     }
-    m_bodies[rigidbody]->body->applyImpulse(
+    m_bodies[rigidBodyID]->body->applyImpulse(
         Conversion::Convert(force), Conversion::Convert(position));
 }
 
 void BulletPhysicsWorld::SetVelocity(const glm::vec3& velocity,
-                                     int rigidbody, 
+                                     int rigidBodyID, 
                                      float linearDamping, 
                                      float angularDamping)
 {
-    if(!m_bodies[rigidbody]->body->isActive())
+    if(!m_bodies[rigidBodyID]->body->isActive())
     {
-        m_bodies[rigidbody]->body->activate(true);
+        m_bodies[rigidBodyID]->body->activate(true);
     }
-    m_bodies[rigidbody]->body->setLinearVelocity(Conversion::Convert(velocity));
-    m_bodies[rigidbody]->body->setDamping(linearDamping, angularDamping);
+    m_bodies[rigidBodyID]->body->setLinearVelocity(Conversion::Convert(velocity));
+    m_bodies[rigidBodyID]->body->setDamping(linearDamping, angularDamping);
 }
 
-glm::vec3 BulletPhysicsWorld::GetVelocity(int rigidbody) const
+glm::vec3 BulletPhysicsWorld::GetVelocity(int rigidBodyID) const
 {
-    return Conversion::Convert(m_bodies[rigidbody]->body->getLinearVelocity());
+    return Conversion::Convert(m_bodies[rigidBodyID]->body->getLinearVelocity());
 }
 
-void BulletPhysicsWorld::SetInternalDamping(int rigidbody, float linearDamp, float angDamp)
+void BulletPhysicsWorld::SetInternalDamping(int rigidBodyID, float linearDamp, float angDamp)
 {
-    m_bodies[rigidbody]->body->setDamping(linearDamp, angDamp);
+    m_bodies[rigidBodyID]->body->setDamping(linearDamp, angDamp);
 }
 
-void BulletPhysicsWorld::AddLinearDamping(int rigidbody, float amount)
+void BulletPhysicsWorld::AddLinearDamping(int rigidBodyID, float amount)
 {
-    btVector3 vec(m_bodies[rigidbody]->body->getLinearVelocity());
+    btVector3 vec(m_bodies[rigidBodyID]->body->getLinearVelocity());
     vec *= amount;
-    m_bodies[rigidbody]->body->setLinearVelocity(vec);
+    m_bodies[rigidBodyID]->body->setLinearVelocity(vec);
 }
 
-void BulletPhysicsWorld::AddRotationalDamping(int rigidbody, float amount)
+void BulletPhysicsWorld::AddRotationalDamping(int rigidBodyID, float amount)
 {
-    btVector3 vec(m_bodies[rigidbody]->body->getAngularVelocity());
+    btVector3 vec(m_bodies[rigidBodyID]->body->getAngularVelocity());
     vec *= amount;
-    m_bodies[rigidbody]->body->setAngularVelocity(vec);
+    m_bodies[rigidBodyID]->body->setAngularVelocity(vec);
 }
 
-void BulletPhysicsWorld::RemoveFromWorld(int rigidbody)
+void BulletPhysicsWorld::SetGravity(int rigidBodyID, float gravity)
 {
-    m_world->removeRigidBody(m_bodies[rigidbody]->body.get());
+    m_bodies[rigidBodyID]->body->setGravity(btVector3(0, gravity, 0));
+    m_bodies[rigidBodyID]->body->applyGravity();
 }
 
-void BulletPhysicsWorld::SetGravity(int rigidbody, float gravity)
+void BulletPhysicsWorld::SetFriction(int rigidBodyID, float amount)
 {
-    m_bodies[rigidbody]->body->setGravity(btVector3(0, gravity, 0));
-    m_bodies[rigidbody]->body->applyGravity();
+    m_bodies[rigidBodyID]->body->setFriction(amount);
 }
 
-void BulletPhysicsWorld::SetFriction(int rigidbody, float amount)
+void BulletPhysicsWorld::ResetVelocityAndForce(int rigidBodyID)
 {
-    m_bodies[rigidbody]->body->setFriction(amount);
+    m_bodies[rigidBodyID]->body->clearForces();
+    m_bodies[rigidBodyID]->body->setAngularVelocity(btVector3(0,0,0));
+    m_bodies[rigidBodyID]->body->setLinearVelocity(btVector3(0,0,0));
 }
 
-void BulletPhysicsWorld::AddToWorld(int rigidbody, short group, int mask)
+void BulletPhysicsWorld::SetMotionState(int rigidBodyID, const glm::mat4& matrix)
 {
-    m_world->addRigidBody(m_bodies[rigidbody]->body.get(), group, mask);
-}
-
-void BulletPhysicsWorld::ResetVelocityAndForce(int rigidbody)
-{
-    m_bodies[rigidbody]->body->clearForces();
-    m_bodies[rigidbody]->body->setAngularVelocity(btVector3(0,0,0));
-    m_bodies[rigidbody]->body->setLinearVelocity(btVector3(0,0,0));
-}
-
-void BulletPhysicsWorld::SetMotionState(int rigidBody, const glm::mat4& matrix)
-{
-    btTransform& transform = m_bodies[rigidBody]->body->getWorldTransform();
+    btTransform& transform = m_bodies[rigidBodyID]->body->getWorldTransform();
     btMatrix3x3 basis(Conversion::Convert(matrix).getBasis());
 
     transform.setOrigin(Conversion::Convert(Conversion::Position(matrix)));
     transform.setBasis(basis);
-    m_bodies[rigidBody]->body->setWorldTransform(transform);
-    m_bodies[rigidBody]->state->setWorldTransform(transform);
+    m_bodies[rigidBodyID]->body->setWorldTransform(transform);
+    m_bodies[rigidBodyID]->state->setWorldTransform(transform);
 }
 
-void BulletPhysicsWorld::SetBasis(int rigidBody, const glm::mat4& matrix)
+void BulletPhysicsWorld::SetBasis(int rigidBodyID, const glm::mat4& matrix)
 {
-    btTransform& transform = m_bodies[rigidBody]->body->getWorldTransform();
+    btTransform& transform = m_bodies[rigidBodyID]->body->getWorldTransform();
     btMatrix3x3 basis(Conversion::Convert(matrix).getBasis());
 
     transform.setBasis(basis);
-    m_bodies[rigidBody]->body->setWorldTransform(transform);
-    m_bodies[rigidBody]->state->setWorldTransform(transform);
+    m_bodies[rigidBodyID]->body->setWorldTransform(transform);
+    m_bodies[rigidBodyID]->state->setWorldTransform(transform);
 }
 
-void BulletPhysicsWorld::SetPosition(int rigidBody, const glm::vec3& position)
+void BulletPhysicsWorld::SetPosition(int rigidBodyID, const glm::vec3& position)
 {
     btTransform transform;
-    m_bodies[rigidBody]->state->getWorldTransform(transform);   
+    m_bodies[rigidBodyID]->state->getWorldTransform(transform);   
     transform.setOrigin(Conversion::Convert(position));
-    m_bodies[rigidBody]->body->setWorldTransform(transform);
-    m_bodies[rigidBody]->state->setWorldTransform(transform);
+    m_bodies[rigidBodyID]->body->setWorldTransform(transform);
+    m_bodies[rigidBodyID]->state->setWorldTransform(transform);
 }
 
-glm::mat4 BulletPhysicsWorld::GetTransform(int rigidBody) const
+glm::mat4 BulletPhysicsWorld::GetTransform(int rigidBodyID) const
 {
     btTransform transform;
-    m_bodies[rigidBody]->state->getWorldTransform(transform);
+    m_bodies[rigidBodyID]->state->getWorldTransform(transform);
     return Conversion::Convert(transform);
 }
 
@@ -255,8 +251,8 @@ void BulletPhysicsWorld::Tick(float timestep)
     }
 }
 
-int BulletPhysicsWorld::CreateHinge(int rigidBody1, 
-                                    int rigidBody2, 
+int BulletPhysicsWorld::CreateHinge(int rigidBodyID1, 
+                                    int rigidBodyID2, 
                                     const glm::vec3& pos1local, 
                                     const glm::vec3& pos2local, 
                                     const glm::vec3& axis1,   
@@ -266,7 +262,7 @@ int BulletPhysicsWorld::CreateHinge(int rigidBody1,
     const int index = m_hinges.size();
 
     m_hinges.push_back(std::unique_ptr<btHingeConstraint>(new btHingeConstraint(
-                *m_bodies[rigidBody1]->body, *m_bodies[rigidBody2]->body,
+                *m_bodies[rigidBodyID1]->body, *m_bodies[rigidBodyID2]->body,
                 Conversion::Convert(pos1local),
                 Conversion::Convert(pos2local),
                 Conversion::Convert(axis1),
@@ -318,24 +314,24 @@ void BulletPhysicsWorld::StopHinge(int hinge, float dt, float damping)
     m_hinges[hinge]->setMotorTarget(m_hinges[hinge]->getHingeAngle() + (velocity * damping), dt);
 }
 
-void BulletPhysicsWorld::LoadConvexShape(float* vertices, int amount, int shape)
+int BulletPhysicsWorld::LoadConvexShape(std::vector<glm::vec3> vertices)
 {
-    m_shapes[shape].reset(new btConvexHullShape(vertices, amount, 3*sizeof(btScalar)));
-}
+    const int ID = static_cast<int>(m_shapes.size());
+    m_shapes.push_back(std::make_unique<btConvexHullShape>());
 
-void BulletPhysicsWorld::SetUserPointers()
-{
-    for (auto& rigidbody : m_bodies)
+    for (const glm::vec3& vertex : vertices)
     {
-        rigidbody->body->setUserPointer(static_cast<void*>(rigidbody.get()));
+        m_shapes[ID]->addPoint(Conversion::Convert(vertex));
     }
+
+    return ID;
 }
 
 int BulletPhysicsWorld::LoadRigidBody(const glm::mat4& matrix, 
                                       int shape, 
                                       float mass, 
                                       int group, 
-                                      int userIndex, 
+                                      int userIndex,
                                       bool createEvents, 
                                       int mask, 
                                       const glm::vec3 inertia)
@@ -367,9 +363,13 @@ int BulletPhysicsWorld::LoadRigidBody(const glm::mat4& matrix,
     m_bodies[index]->userIndex = userIndex;
     m_bodies[index]->processEvents = createEvents;
     m_bodies[index]->group = group;
+    m_bodies[index]->mask = mask;
     m_bodies[index]->index = index;
 
-    m_world->addRigidBody(m_bodies[index]->body.get(), group, mask);
+    m_bodies[index]->body->setUserPointer(
+        static_cast<void*>(m_bodies[index].get()));
+
+    AddToWorld(index, true);
 
     return index;
 }
