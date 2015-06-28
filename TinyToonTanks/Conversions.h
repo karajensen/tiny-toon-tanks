@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "GLMHelper.h"
+#include "GlmHelper.h"
 #include "bullet/include/linearMath/btTransform.h"
 
 class Conversion

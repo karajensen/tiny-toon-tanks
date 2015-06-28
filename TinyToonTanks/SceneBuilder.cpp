@@ -5,7 +5,6 @@
 #include "SceneBuilder.h"
 #include "SceneData.h"
 #include "Shader.h"
-#include "GameData.h"
 #include "BulletPhysics.h"
 #include "Common.h"
 
@@ -27,9 +26,7 @@ bool SceneBuilder::Initialise(SceneData& data, BulletPhysicsWorld& physics)
            InitialiseShaderConstants(data) &&
            InitialiseShaders(data) &&
            InitialiseMeshes(data) &&
-           InitialiseHulls(data, physics) &&
-           InitialisePhysics(data, physics) &&
-           InitialiseSprites(data);
+           InitialiseHulls(data, physics);
 }
 
 bool SceneBuilder::InitialiseLighting(SceneData& data)
@@ -148,20 +145,14 @@ bool SceneBuilder::InitialiseMeshes(SceneData& data)
     return success;
 }
 
-bool SceneBuilder::InitialiseSprites(SceneData& data)
-{
-    return true;
-}
-
-
 bool SceneBuilder::InitialiseHulls(SceneData& data, BulletPhysicsWorld& physics)
 {
     bool success = true;
     data.hulls.resize(HullID::MAX);
-    m_shapeIDS.resize(ShapeID::MAX);
+    data.shapes.resize(ShapeID::MAX);
 
-    auto Initialise = [this, &data, &physics](std::string name, HullID::ID hullID, 
-                                              ShaderID::ID shaderID, ShapeID::ID shapeID) -> bool
+    auto Initialise = [&data, &physics](std::string name, HullID::ID hullID, 
+                                        ShaderID::ID shaderID, ShapeID::ID shapeID) -> bool
     {
         auto& hull = data.hulls[hullID];
         hull = std::make_unique<Mesh>(name, data.shaders[shaderID]->Name(), shaderID);
@@ -169,7 +160,7 @@ bool SceneBuilder::InitialiseHulls(SceneData& data, BulletPhysicsWorld& physics)
 
         if (hull->InitialiseFromFile(ASSETS_PATH + name + ".obj", glm::vec2(0, 0), false, false))
         {
-            m_shapeIDS[shapeID] = physics.LoadConvexShape(hull->VertexPositions());
+            data.shapes[shapeID] = physics.LoadConvexShape(hull->VertexPositions());
             return true;
         }
         return false;
@@ -186,10 +177,4 @@ bool SceneBuilder::InitialiseHulls(SceneData& data, BulletPhysicsWorld& physics)
     success &= Initialise("wallproxy", HullID::WALL, ShaderID::PROXY, ShapeID::WALL);
 
     return success;
-}
-
-bool SceneBuilder::InitialisePhysics(SceneData& data, BulletPhysicsWorld& physics)
-{
-
-    return true;
 }

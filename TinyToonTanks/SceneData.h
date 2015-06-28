@@ -7,6 +7,7 @@
 #include <vector>
 #include <memory>
 
+#include "SceneDataIDs.h"
 #include "Postprocessing.h"
 #include "Shader.h"
 #include "Light.h"
@@ -33,4 +34,5 @@ struct SceneData
     std::vector<std::unique_ptr<Mesh>> meshes;
     std::vector<std::unique_ptr<Mesh>> hulls;
     std::vector<std::unique_ptr<Texture>> textures;
+    std::vector<int> shapes;
 };

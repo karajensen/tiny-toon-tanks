@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////////////
-// Kara Jensen - mail@karajensen.com - scene.h
+// Kara Jensen - mail@karajensen.com - Game.h
 ////////////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -10,40 +10,41 @@
 #include <functional>
 #include "Postprocessing.h"
 
-class Game;
 class BulletPhysicsWorld;
 class Tweaker;
 struct SceneData;
+struct GameData;
 
 /**
-* Manager and owner of all objects
+* Manager of the playable game
 */
-class Scene
+class Game
 {
 public:
 
     /**
     * Constructor
     */
-    Scene();
+    Game();
 
     /**
     * Destructor
     */
-    ~Scene();
+    ~Game();
 
     /**
-    * Ticks the scene
+    * Ticks the game
     * @param deltatime The time passed between ticks
     */
     void Tick(float deltatime);
 
     /**
-    * Initialises the scene
+    * Initialises the game
+    * @param data Elements of the scene
     * @param physics The physics engine
     * @return whether initialisation was successful
     */
-    bool Initialise(BulletPhysicsWorld& physics);
+    bool Initialise(SceneData& data, BulletPhysicsWorld& physics);
 
     /**
     * Reloads the scene
@@ -57,23 +58,14 @@ public:
     */
     void AddToTweaker(Tweaker& tweaker, std::function<void(void)> reset);
 
-    /**
-    * Sets which post map should be rendered
-    * @param map The post map to render
-    */
-    void SetPostMap(PostProcessing::Map map);
-
 private:
 
     /**
     * Prevent copying
     */
-    Scene(const Scene&) = delete;
-    Scene& operator=(const Scene&) = delete;
+    Game(const Game&) = delete;
+    Game& operator=(const Game&) = delete;
 
-    std::unique_ptr<Game> m_game;              ///< Game objects build on scene elements
-    std::unique_ptr<SceneData> m_data;         ///< Elements of the scene
-    int m_selectedLight = 0;                   ///< Currently selected light in the tweak bar
-    int m_selectedMesh = 0;                    ///< Currently selected mesh in the tweak bar
-    int m_selectedHull = 0;                    ///< Currently selected hull in the tweak bar
+    std::unique_ptr<GameData> m_data;  ///< Elements of the game
+    int m_selectedEnemy = 0;           ///< Currently selected enemy in the tweak bar
 }; 

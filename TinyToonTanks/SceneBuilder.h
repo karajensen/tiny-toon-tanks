@@ -79,21 +79,4 @@ private:
     * @return Whether the initialization was successful
     */
     bool InitialiseHulls(SceneData& data, BulletPhysicsWorld& physics);
-
-    /**
-    * Initialises the physics for the scene
-    * @param data All information for the scene
-    * @param physics The physics world
-    * @return Whether the initialization was successful
-    */
-    bool InitialisePhysics(SceneData& data, BulletPhysicsWorld& physics);
-
-    /**
-    * Initialises the sprites for the scene
-    * @param data All information for the scene
-    * @return Whether the initialization was successful
-    */
-    bool InitialiseSprites(SceneData& data);
-
-    std::vector<int> m_shapeIDS;  ///< IDS for the physics collision shapes
 };                     

@@ -6,9 +6,11 @@
 #include "SceneBuilder.h"
 #include "SceneData.h"
 #include "Tweaker.h"
+#include "Game.h"
 
 Scene::Scene() :
-    m_data(std::make_unique<SceneData>())
+    m_data(std::make_unique<SceneData>()),
+    m_game(std::make_unique<Game>())
 {
 }
 
@@ -16,25 +18,35 @@ Scene::~Scene() = default;
 
 void Scene::Tick(float deltatime)
 {
+    m_game->Tick(deltatime);
 }
 
 bool Scene::Initialise(BulletPhysicsWorld& physics)
 {
     SceneBuilder builder;
-    if (builder.Initialise(*m_data, physics))
+    if (!builder.Initialise(*m_data, physics))
     {
-        LogInfo("Scene: Successfully Initialised");
-        return true;
+        return false;
     }
-    return false;
+
+    if (!m_game->Initialise(*m_data, physics))
+    {
+        return false;
+    }
+
+    LogInfo("Scene: Successfully Initialised");
+    return true;
 }
 
 void Scene::Reload()
 {
+    m_game->Reload();
 }
 
 void Scene::AddToTweaker(Tweaker& tweaker, std::function<void(void)> reset)
 {
+    m_game->AddToTweaker(tweaker, reset);
+
     tweaker.SetGroup("PostProcessing");
     m_data->post->AddToTweaker(tweaker);
 
