@@ -7,10 +7,17 @@
 #include "Glcommon.h"
 #include "Camera.h"
 #include "Quad.h"
+#include "SceneData.h"
 #include "Rendertarget.h"
 
-OpenGL::OpenGL(const Camera& camera) :
+namespace
+{
+    const int NO_INDEX = -1;
+}
+
+OpenGL::OpenGL(const SceneData& scene, const Camera& camera) :
     m_camera(camera),
+    m_scene(scene),
     m_quad(std::make_unique<Quad>("PostQuad"))
 {
 }
@@ -116,13 +123,80 @@ GLFWwindow& OpenGL::GetWindow() const
 
 void OpenGL::RenderScene()
 {
+
     m_backBuffer->SetActive();
+
+    RenderMeshes();
+}
+
+void OpenGL::RenderMeshes()
+{
+    for (const auto& mesh : m_scene.meshes)
+    {
+        if (UpdateShader(*mesh))
+        {
+            mesh->PreRender();
+            EnableSelectedShader();
+            mesh->Render([this](const glm::mat4& world){ UpdateShader(world); });
+        }
+    }
 }
 
 void OpenGL::EndRender()
 {
     glfwSwapBuffers(m_window);
     glfwPollEvents();
+}
+
+void OpenGL::UpdateShader(const glm::mat4& world)
+{
+    auto& shader = *m_scene.shaders[m_selectedShader];
+    shader.SendUniform("world", world);
+}
+
+bool OpenGL::UpdateShader(const MeshData& mesh)
+{
+    const int index = mesh.ShaderID();
+    if (index != NO_INDEX)
+    {
+        auto& shader = *m_scene.shaders[index];
+        if(index != m_selectedShader)
+        {
+            SetSelectedShader(index);
+            SendLights();
+
+            shader.SendUniform("viewProjection", m_camera.ViewProjection());
+            shader.SendUniform("cameraPosition", m_camera.Position());
+        }
+
+        SendTexture("DiffuseSampler", mesh.GetTexture());
+        EnableBackfaceCull(mesh.BackfaceCull());
+        EnableAlphaBlending(false, false);
+        return true;
+    }
+    return false;
+}
+
+void OpenGL::SendLights()
+{
+    auto& shader = *m_scene.shaders[m_selectedShader];
+    const auto& lights = m_scene.lights;
+
+    for (unsigned int i = 0; i < lights.size(); ++i)
+    {
+        const int offset = i * 3;
+        shader.SendUniform("lightPosition", lights[i]->Position(), offset);
+        shader.SendUniform("lightDiffuse", lights[i]->Diffuse(), offset);
+    }
+}
+
+void OpenGL::SendTexture(std::string sampler, int ID)
+{
+    if (ID != NO_INDEX)
+    {
+        auto& shader = *m_scene.shaders[m_selectedShader];
+        shader.SendTexture(sampler, ID);
+    }
 }
 
 void OpenGL::EnableAlphaBlending(bool enable, bool multiply)
@@ -167,7 +241,13 @@ void OpenGL::EnableDepthWrite(bool enable)
     }
 }
 
-void OpenGL::ToggleWireframe()
+void OpenGL::EnableSelectedShader()
 {
-    m_isWireframe = !m_isWireframe;
+    m_scene.shaders[m_selectedShader]->EnableShader();
+}
+
+void OpenGL::SetSelectedShader(int index)
+{
+    m_selectedShader = index;
+    m_scene.shaders[m_selectedShader]->SetActive();
 }

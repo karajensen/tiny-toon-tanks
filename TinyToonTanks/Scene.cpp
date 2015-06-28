@@ -74,3 +74,8 @@ void Scene::SetPostMap(PostProcessing::Map map)
 {
     m_data->post->SetPostMap(map);
 }
+
+const SceneData& Scene::GetSceneData() const
+{
+    return *m_data;
+}

@@ -13,8 +13,7 @@ MeshData::MeshData(const std::string& name,
                    int shaderID) :
     m_name(name),
     m_shaderName(shaderName),
-    m_shaderIndex(shaderID),
-    m_scale(1.0f, 1.0f, 1.0f)
+    m_shaderIndex(shaderID)
 { 
 }
 
@@ -33,13 +32,14 @@ void MeshData::AddToTweaker(Tweaker& tweaker)
 {
     tweaker.AddStrEntry("Name", m_name);
     tweaker.AddStrEntry("Shader", m_shaderName);
-    tweaker.AddEntry("Visible", &m_render, TW_TYPE_BOOLCPP);
     tweaker.AddEntry("Backface Cull", &m_backfacecull, TW_TYPE_BOOLCPP);
     tweaker.AddFltEntry("Radius", &m_radius, 0.1f, 0.1f, FLT_MAX);
 }
 
-bool MeshData::Initialise()
+bool MeshData::Initialise(int instances)
 {
+    m_instances.resize(instances);
+
     glGenVertexArrays(1, &m_vaoID);
     glGenBuffers(1, &m_vboID);
     glGenBuffers(1, &m_iboID);
@@ -82,21 +82,27 @@ void MeshData::GenerateRadius()
 
 void MeshData::PreRender() const
 {
-    if (ShouldRender())
+    assert(m_initialised);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_iboID);
+    glBindBuffer(GL_ARRAY_BUFFER, m_vboID);
+}
+
+void MeshData::Render(RenderInstance renderInstance) const
+{
+    for (const Instance& instance : m_instances)
     {
-        assert(m_initialised);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_iboID);
-        glBindBuffer(GL_ARRAY_BUFFER, m_vboID);
+        if (instance.render)
+        {
+            renderInstance(instance.world);
+            Render();
+        }
     }
 }
 
 void MeshData::Render() const
 {
-    if (ShouldRender())
-    {
-        assert(m_initialised);
-        glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, 0);
-    }
+    assert(m_initialised);
+    glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, 0);
 }
 
 const std::string& MeshData::Name() const
@@ -119,6 +125,11 @@ const std::vector<unsigned long>& MeshData::Indices() const
     return m_indices;
 }
 
+int MeshData::GetTexture() const
+{
+    return m_textureID;
+}
+
 void MeshData::SetTexture(int ID)
 {
     if (ID == -1)
@@ -139,73 +150,76 @@ void MeshData::BackfaceCull(bool value)
     m_backfacecull = value;
 }
 
-bool MeshData::ShouldRender() const
+const glm::vec3& MeshData::Position(int index) const
 {
-    return m_render;
+    return m_instances[index].position;
 }
 
-void MeshData::SetShouldRender(bool render)
+const glm::vec3& MeshData::Scale(int index) const
 {
-    m_render = render;
+    return m_instances[index].scale;
 }
 
-const glm::vec3& MeshData::Position() const
+void MeshData::SetWorld(const glm::mat4& world, int index)
 {
-    return m_position;
+    m_instances[index].requiresUpdate = false;
+    m_instances[index].world = world;
 }
 
-const glm::vec3& MeshData::Scale() const
+void MeshData::SetShouldRender(bool render, int index)
 {
-    return m_scale;
-}
-
-void MeshData::SetWorld(const glm::mat4& world)
-{
-    m_requiresUpdate = false;
-    m_world = world;
+    m_instances[index].render = true;
 }
 
 void MeshData::Tick(const glm::vec3& cameraPosition)
 {
-    if (m_requiresUpdate)
+    for (auto& instance : m_instances)
     {
-        m_requiresUpdate = false;
-
-        if (m_rotation.x == 0 &&
-            m_rotation.y == 0 &&
-            m_rotation.z == 0)
+        if (!instance.render)
         {
-            m_world[0][0] = m_scale.x;
-            m_world[0][1] = 0.0f;
-            m_world[0][2] = 0.0f;
-            m_world[1][0] = 0.0f;
-            m_world[1][1] = m_scale.y;
-            m_world[1][2] = 0.0f;
-            m_world[2][0] = 0.0f;
-            m_world[2][1] = 0.0f;
-            m_world[2][2] = m_scale.z;
-            m_world[3][0] = m_position.x;
-            m_world[3][1] = m_position.y;
-            m_world[3][2] = m_position.z;
+            continue;
         }
-        else
+
+        if (instance.requiresUpdate)
         {
-            glm::mat4 scale;
-            scale[0][0] = m_scale.x;
-            scale[1][1] = m_scale.y;
-            scale[2][2] = m_scale.z;
+            instance.requiresUpdate = false;
 
-            glm::mat4 translate;
-            translate[3][0] = m_position.x;
-            translate[3][1] = m_position.y;
-            translate[3][2] = m_position.z;
+            if (instance.rotation.x == 0 &&
+                instance.rotation.y == 0 &&
+                instance.rotation.z == 0)
+            {
+                instance.world[0][0] = instance.scale.x;
+                instance.world[0][1] = 0.0f;
+                instance.world[0][2] = 0.0f;
+                instance.world[1][0] = 0.0f;
+                instance.world[1][1] = instance.scale.y;
+                instance.world[1][2] = 0.0f;
+                instance.world[2][0] = 0.0f;
+                instance.world[2][1] = 0.0f;
+                instance.world[2][2] = instance.scale.z;
+                instance.world[3][0] = instance.position.x;
+                instance.world[3][1] = instance.position.y;
+                instance.world[3][2] = instance.position.z;
+            }
+            else
+            {
+                glm::mat4 scale;
+                scale[0][0] = instance.scale.x;
+                scale[1][1] = instance.scale.y;
+                scale[2][2] = instance.scale.z;
 
-            glm::mat4 rotateX, rotateY, rotateZ;
-            rotateX = glm::rotate(rotateX, m_rotation.x, glm::vec3(1, 0, 0));
-            rotateY = glm::rotate(rotateY, m_rotation.y, glm::vec3(0, 1, 0));
-            rotateZ = glm::rotate(rotateZ, m_rotation.z, glm::vec3(0, 0, 1));
+                glm::mat4 translate;
+                translate[3][0] = instance.position.x;
+                translate[3][1] = instance.position.y;
+                translate[3][2] = instance.position.z;
 
-            m_world = translate * (rotateZ * rotateX * rotateY) * scale;
+                glm::mat4 rotateX, rotateY, rotateZ;
+                rotateX = glm::rotate(rotateX, instance.rotation.x, glm::vec3(1, 0, 0));
+                rotateY = glm::rotate(rotateY, instance.rotation.y, glm::vec3(0, 1, 0));
+                rotateZ = glm::rotate(rotateZ, instance.rotation.z, glm::vec3(0, 0, 1));
+
+                instance.world = translate * (rotateZ * rotateX * rotateY) * scale;
+            }
         }
     }
 }

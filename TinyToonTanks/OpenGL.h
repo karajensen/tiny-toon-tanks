@@ -6,8 +6,11 @@
 
 #include <vector>
 #include <memory>
+#include "glm/glm.hpp"
 
 struct GLFWwindow;
+struct SceneData;
+class MeshData;
 class Quad;
 class Camera;
 class RenderTarget;
@@ -21,9 +24,11 @@ public:
 
     /**
     * Constructor
+    * @param scene The data to render
     * @param camera The viewable camera
     */
-    OpenGL(const Camera& camera);
+    OpenGL(const SceneData& scene,
+           const Camera& camera);
 
     /**
     * Destructor
@@ -75,11 +80,39 @@ private:
     void Release();
 
     /**
+    * Renders the meshes
+    */
+    void RenderMeshes();
+
+    /**
+    * Updates and switches to main shader the mesh requires
+    * @param mesh The mesh currently rendering
+    * @return whether the mesh can now be rendered
+    */
+    bool UpdateShader(const MeshData& mesh);
+
+    /**
+    * Updates the shader for a mesh per instance
+    * @param world The world matrix for the mesh
+    */
+    void UpdateShader(const glm::mat4& world);
+
+    /**
     * Sets whether alpha blending is enabled or not
     * @param enable whether blending is enabled
     * @param whether to multiply the blend colours
     */
     void EnableAlphaBlending(bool enable, bool multiply);
+
+    /**
+    * Sends light information to the selected shader
+    */
+    void SendLights();
+
+    /**
+    * Sends the texture to the selected shader
+    */
+    void SendTexture(std::string sampler, int ID);
 
     /**
     * Sets whether values are written to the depth buffer or not
@@ -94,10 +127,20 @@ private:
     */
     void EnableBackfaceCull(bool enable);
 
+    /**
+    * Enables the selected shader for rendering
+    */
+    void EnableSelectedShader();
+
+    /**
+    * Sets the shader at the given index as selected
+    */
+    void SetSelectedShader(int index);
+
     GLFWwindow* m_window = nullptr;  ///< Handle to the application window
     const Camera& m_camera;          ///< The viewable camera
+    const SceneData& m_scene;        ///< The data to render
     bool m_isBackfaceCull = true;    ///< Whether the culling rasterize state is active
-    bool m_isWireframe = false;      ///< Whether to render the scene as wireframe
     bool m_isAlphaBlend = false;     ///< Whether alpha blending is currently active
     bool m_isBlendMultiply = false;  ///< Whether to multiply the blend colours
     bool m_isDepthWrite = true;      ///< Whether writing to the depth buffer is active

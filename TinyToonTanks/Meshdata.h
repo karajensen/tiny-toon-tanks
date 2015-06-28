@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <functional>
 #include "glm/glm.hpp"
 
 class Tweaker;
@@ -17,6 +18,24 @@ class Tweaker;
 class MeshData
 {
 public:
+
+    /**
+    * Callbacks for rendering a mesh instance
+    */
+    typedef std::function<void(const glm::mat4&)> RenderInstance;
+
+    /**
+    * Holds information for a single instance of a mesh
+    */
+    struct Instance
+    {
+        glm::mat4 world;                       ///< World matrix
+        glm::vec3 position = glm::vec3(0,0,0); ///< Position offset
+        glm::vec3 rotation = glm::vec3(0,0,0); ///< Degrees rotated around each axis
+        glm::vec3 scale = glm::vec3(1,1,1);    ///< Scaling of the mesh
+        bool render = true;                    ///< Whether to draw the mesh
+        bool requiresUpdate = false;           ///< Whether to update the world matrix
+    };
 
     /**
     * Constructor
@@ -47,9 +66,10 @@ public:
 
     /**
     * Initialises the buffers for the mesh
+    * @param the number of instances of this mesh
     * @return whether initialisation was successful
     */
-    bool Initialise();
+    bool Initialise(int instances = 1);
 
     /**
     * Pre-renders the mesh
@@ -60,6 +80,12 @@ public:
     * Renders the mesh
     */
     void Render() const;
+
+    /**
+    * Renders the mesh
+    * @param renderInstance Callback to render a single mesh instance
+    */
+    void Render(RenderInstance renderInstance) const;
 
     /**
     * @return The name of the mesh
@@ -87,9 +113,9 @@ public:
     const std::vector<unsigned long>& Indices() const;
 
     /**
-    * @return The ID for each texture type used
+    * @return The ID for the texture used
     */
-    const std::vector<int>& TextureIDs() const;
+    int GetTexture() const;
 
     /**
     * @return Whether back facing polygons are culled
@@ -108,30 +134,25 @@ public:
     void SetTexture(int ID);
 
     /**
-    * @return whether this mesh is visible or not
-    */
-    bool ShouldRender() const;
-
-    /**
-    * Sets whether this mesh should render
-    */
-    void SetShouldRender(bool render);
-
-    /**
     * @return the position of the mesh
     */
-    const glm::vec3& Position() const;
+    const glm::vec3& Position(int index = 0) const;
 
     /**
     * @return the scale of the mesh
     */
-    const glm::vec3& Scale() const;
+    const glm::vec3& Scale(int index = 0) const;
+
+    /**
+    * Sets whether the mesh should render
+    */
+    void SetShouldRender(bool render, int index = 0);
 
     /**
     * Explicitly set the world glm::mat4
     * @note will be overridden if individual components are set
     */
-    void SetWorld(const glm::mat4& world);
+    void SetWorld(const glm::mat4& world, int index = 0);
 
 protected:
 
@@ -153,13 +174,7 @@ private:
     */
     void GenerateRadius();
 
-    glm::mat4 m_world;                    ///< World glm::mat4
-    glm::vec3 m_position;                 ///< Position offset
-    glm::vec3 m_rotation;                 ///< Degrees rotated around each axis
-    glm::vec3 m_scale;                    ///< Scaling of the mesh
     int m_textureID = -1;                 ///< ID for the diffuse texture
-    bool m_render = true;                 ///< Whether to draw the mesh
-    bool m_requiresUpdate = false;        ///< Whether to update the world glm::mat4
     bool m_backfacecull = true;           ///< Whether backface culling is enabled
     const std::string m_name;             ///< Name of the mesh
     int m_shaderIndex = -1;               ///< Unique Index of the mesh shader to use
@@ -169,4 +184,5 @@ private:
     bool m_initialised = false;           ///< Whether the vertex buffer object is initialised or not
     const std::string m_shaderName;       ///< Name of the shader to use
     float m_radius = 0.0f;                ///< The radius of the sphere surrounding the mesh
+    std::vector<Instance> m_instances;    ///< Instances of this mesh
 };

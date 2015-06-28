@@ -12,19 +12,13 @@ Sprite::Sprite(const std::string& name) :
 
 void Sprite::PreRender()
 {
-    if (m_quad->ShouldRender())
-    {
-        m_quad->PreRender();
-    }
+    m_quad->PreRender();
 }
 
 void Sprite::Render(const glm::vec3& cameraPosition,
                     const glm::vec3& cameraUp)
 {
-    if (m_quad->ShouldRender())
-    {
-        m_quad->Render();
-    }
+    m_quad->Render();
 }
 
 void Sprite::SetPosition(const glm::vec3& position)

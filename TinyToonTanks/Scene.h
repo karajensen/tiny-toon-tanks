@@ -63,6 +63,11 @@ public:
     */
     void SetPostMap(PostProcessing::Map map);
 
+    /**
+    * @return the data for the scene
+    */
+    const SceneData& GetSceneData() const;
+
 private:
 
     /**

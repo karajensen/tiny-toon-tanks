@@ -126,6 +126,7 @@ namespace TextureID
         TANK_NPC_BODY,
         TOON_TEXT,
         WALL,
+        BULLET,
         HEALTH_BACK,
         HEALTH_BAR,
         HEALTH_STAR,
