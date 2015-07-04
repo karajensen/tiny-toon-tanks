@@ -35,14 +35,16 @@ public:
     * Initialises the mesh data buffer from an OBJ file
     * @param path The full path to the mesh file
     * @param uvScale The scale to apply to mesh UVs
+    * @param requiresUVs whether this mesh requires UVs
     * @param requiresNormals Whether this mesh requires normals
-    * @param requiresTangents Whether this mesh requires tangents/bitangents
+    * @param instances The number of instances to create
     * @return Whether creation was successful
     */
     bool InitialiseFromFile(const std::string& path, 
                             const glm::vec2& uvScale,
                             bool requiresUVs,
-                            bool requiresNormals);
+                            bool requiresNormals,
+                            int instances);
 
 private:
 

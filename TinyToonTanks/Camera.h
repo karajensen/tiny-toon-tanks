@@ -28,10 +28,14 @@ public:
     void AddToTweaker(Tweaker& tweaker);
 
     /**
-    * Updates the view glm::mat4
+    * Updates the view matrix
+    * @param mouseDown whether the mouse was pressed
+    * @param mouseDirection the direction of mouse movement
     * @param deltatime Time passed between frames
     */
-    void Update(float deltatime);
+    void Update(bool mouseDown, 
+                const glm::vec2& mouseDirection, 
+                float deltatime);
 
     /**
     * Resets the camera to the initial state

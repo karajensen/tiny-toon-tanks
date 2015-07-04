@@ -103,7 +103,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameBuilder.h" />
     <ClInclude Include="GameData.h" />
-    <ClInclude Include="SceneDataIDs.h" />
+    <ClInclude Include="DataIDs.h" />
     <ClInclude Include="Glcommon.h" />
     <ClInclude Include="GlmHelper.h" />
     <ClInclude Include="Gui.h" />

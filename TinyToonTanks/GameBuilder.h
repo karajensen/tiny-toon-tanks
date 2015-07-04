@@ -40,6 +40,17 @@ private:
     GameBuilder& operator=(const GameBuilder&) = delete;
 
     /**
+    * Initialises the game world
+    * @param scenedata All information for the scene
+    * @param gamedata All information for the game
+    * @param physics The physics world
+    * @return Whether the initialization was successful
+    */
+    bool InitialiseWorld(GameData& gamedata,
+                         SceneData& scenedata, 
+                         BulletPhysicsWorld& physics);
+
+    /**
     * Initialises the controllable tanks
     * @param scenedata All information for the scene
     * @param gamedata All information for the game

@@ -123,7 +123,6 @@ GLFWwindow& OpenGL::GetWindow() const
 
 void OpenGL::RenderScene()
 {
-
     m_backBuffer->SetActive();
 
     RenderMeshes();
@@ -166,7 +165,6 @@ bool OpenGL::UpdateShader(const MeshData& mesh)
             SendLights();
 
             shader.SendUniform("viewProjection", m_camera.ViewProjection());
-            shader.SendUniform("cameraPosition", m_camera.Position());
         }
 
         SendTexture("DiffuseSampler", mesh.GetTexture());

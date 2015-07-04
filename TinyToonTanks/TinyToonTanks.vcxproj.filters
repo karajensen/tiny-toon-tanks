@@ -240,9 +240,6 @@
     <ClInclude Include="GlmHelper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SceneDataIDs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="GameData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -250,6 +247,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GameBuilder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DataIDs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

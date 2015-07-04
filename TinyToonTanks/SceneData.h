@@ -7,7 +7,7 @@
 #include <vector>
 #include <memory>
 
-#include "SceneDataIDs.h"
+#include "DataIDs.h"
 #include "Postprocessing.h"
 #include "Shader.h"
 #include "Light.h"

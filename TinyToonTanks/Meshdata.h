@@ -60,9 +60,8 @@ public:
 
     /**
     * Ticks the mesh
-    * @param cameraPosition The world position of the camera
     */
-    void Tick(const glm::vec3& cameraPosition);
+    void Tick();
 
     /**
     * Initialises the buffers for the mesh
@@ -139,6 +138,16 @@ public:
     const glm::vec3& Position(int index = 0) const;
 
     /**
+    * Sets the position of the mesh
+    */
+    void Position(float x, float y, float z, int index = 0);
+
+    /**
+    * Sets the rotation of the mesh in degrees
+    */
+    void Rotation(float x, float y, float z, int index = 0);
+
+    /**
     * @return the scale of the mesh
     */
     const glm::vec3& Scale(int index = 0) const;
@@ -153,6 +162,16 @@ public:
     * @note will be overridden if individual components are set
     */
     void SetWorld(const glm::mat4& world, int index = 0);
+
+    /**
+    * @return the amount of instances of this mesh
+    */
+    int Instances() const;
+
+    /**
+    * Sets whether this mesh is visible
+    */
+    void Visible(bool isVisible, int index = 0);
 
 protected:
 

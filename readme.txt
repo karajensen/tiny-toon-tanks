@@ -1,20 +1,17 @@
 
-• Clean and add to new project
-    - Get initial starting positions of tanks rendering
-        - Create tank class heirarchy
-        - Position meshes in the world
-
-    - Get render pipeline working inc. shadows
-    - Add physics to tanks 
-    - Add movement and collisions to tanks
-    - Add firing for tanks
-    - Add bullet collisions
-    - Add breaking tanks apart
-    - Add toon text
-    - Add AI movement for tanks
-    - Create sprite quad rendering in screen space
-    - Create menus/game over screens/logic
-    - Create new unit tests
+- Fix rendering
+- Get initial starting positions of tanks rendering
+- Get render pipeline working inc. shadows
+- Add physics to tanks 
+- Add movement and collisions to tanks
+- Add firing for tanks
+- Add bullet collisions
+- Add breaking tanks apart
+- Add toon text
+- Add AI movement for tanks
+- Create sprite quad rendering in screen space
+- Create menus/game over screens/logic
+- Create new unit tests
 
 • Change 'N' to '0'
 • Update GUI/Menus

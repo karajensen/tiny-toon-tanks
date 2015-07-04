@@ -18,6 +18,16 @@ Scene::~Scene() = default;
 
 void Scene::Tick(float deltatime)
 {
+    for (auto& mesh : m_data->meshes)
+    {
+        mesh->Tick();
+    }
+
+    for (auto& hull : m_data->hulls)
+    {
+        hull->Tick();
+    }
+
     m_game->Tick(deltatime);
 }
 

@@ -39,8 +39,10 @@ void Application::Run()
         m_sound->FadeMusic();
         m_input->Update();       
         m_gui->Update(*m_input);
-        m_camera->Update(deltaTime);
         m_scene->Tick(deltaTime);
+
+        m_camera->Update(m_input->IsRightMouseDown(), 
+            m_input->GetMouseDirection(), deltaTime);
 
         m_timer->StopSection(Timer::SCENE);
         m_timer->StartSection(Timer::PHYSICS);

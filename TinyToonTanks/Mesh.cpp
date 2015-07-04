@@ -24,15 +24,10 @@ void Mesh::AddToTweaker(Tweaker& tweaker)
 
 bool Mesh::InitialiseFromFile(const std::string& path, 
                               const glm::vec2& uvScale,
+                              bool requiresUVs,
                               bool requiresNormals, 
-                              bool requiresTangents)
+                              int instances)
 {
-    if (requiresTangents && !requiresNormals)
-    {
-        LogError(path + " requies normals for bump mapping");
-        return false;
-    }
-
     Assimp::Importer importer;
     const aiScene* scene = importer.ReadFile(path, aiProcess_CalcTangentSpace|
         aiProcess_Triangulate|aiProcess_JoinIdenticalVertices|aiProcess_SortByPType|
@@ -62,7 +57,7 @@ bool Mesh::InitialiseFromFile(const std::string& path,
             LogError(Name() + " requires positions for requested shader");
             return false;
         }
-        if(!pMesh->HasTextureCoords(0))
+        if(requiresUVs && !pMesh->HasTextureCoords(0))
         {
             LogError(Name() + " requires uvs for requested shader");
             return false;
@@ -80,9 +75,14 @@ bool Mesh::InitialiseFromFile(const std::string& path,
             m_vertices.push_back(pMesh->mVertices[vert].x);
             m_vertices.push_back(pMesh->mVertices[vert].y);
             m_vertices.push_back(pMesh->mVertices[vert].z);
-            m_vertices.push_back(pMesh->mTextureCoords[0][vert].x * uvScale.x);
-            m_vertices.push_back(pMesh->mTextureCoords[0][vert].y * uvScale.y);
-            componentCount = 5;
+            componentCount = 3;
+
+            if (requiresUVs)
+            {
+                m_vertices.push_back(pMesh->mTextureCoords[0][vert].x * uvScale.x);
+                m_vertices.push_back(pMesh->mTextureCoords[0][vert].y * uvScale.y);
+                componentCount += 2;
+            }
 
             if (requiresNormals)
             {
@@ -90,25 +90,6 @@ bool Mesh::InitialiseFromFile(const std::string& path,
                 m_vertices.push_back(pMesh->mNormals[vert].y);
                 m_vertices.push_back(pMesh->mNormals[vert].z);
                 componentCount += 3;
-            }
-
-            if(requiresTangents)
-            {
-                if(pMesh->HasTangentsAndBitangents())
-                {
-                    m_vertices.push_back(pMesh->mTangents[vert].x);
-                    m_vertices.push_back(pMesh->mTangents[vert].y);
-                    m_vertices.push_back(pMesh->mTangents[vert].z);
-                    m_vertices.push_back(pMesh->mBitangents[vert].x);
-                    m_vertices.push_back(pMesh->mBitangents[vert].y);
-                    m_vertices.push_back(pMesh->mBitangents[vert].z);
-                    componentCount += 6;
-                }
-                else
-                {
-                    LogError(Name() + " requires tangents for requested shader");
-                    return false;
-                }
             }
         }
 
@@ -146,5 +127,5 @@ bool Mesh::InitialiseFromFile(const std::string& path,
     }
 
     LogInfo("Mesh: " + Name() + " created");
-    return MeshData::Initialise();
+    return MeshData::Initialise(instances);
 }

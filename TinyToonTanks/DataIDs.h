@@ -16,10 +16,7 @@ namespace MeshID
         TANKGUN,
         GROUND,
         WALL,
-        GUNSHADOW,
-        TANKSHADOW,
         WALLBOX,
-        WORLD,
         TANKP1,
         TANKP2,
         TANKP3,
@@ -133,5 +130,20 @@ namespace TextureID
         MENU,
         PIXEL,
         MAX
+    };
+}
+
+/**
+* The amount of instances of each mesh
+*/
+namespace Instance
+{
+    enum Amount
+    {
+        GROUND = 1,
+        TANKS = 6,
+        BULLETS = 100,
+        WALLS = 4,
+        ENEMIES = 5
     };
 }

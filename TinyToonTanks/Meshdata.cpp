@@ -171,7 +171,7 @@ void MeshData::SetShouldRender(bool render, int index)
     m_instances[index].render = true;
 }
 
-void MeshData::Tick(const glm::vec3& cameraPosition)
+void MeshData::Tick()
 {
     for (auto& instance : m_instances)
     {
@@ -239,4 +239,30 @@ std::vector<glm::vec3> MeshData::VertexPositions() const
     }
 
     return vertices;
+}
+
+void MeshData::Position(float x, float y, float z, int index)
+{
+    m_instances[index].position.x = x;
+    m_instances[index].position.y = y;
+    m_instances[index].position.z = z;
+    m_instances[index].requiresUpdate = true;
+}
+
+void MeshData::Rotation(float x, float y, float z, int index)
+{
+    m_instances[index].rotation.x = x;
+    m_instances[index].rotation.y = y;
+    m_instances[index].rotation.z = z;
+    m_instances[index].requiresUpdate = true;
+}
+
+int MeshData::Instances() const
+{
+    return static_cast<int>(m_instances.size());
+}
+
+void MeshData::Visible(bool isVisible, int index)
+{
+    m_instances[index].render = isVisible;
 }

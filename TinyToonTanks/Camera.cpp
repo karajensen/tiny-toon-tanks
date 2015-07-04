@@ -17,7 +17,7 @@ namespace
 }
 
 Camera::Camera() :
-    m_initialPos(0.0f, 20.0f, 0.0f),
+    m_initialPos(0.0f, 0.0f, -10.0f),
     m_position(m_initialPos),
     m_target(0.0f, 0.0f, 0.0f),
     m_rotationSpeed(0.001f),
@@ -95,8 +95,24 @@ void Camera::SetTarget(const glm::vec3& position)
     m_target = position;
 }
 
-void Camera::Update(float deltatime)
+void Camera::Update(bool mouseDown, 
+                    const glm::vec2& mouseDirection,
+                    float deltatime)
 {
+    if (mouseDown)
+    {
+        if(mouseDirection.x != 0.0f)
+        {
+            Yaw(mouseDirection.x < 0.0f ? deltatime : -deltatime);
+            m_requiresUpdate = true;
+        }
+        if(mouseDirection.y != 0.0f)
+        {
+            Pitch(mouseDirection.y < 0.0f ? deltatime : -deltatime);
+            m_requiresUpdate = true;
+        }
+    }
+
     if (m_requiresUpdate)
     {
         m_requiresUpdate = false;
@@ -109,6 +125,7 @@ void Camera::Update(float deltatime)
 
         m_view = glm::lookAt(m_position, m_target, glm::matrix_get_up(rotation));
         m_world = glm::inverse(m_view);
+        m_viewProjection = m_view * m_projection;
     }
 }
 

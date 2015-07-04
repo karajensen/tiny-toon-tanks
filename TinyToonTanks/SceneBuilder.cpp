@@ -122,7 +122,7 @@ bool SceneBuilder::InitialiseMeshes(SceneData& data)
     const int NO_TEXTURE = -1;
     data.meshes.resize(MeshID::MAX);
 
-    auto Initialise = [&data, NO_TEXTURE](std::string name, int meshID, int shaderID, int textureID) -> bool
+    auto Initialise = [&data, NO_TEXTURE](std::string name, int meshID, int shaderID, int textureID, int instances) -> bool
     {
         data.meshes[meshID] = std::make_unique<Mesh>(name,
             data.shaders[shaderID]->Name(), shaderID);
@@ -132,24 +132,20 @@ bool SceneBuilder::InitialiseMeshes(SceneData& data)
             data.meshes[meshID]->SetTexture(data.textures[textureID]->GetID());
         }
 
-        return data.meshes[meshID]->InitialiseFromFile(
-            ASSETS_PATH + name + ".obj", glm::vec2(0, 0), true, true);
+        return data.meshes[meshID]->InitialiseFromFile(ASSETS_PATH + 
+            name + ".obj", glm::vec2(0, 0), true, true, instances);
     };
 
-    success &= Initialise("bullet", MeshID::BULLET, ShaderID::TOON, TextureID::BULLET);
-    success &= Initialise("tank", MeshID::TANK, ShaderID::TOON, TextureID::TANK_BODY);
-    success &= Initialise("tankgun", MeshID::TANKGUN, ShaderID::TOON, TextureID::TANK_GUN);
-    success &= Initialise("ground", MeshID::GROUND, ShaderID::TOON, TextureID::GROUND);
-    success &= Initialise("wall", MeshID::WALL, ShaderID::TOON, TextureID::WALL);
-    success &= Initialise("world", MeshID::WORLD, ShaderID::TOON, TextureID::GROUND);
-    success &= Initialise("wall", MeshID::WALLBOX, ShaderID::TOON, TextureID::BOX);
-    success &= Initialise("tankp1", MeshID::TANKP1, ShaderID::TOON, TextureID::TANK_BODY);
-    success &= Initialise("tankp2", MeshID::TANKP2, ShaderID::TOON, TextureID::TANK_BODY);
-    success &= Initialise("tankp3", MeshID::TANKP3, ShaderID::TOON, TextureID::TANK_BODY);
-    success &= Initialise("tankp4", MeshID::TANKP4, ShaderID::TOON, TextureID::TANK_BODY);
-
-    success &= Initialise("tankshadow", MeshID::TANKSHADOW, ShaderID::TOON, NO_TEXTURE);
-    success &= Initialise("gunshadow", MeshID::GUNSHADOW, ShaderID::TOON, NO_TEXTURE);
+    success &= Initialise("bullet", MeshID::BULLET, ShaderID::TOON, TextureID::BULLET, Instance::BULLETS);
+    success &= Initialise("tank", MeshID::TANK, ShaderID::TOON, TextureID::TANK_BODY, Instance::TANKS);
+    success &= Initialise("tankgun", MeshID::TANKGUN, ShaderID::TOON, TextureID::TANK_GUN, Instance::TANKS);
+    success &= Initialise("ground", MeshID::GROUND, ShaderID::TOON, TextureID::GROUND, Instance::GROUND);
+    success &= Initialise("wall", MeshID::WALL, ShaderID::TOON, TextureID::WALL, Instance::WALLS);
+    success &= Initialise("wallbox", MeshID::WALLBOX, ShaderID::TOON, TextureID::BOX, Instance::WALLS);
+    success &= Initialise("tankp1", MeshID::TANKP1, ShaderID::TOON, TextureID::TANK_BODY, Instance::TANKS);
+    success &= Initialise("tankp2", MeshID::TANKP2, ShaderID::TOON, TextureID::TANK_BODY, Instance::TANKS);
+    success &= Initialise("tankp3", MeshID::TANKP3, ShaderID::TOON, TextureID::TANK_BODY, Instance::TANKS);
+    success &= Initialise("tankp4", MeshID::TANKP4, ShaderID::TOON, TextureID::TANK_BODY, Instance::TANKS);
 
     return success;
 }
@@ -161,12 +157,14 @@ bool SceneBuilder::InitialiseHulls(SceneData& data, BulletPhysicsWorld& physics)
     data.shapes.resize(ShapeID::MAX);
 
     auto Initialise = [&data, &physics](std::string name, HullID::ID hullID, 
-                                        ShaderID::ID shaderID, ShapeID::ID shapeID) -> bool
+                                        ShaderID::ID shaderID, ShapeID::ID shapeID, 
+                                        int instances) -> bool
     {
         auto& hull = data.hulls[hullID];
         hull = std::make_unique<Mesh>(name, data.shaders[shaderID]->Name(), shaderID);
 
-        if (hull->InitialiseFromFile(ASSETS_PATH + name + ".obj", glm::vec2(0, 0), false, false))
+        if (hull->InitialiseFromFile(ASSETS_PATH + name + ".obj",
+                                     glm::vec2(0, 0), false, false, instances))
         {
             hull->SetShouldRender(false);
             data.shapes[shapeID] = physics.LoadConvexShape(hull->VertexPositions());
@@ -175,15 +173,15 @@ bool SceneBuilder::InitialiseHulls(SceneData& data, BulletPhysicsWorld& physics)
         return false;
     };
 
-    success &= Initialise("tankp1proxy", HullID::TANKP1, ShaderID::PROXY, ShapeID::TANKP1);
-    success &= Initialise("tankp2proxy", HullID::TANKP2, ShaderID::PROXY, ShapeID::TANKP2);
-    success &= Initialise("tankp3proxy", HullID::TANKP3, ShaderID::PROXY, ShapeID::TANKP3);
-    success &= Initialise("tankp4proxy", HullID::TANKP4, ShaderID::PROXY, ShapeID::TANKP4);
-    success &= Initialise("tankproxy", HullID::TANK, ShaderID::PROXY, ShapeID::TANK);
-    success &= Initialise("tankgunproxy", HullID::GUN, ShaderID::PROXY, ShapeID::GUN);
-    success &= Initialise("bulletproxy", HullID::BULLET, ShaderID::PROXY, ShapeID::BULLET);
-    success &= Initialise("groundproxy", HullID::GROUND, ShaderID::PROXY, ShapeID::GROUND);
-    success &= Initialise("wallproxy", HullID::WALL, ShaderID::PROXY, ShapeID::WALL);
+    success &= Initialise("tankp1proxy", HullID::TANKP1, ShaderID::PROXY, ShapeID::TANKP1, Instance::TANKS);
+    success &= Initialise("tankp2proxy", HullID::TANKP2, ShaderID::PROXY, ShapeID::TANKP2, Instance::TANKS);
+    success &= Initialise("tankp3proxy", HullID::TANKP3, ShaderID::PROXY, ShapeID::TANKP3, Instance::TANKS);
+    success &= Initialise("tankp4proxy", HullID::TANKP4, ShaderID::PROXY, ShapeID::TANKP4, Instance::TANKS);
+    success &= Initialise("tankproxy", HullID::TANK, ShaderID::PROXY, ShapeID::TANK, Instance::TANKS);
+    success &= Initialise("tankgunproxy", HullID::GUN, ShaderID::PROXY, ShapeID::GUN, Instance::TANKS);
+    success &= Initialise("bulletproxy", HullID::BULLET, ShaderID::PROXY, ShapeID::BULLET, Instance::BULLETS);
+    success &= Initialise("groundproxy", HullID::GROUND, ShaderID::PROXY, ShapeID::GROUND, Instance::GROUND);
+    success &= Initialise("wallproxy", HullID::WALL, ShaderID::PROXY, ShapeID::WALL, Instance::WALLS);
 
     return success;
 }
