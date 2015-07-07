@@ -266,3 +266,9 @@ void MeshData::Visible(bool isVisible, int index)
 {
     m_instances[index].render = isVisible;
 }
+
+bool MeshData::IsVisible() const
+{
+    return std::find_if(m_instances.begin(), m_instances.end(), 
+        [](const Instance& instance){ return instance.render; }) != m_instances.end();
+}

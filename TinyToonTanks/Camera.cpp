@@ -17,7 +17,7 @@ namespace
 }
 
 Camera::Camera() :
-    m_initialPos(0.0f, 0.0f, -10.0f),
+    m_initialPos(0.0f, /*20.0f*/ 0.0f, 10.0f),
     m_position(m_initialPos),
     m_target(0.0f, 0.0f, 0.0f),
     m_rotationSpeed(0.001f),
@@ -34,6 +34,7 @@ Camera::Camera() :
 void Camera::AddToTweaker(Tweaker& tweaker)
 {
     tweaker.SetGroup("Camera");
+    tweaker.AddEntry("Fly Camera", &m_useFlyCamera, TW_TYPE_BOOLCPP);
     tweaker.AddFltEntry("Rotation Speed", &m_rotationSpeed, 1.0f);
     tweaker.AddFltEntry("Translate Speed", &m_translateSpeed, 1.0f);
     tweaker.AddFltEntry("Forward Speed", &m_forwardSpeed, 1.0f);
@@ -99,7 +100,7 @@ void Camera::Update(bool mouseDown,
                     const glm::vec2& mouseDirection,
                     float deltatime)
 {
-    if (mouseDown)
+    if (m_useFlyCamera && mouseDown)
     {
         if(mouseDirection.x != 0.0f)
         {
@@ -123,9 +124,19 @@ void Camera::Update(bool mouseDown,
         rotateZ = glm::rotate(rotateZ, m_roll, glm::vec3(0,0,1));
         rotation = rotateZ * rotateY * rotateX;
 
-        m_view = glm::lookAt(m_position, m_target, glm::matrix_get_up(rotation));
-        m_world = glm::inverse(m_view);
-        m_viewProjection = m_view * m_projection;
+        if (m_useFlyCamera)
+        {
+            m_world = rotation;
+            glm::matrix_set_position(m_world, m_position);
+            m_view = glm::inverse(m_world);
+        }
+        else
+        {
+            m_view = glm::lookAt(m_position, m_target, glm::matrix_get_up(rotation));
+            m_world = glm::inverse(m_view);
+        }
+
+        m_viewProjection = m_projection * m_view;
     }
 }
 

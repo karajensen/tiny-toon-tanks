@@ -140,6 +140,7 @@ private:
     glm::vec3 m_right;                   ///< Camera right vector
     glm::vec3 m_target;                  ///< Camera Look at target
     bool m_requiresUpdate = true;        ///< Whether the camera requires updating or not
+    bool m_useFlyCamera = false;         ///< Whether the camera is locked or in fly mode
     float m_yaw = 0.0f;                  ///< Degrees amount of yaw
     float m_pitch = 0.0f;                ///< Degrees amount of pitch
     float m_roll = 0.0f;                 ///< Degrees amount of roll

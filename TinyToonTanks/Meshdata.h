@@ -173,6 +173,11 @@ public:
     */
     void Visible(bool isVisible, int index = 0);
 
+    /**
+    * @return whether any instance is visible
+    */
+    bool IsVisible() const;
+
 protected:
 
     int m_vertexComponentCount = 0;         ///< Number of components that make up a vertex

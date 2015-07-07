@@ -1,5 +1,6 @@
 
-- Fix rendering
+- Fly camera working
+- Place follow camera in position
 - Get initial starting positions of tanks rendering
 - Get render pipeline working inc. shadows
 - Add physics to tanks 

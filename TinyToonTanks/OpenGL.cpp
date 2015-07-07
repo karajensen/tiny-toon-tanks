@@ -132,7 +132,7 @@ void OpenGL::RenderMeshes()
 {
     for (const auto& mesh : m_scene.meshes)
     {
-        if (UpdateShader(*mesh))
+        if (mesh->IsVisible() && UpdateShader(*mesh))
         {
             mesh->PreRender();
             EnableSelectedShader();
@@ -159,7 +159,7 @@ bool OpenGL::UpdateShader(const MeshData& mesh)
     if (index != NO_INDEX)
     {
         auto& shader = *m_scene.shaders[index];
-        if(index != m_selectedShader)
+        //if(index != m_selectedShader)
         {
             SetSelectedShader(index);
             SendLights();
