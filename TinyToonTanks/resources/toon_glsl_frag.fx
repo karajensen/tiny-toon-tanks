@@ -43,5 +43,6 @@ void main(void)
         diffuse += lightDiffuse[i] * lightAmount;
     }
 
-    out_Color = vec4(diffuseTex.rgb * diffuse, 1.0);
+    out_Color.rgb = diffuseTex.rgb * diffuse;
+    out_Color.a = 1.0;
 }

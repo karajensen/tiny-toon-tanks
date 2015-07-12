@@ -17,16 +17,17 @@ namespace
 }
 
 Camera::Camera() :
-    m_initialPos(0.0f, /*20.0f*/ 0.0f, 10.0f),
+    m_initialPos(4.0f, /*20.0f*/ 12.0f, 36.0f),
     m_position(m_initialPos),
     m_target(0.0f, 0.0f, 0.0f),
-    m_rotationSpeed(0.001f),
-    m_translateSpeed(0.02f),
-    m_forwardSpeed(0.02f),
-    m_pitch(0.0f),
+    m_rotationSpeed(5.0f),
+    m_translateSpeed(5.0f),
+    m_forwardSpeed(5.0f),
+    m_pitch(-27.0f),
     m_yaw(0.0f),
     m_roll(0.0f),
-    m_requiresUpdate(true)
+    m_requiresUpdate(true),
+    m_useFlyCamera(true)
 {
     m_projection = glm::perspective(FIELD_OF_VIEW, RATIO, FRUSTRUM_NEAR, FRUSTRUM_FAR);
 }
@@ -104,12 +105,12 @@ void Camera::Update(bool mouseDown,
     {
         if(mouseDirection.x != 0.0f)
         {
-            Yaw(mouseDirection.x < 0.0f ? deltatime : -deltatime);
+            Yaw(mouseDirection.x < 0.0f ? -deltatime : deltatime);
             m_requiresUpdate = true;
         }
         if(mouseDirection.y != 0.0f)
         {
-            Pitch(mouseDirection.y < 0.0f ? deltatime : -deltatime);
+            Pitch(mouseDirection.y < 0.0f ? -deltatime : deltatime);
             m_requiresUpdate = true;
         }
     }
@@ -137,6 +138,9 @@ void Camera::Update(bool mouseDown,
         }
 
         m_viewProjection = m_projection * m_view;
+        m_forward = glm::matrix_get_forward(m_world);
+        m_up = glm::matrix_get_up(m_world);
+        m_right = glm::matrix_get_right(m_world);
     }
 }
 

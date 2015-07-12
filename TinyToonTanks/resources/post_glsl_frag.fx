@@ -45,6 +45,6 @@ void main(void)
     // Masking the selected texture
     out_Color.rgb = final.rgb * finalMask;
     out_Color.rgb += scene.rgb * sceneMask;
-    out_Color.rgb += vec3(edgeAmount) * toonlineMask;
     out_Color.rgb += normal.rgb * normalMask;
+    out_Color.rgb += vec3(edgeAmount) * toonlineMask;
 }

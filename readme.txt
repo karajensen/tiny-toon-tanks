@@ -1,15 +1,18 @@
 
-- Fly camera working
+- Get world/tank placement
 - Place follow camera in position
-- Get initial starting positions of tanks rendering
-- Get render pipeline working inc. shadows
+- Get shadows rendering
+
 - Add physics to tanks 
 - Add movement and collisions to tanks
+
 - Add firing for tanks
 - Add bullet collisions
 - Add breaking tanks apart
+
 - Add toon text
 - Add AI movement for tanks
+
 - Create sprite quad rendering in screen space
 - Create menus/game over screens/logic
 - Create new unit tests

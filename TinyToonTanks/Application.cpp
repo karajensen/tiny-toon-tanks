@@ -115,10 +115,10 @@ void Application::InitialiseInput()
         [this](){ m_scene->SetPostMap(PostProcessing::TOONLINE_MAP); });
 
     m_input->AddCallback(GLFW_KEY_W, true, 
-        [this](){ m_camera->Forward(m_timer->GetDeltaTime()); });
+        [this](){ m_camera->Forward(-m_timer->GetDeltaTime()); });
 
     m_input->AddCallback(GLFW_KEY_S, true, 
-        [this](){ m_camera->Forward(-m_timer->GetDeltaTime()); });
+        [this](){ m_camera->Forward(m_timer->GetDeltaTime()); });
 
     m_input->AddCallback(GLFW_KEY_D, true, 
         [this](){ m_camera->Right(m_timer->GetDeltaTime()); });
@@ -127,8 +127,8 @@ void Application::InitialiseInput()
         [this](){ m_camera->Right(-m_timer->GetDeltaTime()); });
 
     m_input->AddCallback(GLFW_KEY_Q, true,
-        [this](){ m_camera->Up(m_timer->GetDeltaTime()); });
+        [this](){ m_camera->Up(-m_timer->GetDeltaTime()); });
 
     m_input->AddCallback(GLFW_KEY_E, true, 
-        [this](){ m_camera->Up(-m_timer->GetDeltaTime()); });
+        [this](){ m_camera->Up(m_timer->GetDeltaTime()); });
 }

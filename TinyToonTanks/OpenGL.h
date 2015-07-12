@@ -52,6 +52,11 @@ public:
     void RenderScene();
 
     /**
+    * Applies the post processing shader
+    */
+    void RenderPostProcessing();
+
+    /**
     * Ends the rendering pipeline
     */
     void EndRender();
@@ -85,11 +90,23 @@ private:
     void RenderMeshes();
 
     /**
+    * Renders the normals for the scene
+    */
+    void RenderNormals();
+
+    /**
     * Updates and switches to main shader the mesh requires
     * @param mesh The mesh currently rendering
     * @return whether the mesh can now be rendered
     */
     bool UpdateShader(const MeshData& mesh);
+
+    /**
+    * Updates and switches to the normal shader
+    * @param mesh The mesh currently rendering
+    * @return whether the mesh can now be rendered
+    */
+    bool UpdateNormalShader(const MeshData& mesh);
 
     /**
     * Updates the shader for a mesh per instance

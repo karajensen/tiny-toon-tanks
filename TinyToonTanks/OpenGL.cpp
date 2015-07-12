@@ -80,7 +80,6 @@ bool OpenGL::Initialise()
     glClearDepth(1.0f);
     glDepthFunc(GL_LEQUAL);
     glDepthRange(0.0f, 1.0f);
-    glFrontFace(GL_CCW); 
     glDisablei(GL_BLEND, 0);
     glEnable(GL_CULL_FACE);
     glDepthMask(GL_TRUE);
@@ -123,9 +122,52 @@ GLFWwindow& OpenGL::GetWindow() const
 
 void OpenGL::RenderScene()
 {
-    m_backBuffer->SetActive();
-
+    m_sceneTarget->SetActive();
     RenderMeshes();
+
+    m_normalTarget->SetActive();
+    RenderNormals();
+
+    m_backBuffer->SetActive();
+    RenderPostProcessing();
+}
+
+void OpenGL::RenderPostProcessing()
+{
+    EnableBackfaceCull(false);
+    EnableAlphaBlending(false, false);   
+
+    SetSelectedShader(ShaderID::POST);
+    auto& shader = *m_scene.shaders[m_selectedShader];
+    auto& post = *m_scene.post;
+
+    shader.SendUniform("finalMask", post.Mask(PostProcessing::FINAL_MAP));
+    shader.SendUniform("sceneMask", post.Mask(PostProcessing::SCENE_MAP));
+    shader.SendUniform("normalMask", post.Mask(PostProcessing::NORMAL_MAP));
+    shader.SendUniform("toonlineMask", post.Mask(PostProcessing::TOONLINE_MAP));
+
+    shader.SendTexture("SceneSampler", *m_sceneTarget);
+    shader.SendTexture("NormalSampler", *m_normalTarget);
+
+    m_quad->PreRender();
+    EnableSelectedShader();
+    m_quad->Render();
+
+    shader.ClearTexture("SceneSampler", *m_sceneTarget);
+    shader.ClearTexture("NormalSampler", *m_normalTarget);
+}
+
+void OpenGL::RenderNormals()
+{
+    for (const auto& mesh : m_scene.meshes)
+    {
+        if (mesh->IsVisible() && UpdateNormalShader(*mesh))
+        {
+            mesh->PreRender();
+            EnableSelectedShader();
+            mesh->Render([this](const glm::mat4& world){ UpdateShader(world); });
+        }
+    }
 }
 
 void OpenGL::RenderMeshes()
@@ -153,13 +195,30 @@ void OpenGL::UpdateShader(const glm::mat4& world)
     shader.SendUniform("world", world);
 }
 
+bool OpenGL::UpdateNormalShader(const MeshData& mesh)
+{
+    auto index = ShaderID::NORMAL;
+    auto& shader = *m_scene.shaders[index];
+
+    if(index != m_selectedShader)
+    {
+        SetSelectedShader(index);
+        shader.SendUniform("viewProjection", m_camera.ViewProjection());
+    }
+
+    EnableBackfaceCull(mesh.BackfaceCull());
+    EnableAlphaBlending(false, false);
+
+    return true;
+}
+
 bool OpenGL::UpdateShader(const MeshData& mesh)
 {
     const int index = mesh.ShaderID();
     if (index != NO_INDEX)
     {
         auto& shader = *m_scene.shaders[index];
-        //if(index != m_selectedShader)
+        if(index != m_selectedShader)
         {
             SetSelectedShader(index);
             SendLights();
