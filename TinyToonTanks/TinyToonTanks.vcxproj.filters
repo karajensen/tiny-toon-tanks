@@ -91,12 +91,6 @@
     <ClCompile Include="opengl\gl_core_4_4.c">
       <Filter>External Libraries</Filter>
     </ClCompile>
-    <ClCompile Include="Mesh.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Meshdata.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Quad.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -139,6 +133,15 @@
     <ClCompile Include="GameBuilder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="MeshFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicsUpdater.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BulletPhysics.h">
@@ -179,12 +182,6 @@
     </ClInclude>
     <ClInclude Include="opengl\gl_core_4_4.h">
       <Filter>External Libraries</Filter>
-    </ClInclude>
-    <ClInclude Include="Mesh.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Meshdata.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Quad.h">
       <Filter>Header Files</Filter>
@@ -250,6 +247,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DataIDs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshFile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TankData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsUpdater.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -78,40 +78,40 @@ bool SceneBuilder::InitialiseTextures(SceneData& data)
     bool success = true;
     data.textures.resize(TextureID::MAX);
 
-    auto Initialise = [&data](std::string name, TextureID::ID ID) -> bool
+    auto Initialise = [&data](std::string name, TextureID::ID ID, Texture::Filter filter) -> bool
     {
         data.textures[ID] = std::make_unique<Texture>(
-            name, ASSETS_PATH + name, Texture::LINEAR);
+            name, ASSETS_PATH + name, filter);
         return data.textures[ID]->Initialise();
     };
 
-    success &= Initialise("backdrop.png", TextureID::BACKDROP);
-    success &= Initialise("border.png", TextureID::BORDER);
-    success &= Initialise("boxUV.png", TextureID::BOX);
-    success &= Initialise("buthigh.png", TextureID::BUTTON_HIGH);
-    success &= Initialise("butnorm.png", TextureID::BUTTON_LOW);
-    success &= Initialise("diffhigh.png", TextureID::DIFF_HIGH);
-    success &= Initialise("easy.png", TextureID::DIFF_EASY);
-    success &= Initialise("flip1.png", TextureID::FLIP);
-    success &= Initialise("gameover.png", TextureID::GAME_OVER);
-    success &= Initialise("gomenu.png", TextureID::GAME_OVER_MENU);
-    success &= Initialise("gop1.png", TextureID::GAME_OVER_P1);
-    success &= Initialise("goreplay.png", TextureID::GAME_OVER_REPLAY);
-    success &= Initialise("groundUV.png", TextureID::GROUND);
-    success &= Initialise("gunp1.png", TextureID::TANK_GUN);
-    success &= Initialise("gunpn.png", TextureID::TANK_NPC_GUN);
-    success &= Initialise("hard.png", TextureID::DIFF_HARD);
-    success &= Initialise("health1.png", TextureID::HEALTH_BAR);
-    success &= Initialise("medium.png", TextureID::DIFF_MED);
-    success &= Initialise("menu.png", TextureID::MENU);
-    success &= Initialise("pixel.png", TextureID::PIXEL);
-    success &= Initialise("player.png", TextureID::HEALTH_BACK);
-    success &= Initialise("star1.png", TextureID::HEALTH_STAR);
-    success &= Initialise("tankp1.png", TextureID::TANK_BODY);
-    success &= Initialise("tankpn.png", TextureID::TANK_NPC_BODY);
-    success &= Initialise("toontext.png", TextureID::TOON_TEXT);
-    success &= Initialise("wallUV.png", TextureID::WALL);
-    success &= Initialise("bullet.png", TextureID::BULLET);
+    success &= Initialise("backdrop.png", TextureID::BACKDROP, Texture::NEAREST);
+    success &= Initialise("border.png", TextureID::BORDER, Texture::NEAREST);
+    success &= Initialise("boxUV.png", TextureID::BOX, Texture::ANISOTROPIC);
+    success &= Initialise("buthigh.png", TextureID::BUTTON_HIGH, Texture::NEAREST);
+    success &= Initialise("butnorm.png", TextureID::BUTTON_LOW, Texture::NEAREST);
+    success &= Initialise("diffhigh.png", TextureID::DIFF_HIGH, Texture::NEAREST);
+    success &= Initialise("easy.png", TextureID::DIFF_EASY, Texture::NEAREST);
+    success &= Initialise("flip1.png", TextureID::FLIP, Texture::NEAREST);
+    success &= Initialise("gameover.png", TextureID::GAME_OVER, Texture::NEAREST);
+    success &= Initialise("gomenu.png", TextureID::GAME_OVER_MENU, Texture::NEAREST);
+    success &= Initialise("gop1.png", TextureID::GAME_OVER_P1, Texture::NEAREST);
+    success &= Initialise("goreplay.png", TextureID::GAME_OVER_REPLAY, Texture::NEAREST);
+    success &= Initialise("groundUV.png", TextureID::GROUND, Texture::ANISOTROPIC);
+    success &= Initialise("gunp1.png", TextureID::TANK_GUN, Texture::ANISOTROPIC);
+    success &= Initialise("gunpn.png", TextureID::TANK_NPC_GUN, Texture::ANISOTROPIC);
+    success &= Initialise("hard.png", TextureID::DIFF_HARD, Texture::NEAREST);
+    success &= Initialise("health1.png", TextureID::HEALTH_BAR, Texture::NEAREST);
+    success &= Initialise("medium.png", TextureID::DIFF_MED, Texture::NEAREST);
+    success &= Initialise("menu.png", TextureID::MENU, Texture::NEAREST);
+    success &= Initialise("pixel.png", TextureID::PIXEL, Texture::NEAREST);
+    success &= Initialise("player.png", TextureID::HEALTH_BACK, Texture::NEAREST);
+    success &= Initialise("star1.png", TextureID::HEALTH_STAR, Texture::NEAREST);
+    success &= Initialise("tankp1.png", TextureID::TANK_BODY, Texture::ANISOTROPIC);
+    success &= Initialise("tankpn.png", TextureID::TANK_NPC_BODY, Texture::ANISOTROPIC);
+    success &= Initialise("toontext.png", TextureID::TOON_TEXT, Texture::ANISOTROPIC);
+    success &= Initialise("wallUV.png", TextureID::WALL, Texture::ANISOTROPIC);
+    success &= Initialise("bullet.png", TextureID::BULLET, Texture::NEAREST);
 
     return true;
 }
@@ -124,16 +124,16 @@ bool SceneBuilder::InitialiseMeshes(SceneData& data)
 
     auto Initialise = [&data, NO_TEXTURE](std::string name, int meshID, int shaderID, int textureID, int instances) -> bool
     {
-        data.meshes[meshID] = std::make_unique<Mesh>(name,
+        data.meshes[meshID] = std::make_unique<MeshFile>(name,
             data.shaders[shaderID]->Name(), shaderID);
 
         if (textureID != NO_TEXTURE)
         {
-            data.meshes[meshID]->SetTexture(data.textures[textureID]->GetID());
+            data.meshes[meshID]->SetTexture(textureID);
         }
 
-        return data.meshes[meshID]->InitialiseFromFile(ASSETS_PATH + 
-            name + ".obj", glm::vec2(0, 0), true, true, instances);
+        return data.meshes[meshID]->InitialiseFromFile(
+            ASSETS_PATH + name + ".obj", true, true, instances);
     };
 
     success &= Initialise("bullet", MeshID::BULLET, ShaderID::TOON, TextureID::BULLET, Instance::BULLETS);
@@ -161,10 +161,9 @@ bool SceneBuilder::InitialiseHulls(SceneData& data, BulletPhysicsWorld& physics)
                                         int instances) -> bool
     {
         auto& hull = data.hulls[hullID];
-        hull = std::make_unique<Mesh>(name, data.shaders[shaderID]->Name(), shaderID);
+        hull = std::make_unique<MeshFile>(name, data.shaders[shaderID]->Name(), shaderID);
 
-        if (hull->InitialiseFromFile(ASSETS_PATH + name + ".obj",
-                                     glm::vec2(0, 0), false, false, instances))
+        if (hull->InitialiseFromFile(ASSETS_PATH + name + ".obj", false, false, instances))
         {
             hull->SetShouldRender(false);
             data.shapes[shapeID] = physics.LoadConvexShape(hull->VertexPositions());

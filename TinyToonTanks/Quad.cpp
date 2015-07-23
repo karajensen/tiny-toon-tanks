@@ -5,7 +5,7 @@
 #include "quad.h"
 
 Quad::Quad(const std::string& name, int shader) :
-    MeshData(name, "unnamed", shader)
+    Mesh(name, "unnamed", shader)
 {
     m_vertexComponentCount = 5;
 

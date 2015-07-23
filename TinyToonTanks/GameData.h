@@ -9,6 +9,7 @@
 
 #include "Player.h"
 #include "Enemy.h"
+#include "TankData.h"
 
 /**
 * Internal data for the game
@@ -25,4 +26,5 @@ struct GameData
 
     std::unique_ptr<Player> player;
     std::vector<std::unique_ptr<Enemy>> enemies;
+    std::unique_ptr<TankMesh> tankMesh;
 };

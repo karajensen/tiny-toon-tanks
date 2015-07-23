@@ -4,12 +4,12 @@
 
 #pragma once
 
-#include "meshdata.h"
+#include "mesh.h"
 
 /**
 * Four-vertex quad
 */
-class Quad : public MeshData
+class Quad : public Mesh
 {
 public:
 

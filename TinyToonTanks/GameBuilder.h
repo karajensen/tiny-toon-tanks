@@ -71,4 +71,8 @@ private:
     bool InitialiseBullets(GameData& gamedata,
                            SceneData& scenedata, 
                            BulletPhysicsWorld& physics);
+
+private:
+
+    int m_collisionGroupIndex = 0; ///< Current index for collision groups
 };                     

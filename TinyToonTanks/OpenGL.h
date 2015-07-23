@@ -10,7 +10,7 @@
 
 struct GLFWwindow;
 struct SceneData;
-class MeshData;
+class Mesh;
 class Quad;
 class Camera;
 class RenderTarget;
@@ -99,14 +99,14 @@ private:
     * @param mesh The mesh currently rendering
     * @return whether the mesh can now be rendered
     */
-    bool UpdateShader(const MeshData& mesh);
+    bool UpdateShader(const Mesh& mesh);
 
     /**
     * Updates and switches to the normal shader
     * @param mesh The mesh currently rendering
     * @return whether the mesh can now be rendered
     */
-    bool UpdateNormalShader(const MeshData& mesh);
+    bool UpdateNormalShader(const Mesh& mesh);
 
     /**
     * Updates the shader for a mesh per instance

@@ -11,6 +11,7 @@
 #include "bullet/include/btBulletDynamicsCommon.h"
 #include "bullet/include/linearMath/btTransform.h"
 
+struct MeshKey;
 struct RigidBody;
 struct CollisionEvent;
 
@@ -40,10 +41,10 @@ public:
     /**
     * Generates a collision event
     * @param collisionIndex The index from currently occuring collisions
-    * @param colEvent The collision event to be filled in
+    * @param collision The collision event to be filled in
     * @return whether generation was successful
     */
-    bool GenerateCollisionEvent(int collisionIndex, CollisionEvent& colEvent);
+    bool GenerateCollisionEvent(int collisionIndex, CollisionEvent& collision);
 
     /**
     * @return the number of collisions currently occuring
@@ -247,9 +248,9 @@ public:
     * @param shape The collision shape to use
     * @param mass The mass of the body
     * @param group The collision group the body is part of
-    * @param userIndex The user defined index of the body
+    * @param meshID The ID of the graphical mesh for rendering
+    * @param meshInstance The instance to use of the graphical mesh
     * @param createEvents Whether the body is interested in collision events
-    * @param mask The collision mask of the body
     * @param inertia The inertia of the body
     * @return the internal index of the rigid body
     */
@@ -257,9 +258,9 @@ public:
                       int shape, 
                       float mass, 
                       int group, 
-                      int userIndex, 
+                      int meshID,
+                      int meshInstance,
                       bool createEvents, 
-                      int mask = NO_MASK, 
                       const glm::vec3 inertia = glm::vec3());
 
 private:
@@ -283,14 +284,15 @@ private:
     */
     struct RigidBody
     {
-        std::unique_ptr<btRigidBody> body;           ///< Bullet rigid body object
-        std::unique_ptr<btDefaultMotionState> state; ///< Motion state for movement interpolation
-        int mask = NO_MASK;                          ///< The collision mask of the body
-        int shape = 0;                               ///< The type of shape of the body
-        int index = 0;                               ///< Internal index for all rigid bodies
-        int userIndex = 0;                           ///< User defined index of the body
-        int group = 0;                               ///< The collision filter group the body belongs to
-        bool processEvents = true;                   ///< Whether or not this body requires collision checking
+        std::unique_ptr<btRigidBody> Body;           ///< Bullet rigid body object
+        std::unique_ptr<btDefaultMotionState> State; ///< Motion state for movement interpolation
+        int Mask = NO_MASK;                          ///< The collision mask of the body
+        int Index = 0;                               ///< Internal index of the body in the container
+        int Shape = 0;                               ///< The type of shape of the body
+        int Group = 0;                               ///< The collision filter group the body belongs to
+        int MeshID = 0;                              ///< ID of the graphical mesh for rendering
+        int MeshInstance = 0;                        ///< Associated instance of the graphical mesh
+        bool ProcessEvents = true;                   ///< Whether or not this body requires collision checking
     };
 
     /**

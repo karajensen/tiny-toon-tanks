@@ -17,17 +17,17 @@ namespace
 }
 
 Camera::Camera() :
-    m_initialPos(4.0f, /*20.0f*/ 12.0f, 36.0f),
+    m_initialPos(0.0f, 20.0f, 0.0f),
     m_position(m_initialPos),
     m_target(0.0f, 0.0f, 0.0f),
     m_rotationSpeed(5.0f),
     m_translateSpeed(5.0f),
     m_forwardSpeed(5.0f),
-    m_pitch(-27.0f),
+    m_pitch(0.0f),
     m_yaw(0.0f),
     m_roll(0.0f),
     m_requiresUpdate(true),
-    m_useFlyCamera(true)
+    m_useFlyCamera(false)
 {
     m_projection = glm::perspective(FIELD_OF_VIEW, RATIO, FRUSTRUM_NEAR, FRUSTRUM_FAR);
 }
@@ -90,6 +90,17 @@ void Camera::Reset()
     m_yaw = 0;
     m_roll = 0;
     m_pitch = 0;
+}
+
+void Camera::SetPosition(const glm::vec3& position)
+{
+    m_position = position;
+    m_requiresUpdate = true;
+}
+
+bool Camera::IsFlyCamera() const
+{
+    return m_useFlyCamera;
 }
 
 void Camera::SetTarget(const glm::vec3& position)

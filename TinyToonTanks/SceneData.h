@@ -11,7 +11,7 @@
 #include "Postprocessing.h"
 #include "Shader.h"
 #include "Light.h"
-#include "Mesh.h"
+#include "MeshFile.h"
 #include "Texture.h"
 
 /**
@@ -31,8 +31,8 @@ struct SceneData
     std::unique_ptr<PostProcessing> post;
     std::vector<std::unique_ptr<Shader>> shaders;
     std::vector<std::unique_ptr<Light>> lights;
-    std::vector<std::unique_ptr<Mesh>> meshes;
-    std::vector<std::unique_ptr<Mesh>> hulls;
+    std::vector<std::unique_ptr<MeshFile>> meshes;
+    std::vector<std::unique_ptr<MeshFile>> hulls;
     std::vector<std::unique_ptr<Texture>> textures;
     std::vector<int> shapes;
 };

@@ -29,15 +29,19 @@ void main(void)
 	    // Create bands of color depending on angle to light
         if (lightAmount <= 0.25)
         {
-            lightAmount -= 0.6;
+            lightAmount = 0.25;
         }
         else if (lightAmount <= 0.5)
         {
-            lightAmount -= 0.4;
+            lightAmount = 0.5;
         }
         else if (lightAmount <= 0.75)
         {
-            lightAmount -= 0.2;
+            lightAmount = 0.75;
+        }
+        else
+        {
+            lightAmount = 1.0;
         }
 
         diffuse += lightDiffuse[i] * lightAmount;

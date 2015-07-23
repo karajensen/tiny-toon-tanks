@@ -11,7 +11,9 @@
 #include "Postprocessing.h"
 
 class Game;
+class Camera;
 class BulletPhysicsWorld;
+class PhysicsUpdater;
 class Tweaker;
 struct SceneData;
 
@@ -24,8 +26,9 @@ public:
 
     /**
     * Constructor
+    * @param camera The main view camera
     */
-    Scene();
+    Scene(Camera& camera);
 
     /**
     * Destructor
@@ -76,9 +79,11 @@ private:
     Scene(const Scene&) = delete;
     Scene& operator=(const Scene&) = delete;
 
-    std::unique_ptr<Game> m_game;              ///< Game objects build on scene elements
-    std::unique_ptr<SceneData> m_data;         ///< Elements of the scene
-    int m_selectedLight = 0;                   ///< Currently selected light in the tweak bar
-    int m_selectedMesh = 0;                    ///< Currently selected mesh in the tweak bar
-    int m_selectedHull = 0;                    ///< Currently selected hull in the tweak bar
+    Camera& m_camera;                   ///< Main camera
+    std::unique_ptr<Game> m_game;       ///< Game objects build on scene elements
+    std::unique_ptr<SceneData> m_data;  ///< Elements of the scene
+
+    int m_selectedLight = 0;            ///< Currently selected light in the tweak bar
+    int m_selectedMesh = 0;             ///< Currently selected mesh in the tweak bar
+    int m_selectedHull = 0;             ///< Currently selected hull in the tweak bar
 }; 

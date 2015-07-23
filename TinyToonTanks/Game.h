@@ -9,7 +9,9 @@
 #include <memory>
 #include <functional>
 #include "Postprocessing.h"
+#include "glm/glm.hpp"
 
+class PhysicsUpdater;
 class BulletPhysicsWorld;
 class Tweaker;
 struct SceneData;
@@ -52,6 +54,11 @@ public:
     void Reload();
 
     /**
+    * @return the position of the tank in focus
+    */
+    const glm::vec3& GetFocusTankPosition() const;
+
+    /**
     * Adds data for this element to be tweaked by the gui
     * @param tweaker The helper for adding tweakable entries
     * @param reset Callback to reset the tweak bar
@@ -66,6 +73,7 @@ private:
     Game(const Game&) = delete;
     Game& operator=(const Game&) = delete;
 
-    std::unique_ptr<GameData> m_data;  ///< Elements of the game
-    int m_selectedEnemy = 0;           ///< Currently selected enemy in the tweak bar
+    std::unique_ptr<PhysicsUpdater> m_physicsUpdater; ///< Connects the physics to the game
+    std::unique_ptr<GameData> m_data;                 ///< Elements of the game
+    int m_selectedEnemy = 0;                          ///< Currently selected enemy in the tweak bar
 }; 

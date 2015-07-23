@@ -4,8 +4,9 @@
 
 #include "Enemy.h"
 
-Enemy::Enemy() 
-{ 
+Enemy::Enemy(TankMesh& tankmesh, int instance) :
+    Tank(tankmesh, instance)
+{  
 }
 
 void Enemy::AddToTweaker(Tweaker& tweaker)

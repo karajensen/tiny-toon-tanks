@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////////////
-// Kara Jensen - mail@karajensen.com - scene.cpp
+// Kara Jensen - mail@karajensen.com - Scene.cpp
 ////////////////////////////////////////////////////////////////////////////////////////
 
 #include "Scene.h"
@@ -7,8 +7,10 @@
 #include "SceneData.h"
 #include "Tweaker.h"
 #include "Game.h"
+#include "Camera.h"
 
-Scene::Scene() :
+Scene::Scene(Camera& camera) :
+    m_camera(camera),
     m_data(std::make_unique<SceneData>()),
     m_game(std::make_unique<Game>())
 {
@@ -23,12 +25,20 @@ void Scene::Tick(float deltatime)
         mesh->Tick();
     }
 
-    for (auto& hull : m_data->hulls)
-    {
-        hull->Tick();
-    }
-
     m_game->Tick(deltatime);
+
+    if (!m_camera.IsFlyCamera())
+    {
+        const float cameraOffset = 20.0f;
+        const glm::vec3 tankPosition = m_game->GetFocusTankPosition();
+        const glm::vec3 cameraPosition(
+            tankPosition.x - cameraOffset,
+            tankPosition.y + cameraOffset,
+            tankPosition.z - cameraOffset);
+
+        m_camera.SetPosition(cameraPosition);
+        m_camera.SetTarget(tankPosition);
+    }
 }
 
 bool Scene::Initialise(BulletPhysicsWorld& physics)

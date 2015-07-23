@@ -1,22 +1,19 @@
 
-- Get world/tank placement
-- Place follow camera in position
-- Get shadows rendering
-
-- Add physics to tanks 
-- Add movement and collisions to tanks
-
+- Player movement/rotation
+- Collision detection/resolution
 - Add firing for tanks
 - Add bullet collisions
 - Add breaking tanks apart
-
 - Add toon text
 - Add AI movement for tanks
-
+- Get background rendering
+- Get lighting matching
+- Get shadows rendering
 - Create sprite quad rendering in screen space
 - Create menus/game over screens/logic
 - Create new unit tests
 
+• Smoothing on toon lines
 • Change 'N' to '0'
 • Update GUI/Menus
 • Transparent shadows

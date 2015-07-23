@@ -11,21 +11,28 @@ struct CollisionEvent
 {    
     /**
     * Checks for equality with another event
-    * @param colEvent The event to check equality with
+    * @param collision The event to check equality with
     * @return whether to two events are equal
     */
-    bool operator==(const CollisionEvent& colEvent)
+    bool operator==(const CollisionEvent& collision)
     {
-        return colEvent.body1 == body1 && colEvent.body2 == body2;
+        return collision.BodyA.RigidBodyID == BodyA.RigidBodyID && 
+               collision.BodyB.RigidBodyID == BodyB.RigidBodyID;
     }
 
-    int shape1 = 0;         ///< The shape of rigid body no.1
-    int shape2 = 0;         ///< The shape of rigid body no.2
-    int body1 = 0;          ///< The internal index of the rigid body no.1
-    int body2 = 0;          ///< The internal index of the rigid body no.2
-    int objindex1 = 0;      ///< The user defined index of rigid body no.1
-    int objindex2 = 0;      ///< The user defined index of rigid body no.2
-    bool ignore = false;    ///< Whether to ignore this collision event or not
-    bool processed = false; ///< Whether the collision has been acknowledged and waiting resolution
-    bool resolved = false;  ///< Whether the collision has been resolved
+    /**
+    * Data for a colliding rigid body
+    */
+    struct CollisionBody
+    {
+        int MeshID = 0;        ///< ID of the graphical mesh for rendering
+        int MeshInstance = 0;  ///< Associated instance of the graphical mesh
+        int RigidBodyID = 0;   ///< The index of the rigid body
+    };
+
+    CollisionBody BodyA;    ///< Collidable body 1
+    CollisionBody BodyB;    ///< Collidable body 2
+    bool Ignore = false;    ///< Whether to ignore this collision event or not
+    bool Processed = false; ///< Whether the collision has been acknowledged and waiting resolution
+    bool Resolved = false;  ///< Whether the collision has been resolved
 };

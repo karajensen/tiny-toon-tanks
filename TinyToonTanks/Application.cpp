@@ -17,7 +17,6 @@
 Application::Application() :
     m_sound(std::make_unique<SoundEngine>()),
     m_camera(std::make_unique<Camera>()),
-    m_scene(std::make_unique<Scene>()),
     m_timer(std::make_unique<Timer>()),
     m_physics(std::make_unique<BulletPhysicsWorld>())
 {
@@ -71,6 +70,7 @@ void Application::Release()
 
 bool Application::Initialise()
 {
+    m_scene = std::make_unique<Scene>(*m_camera);
     m_engine = std::make_unique<OpenGL>(
         m_scene->GetSceneData(), *m_camera);
 

@@ -85,6 +85,17 @@ public:
     void SetTarget(const glm::vec3& position);
 
     /**
+    * Sets the position of the camera
+    * @parm position the Position in world space
+    */
+    void SetPosition(const glm::vec3& position);
+
+    /**
+    * @return whether fly camera is active
+    */
+    bool IsFlyCamera() const;
+
+    /**
     * Rotates the camera according to the mouse direction
     * @param direction The normalized direction of the mouse
     * @param value The amount to rotate the camera

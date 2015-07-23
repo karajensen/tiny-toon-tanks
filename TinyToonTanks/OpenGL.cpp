@@ -195,7 +195,7 @@ void OpenGL::UpdateShader(const glm::mat4& world)
     shader.SendUniform("world", world);
 }
 
-bool OpenGL::UpdateNormalShader(const MeshData& mesh)
+bool OpenGL::UpdateNormalShader(const Mesh& mesh)
 {
     auto index = ShaderID::NORMAL;
     auto& shader = *m_scene.shaders[index];
@@ -212,7 +212,7 @@ bool OpenGL::UpdateNormalShader(const MeshData& mesh)
     return true;
 }
 
-bool OpenGL::UpdateShader(const MeshData& mesh)
+bool OpenGL::UpdateShader(const Mesh& mesh)
 {
     const int index = mesh.ShaderID();
     if (index != NO_INDEX)
@@ -252,7 +252,7 @@ void OpenGL::SendTexture(std::string sampler, int ID)
     if (ID != NO_INDEX)
     {
         auto& shader = *m_scene.shaders[m_selectedShader];
-        shader.SendTexture(sampler, ID);
+        shader.SendTexture(sampler, m_scene.textures[ID]->GetID());
     }
 }
 
