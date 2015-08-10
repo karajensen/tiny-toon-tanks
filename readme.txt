@@ -1,8 +1,8 @@
 
-- Player movement/rotation
-- Collision detection/resolution
-- Add firing for tanks
-- Add bullet collisions
+- Add forced break between firing
+- Moving the bullet
+
+- CollisionSolver: Collision detection/resolution
 - Add breaking tanks apart
 - Add toon text
 - Add AI movement for tanks
@@ -12,6 +12,7 @@
 - Create sprite quad rendering in screen space
 - Create menus/game over screens/logic
 - Create new unit tests
+- Replace code examples
 
 • Smoothing on toon lines
 • Change 'N' to '0'
@@ -28,9 +29,10 @@ www.KaraJensen.com
 RELEASE REQUIREMENTS: Windows 7/8, OpenGL
 BUILD REQUIREMENTS: Windows 7/8, Visual Studio 2013
 
-F1      Toggle debug GUI
-F2-F5   Switch render layers
-ARROWS  Tank movement
-P       Shoot gun
-[       Rotate turrent clockwise
-]       Rotate turrent anti-clockwise
+F1      Reset game
+F2      Toggle debug GUI
+F3-F6   Switch render layers
+WASD    Tank movement/Fly camera movement
+I       Shoot gun
+O       Rotate turrent anti-clockwise
+P       Rotate turrent clockwise

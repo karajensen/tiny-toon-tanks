@@ -18,7 +18,7 @@ public:
     * @param mesh Tankmesh Holds each piece of the tank
     * @param instance Which instance this tank is to access the mesh parts
     */
-    Enemy(TankMesh& tankmesh, int instance);
+    Enemy(MeshGroup& tankmesh, int instance);
 
     /**
     * Adds data for this element to be tweaked by the gui

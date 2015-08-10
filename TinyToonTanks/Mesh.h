@@ -23,6 +23,7 @@ public:
     * Callbacks for rendering a mesh instance
     */
     typedef std::function<void(const glm::mat4&)> RenderInstance;
+    typedef std::function<void(const glm::mat4&,int)> RenderTexturedInstance;
 
     /**
     * Holds information for a single instance of a mesh
@@ -35,6 +36,7 @@ public:
         glm::vec3 scale = glm::vec3(1,1,1);    ///< Scaling of the mesh
         bool render = true;                    ///< Whether to draw the mesh
         bool requiresUpdate = false;           ///< Whether to update the world matrix
+        int texture = -1;                      ///< Texture to use when rendering
     };
 
     /**
@@ -87,6 +89,12 @@ public:
     void Render(RenderInstance renderInstance) const;
 
     /**
+    * Renders the mesh with a texture
+    * @param renderInstance Callback to render a single mesh instance
+    */
+    void RenderTextured(RenderTexturedInstance renderInstance) const;
+
+    /**
     * @return The name of the mesh
     */
     const std::string& Name() const;
@@ -114,7 +122,7 @@ public:
     /**
     * @return The ID for the texture used
     */
-    int GetTexture() const;
+    int GetTexture(int index = 0) const;
 
     /**
     * @return Whether back facing polygons are culled
@@ -127,10 +135,10 @@ public:
     void BackfaceCull(bool value);
 
     /**
-    * Sets the ID of the texture to use
+    * Sets the ID of the texture to use for the overall mesh
     * @param ID The ID of the texture to use
     */
-    void SetTexture(int ID);
+    void SetTexture(int ID, int index = 0);
 
     /**
     * @return the position of the mesh
@@ -185,6 +193,11 @@ public:
     bool IsVisible() const;
 
     /**
+    * @return whether the instance is visible
+    */
+    bool IsVisible(int index) const;
+
+    /**
     * Updates all instance transforms if required
     */
     void UpdateTransforms();
@@ -209,7 +222,6 @@ private:
     */
     void GenerateRadius();
 
-    int m_textureID = -1;                 ///< ID for the diffuse texture
     bool m_backfacecull = true;           ///< Whether backface culling is enabled
     const std::string m_name;             ///< Name of the mesh
     int m_shaderIndex = -1;               ///< Unique Index of the mesh shader to use

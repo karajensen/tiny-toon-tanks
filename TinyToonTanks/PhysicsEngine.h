@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////////////
-// Kara Jensen - mail@karajensen.com - BulletPhysics.h
+// Kara Jensen - mail@karajensen.com - PhysicsEngine.h
 ////////////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -9,28 +9,26 @@
 #include "glm/glm.hpp"
 #include "bullet/include/btBulletCollisionCommon.h"
 #include "bullet/include/btBulletDynamicsCommon.h"
-#include "bullet/include/linearMath/btTransform.h"
 
-struct MeshKey;
 struct RigidBody;
 struct CollisionEvent;
 
 /**
 * Holds the Bullet Physics world for Tiny Toon Tanks
 */
-class BulletPhysicsWorld
+class PhysicsEngine
 {
 public:
 
     /**
     * Constructor
     */
-    BulletPhysicsWorld();
+    PhysicsEngine();
 
     /**
     * Destructor
     */
-    ~BulletPhysicsWorld();
+    ~PhysicsEngine();
 
     /**
     * Tick the simulation
@@ -63,6 +61,13 @@ public:
     * @param group The collision group the rigid body belongs to
     */
     void SetGroup(int rigidBodyID, int group);
+
+    /**
+    * Gets the collision group for the rigid body
+    * @param rigidBody The index for the rigid body
+    * @return The collision group the rigid body belongs to
+    */
+    int GetGroup(int rigidBodyID) const;
 
     /**
     * Get the current velocity of a rigid body
@@ -140,10 +145,12 @@ public:
     /**
     * Sets the linear and angular damping of a rigid body
     * @param rigidbody The index for the rigid body to set
-    * @param linearDamp The damping for linear velocity
-    * @param angDamp The damping for angular velocity
+    * @param linearDamping The damping for linear velocity
+    * @param angularDamping The damping for angular velocity
     */
-    void SetInternalDamping(int rigidBodyID, float linearDamp, float angDamp);
+    void SetInternalDamping(int rigidBodyID, 
+                            float linearDamping, 
+                            float angularDamping);
 
     /**
     * Sets whether the rigid body exists in the simulation world or not
@@ -190,7 +197,7 @@ public:
 
     /**
     * @param hinge The index for the hinge
-    * @return The current rotation for the hinge
+    * @return The current rotation for the hinge in radians
     */
     float GetHingeRotation(int hinge);
 
@@ -298,11 +305,11 @@ private:
     /**
     * Prevent copying
     */
-    BulletPhysicsWorld(const BulletPhysicsWorld&) = delete;
-    BulletPhysicsWorld& operator=(const BulletPhysicsWorld&) = delete;
+    PhysicsEngine(const PhysicsEngine&) = delete;
+    PhysicsEngine& operator=(const PhysicsEngine&) = delete;
 
     float m_sleepvalue = 0.0f;     ///< Threshold before a body is asleep
-    float m_iterations = 1.0f;     ///< Number of iterations for the world
+    int m_iterations = 1;          ///< Number of iterations for the world
     static const int NO_MASK = -1; ///< No collision masking
 
     std::vector<std::unique_ptr<btConvexHullShape>> m_shapes;            ///< Collision shapes avaliable

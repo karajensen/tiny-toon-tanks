@@ -6,7 +6,7 @@
 
 #include <vector>
 
-class BulletPhysicsWorld;
+class PhysicsEngine;
 struct SceneData;
 
 /**
@@ -25,7 +25,7 @@ public:
     * @param physics The physics engine
     * @return Whether the initialization was successful
     */
-    bool Initialise(SceneData& data, BulletPhysicsWorld& physics);
+    bool Initialise(SceneData& data, PhysicsEngine& physics);
 
 private:
 
@@ -78,5 +78,5 @@ private:
     * @note relies on shaders initialised before
     * @return Whether the initialization was successful
     */
-    bool InitialiseHulls(SceneData& data, BulletPhysicsWorld& physics);
+    bool InitialiseHulls(SceneData& data, PhysicsEngine& physics);
 };                     

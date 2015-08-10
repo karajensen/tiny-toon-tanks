@@ -11,9 +11,12 @@
 #include "Postprocessing.h"
 #include "glm/glm.hpp"
 
-class PhysicsUpdater;
-class BulletPhysicsWorld;
+class MovementUpdater;
+class BulletSpawner;
+class GameBuilder;
+class PhysicsEngine;
 class Tweaker;
+class Camera;
 struct SceneData;
 struct GameData;
 
@@ -26,8 +29,9 @@ public:
 
     /**
     * Constructor
+    * @param camera The main view camera
     */
-    Game();
+    Game(Camera& camera);
 
     /**
     * Destructor
@@ -46,17 +50,15 @@ public:
     * @param physics The physics engine
     * @return whether initialisation was successful
     */
-    bool Initialise(SceneData& data, BulletPhysicsWorld& physics);
+    bool Initialise(SceneData& data, PhysicsEngine& physics);
 
     /**
-    * Reloads the scene
+    * Resets the game
+    * @param data Elements of the scene
+    * @param physics The physics engine
+    * @return whether reset was successful
     */
-    void Reload();
-
-    /**
-    * @return the position of the tank in focus
-    */
-    const glm::vec3& GetFocusTankPosition() const;
+    bool Reset(SceneData& data, PhysicsEngine& physics);
 
     /**
     * Adds data for this element to be tweaked by the gui
@@ -64,6 +66,34 @@ public:
     * @param reset Callback to reset the tweak bar
     */
     void AddToTweaker(Tweaker& tweaker, std::function<void(void)> reset);
+
+    /**
+    * Sends a request to fire the player gun
+    */
+    void FirePlayer();
+
+    /**
+    * Sends a request to flip the player over
+    */
+    void FlipPlayer();
+
+    /**
+    * Sends a request to rotate the player
+    * @param left Whether to rotate left or right
+    */
+    void RotatePlayer(bool left);
+
+    /**
+    * Sends a request to rotate the player gun
+    * @param left Whether to rotate left or right
+    */
+    void RotatePlayerGun(bool left);
+
+    /**
+    * Sends a request to move the player
+    * @param forwards Whether to move forwards or backwards
+    */
+    void MovePlayer(bool forwards);
 
 private:
 
@@ -73,7 +103,10 @@ private:
     Game(const Game&) = delete;
     Game& operator=(const Game&) = delete;
 
-    std::unique_ptr<PhysicsUpdater> m_physicsUpdater; ///< Connects the physics to the game
-    std::unique_ptr<GameData> m_data;                 ///< Elements of the game
-    int m_selectedEnemy = 0;                          ///< Currently selected enemy in the tweak bar
+    Camera& m_camera;                             ///< Main camera
+    std::unique_ptr<GameBuilder> m_builder;       ///< Constructs the game
+    std::unique_ptr<MovementUpdater> m_movement;  ///< Controls the movement of the tanks
+    std::unique_ptr<BulletSpawner> m_spawner;     ///< Controls the spawning of bullets
+    std::unique_ptr<GameData> m_data;             ///< Elements of the game
+    int m_selectedEnemy = 0;                      ///< Currently selected enemy in the tweak bar
 }; 

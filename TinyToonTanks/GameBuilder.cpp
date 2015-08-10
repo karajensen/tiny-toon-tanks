@@ -5,7 +5,7 @@
 #include "GameBuilder.h"
 #include "GameData.h"
 #include "SceneData.h"
-#include "BulletPhysics.h"
+#include "PhysicsEngine.h"
 #include "Common.h"
 
 GameBuilder::GameBuilder() = default;
@@ -13,8 +13,11 @@ GameBuilder::~GameBuilder() = default;
 
 bool GameBuilder::Initialise(GameData& gamedata,
                              SceneData& scenedata, 
-                             BulletPhysicsWorld& physics)
+                             PhysicsEngine& physics)
 {
+    m_collisionGroupIndex = 0;
+    physics.ResetSimulation();
+
     return InitialiseWorld(gamedata, scenedata, physics) &&
         InitialiseTanks(gamedata, scenedata, physics) &&
         InitialiseBullets(gamedata, scenedata, physics);
@@ -22,7 +25,7 @@ bool GameBuilder::Initialise(GameData& gamedata,
 
 bool GameBuilder::InitialiseWorld(GameData& gamedata,
                                   SceneData& scenedata, 
-                                  BulletPhysicsWorld& physics)
+                                  PhysicsEngine& physics)
 {
 	const float groundHeight = -60.0f;
 	const float floorHeight = groundHeight + 2.282f;
@@ -68,7 +71,7 @@ bool GameBuilder::InitialiseWorld(GameData& gamedata,
 
 bool GameBuilder::InitialiseTanks(GameData& gamedata,
                                   SceneData& scenedata, 
-                                  BulletPhysicsWorld& physics)
+                                  PhysicsEngine& physics)
 
 {
     const int enemyHealth = 2;
@@ -89,14 +92,25 @@ bool GameBuilder::InitialiseTanks(GameData& gamedata,
     auto& tankp4 = *scenedata.meshes[MeshID::TANKP4];
     auto& tankGun = *scenedata.meshes[MeshID::TANKGUN];
 
-    gamedata.tankMesh = std::make_unique<TankMesh>(
-        tankBody, tankGun, tankp1, tankp2, tankp3, tankp4);
-
-    gamedata.player = std::make_unique<Player>(*gamedata.tankMesh, 0);
-    for (int i = 1; i <= Instance::ENEMIES; ++i)
+    if (!gamedata.tankMesh)
     {
-        gamedata.enemies.push_back(
-            std::make_unique<Enemy>(*gamedata.tankMesh, i));
+        gamedata.tankMesh = std::make_unique<Tank::MeshGroup>(
+            tankBody, tankGun, tankp1, tankp2, tankp3, tankp4);
+
+        gamedata.player = std::make_unique<Player>(*gamedata.tankMesh, 0);
+        for (int i = 1; i <= Instance::ENEMIES; ++i)
+        {
+            gamedata.enemies.push_back(
+                std::make_unique<Enemy>(*gamedata.tankMesh, i));
+        }
+    }
+    else
+    {
+        gamedata.player->Reset();
+        for (auto& enemy : gamedata.enemies)
+        {
+            enemy->Reset();
+        }
     }
 
     int index = 0;
@@ -148,9 +162,9 @@ bool GameBuilder::InitialiseTanks(GameData& gamedata,
     const int tankP4Shape = physics.LoadConvexShape(
         scenedata.hulls[HullID::TANKP4]->VertexPositions());
 
-    auto CreateTankPhysics = [&](int instance) -> TankPhysicsIDs
+    auto CreateTankPhysics = [&](int instance) -> Tank::PhysicsIDs
     {
-        TankPhysicsIDs IDs;
+        Tank::PhysicsIDs IDs;
 
         ++m_collisionGroupIndex;
 
@@ -207,18 +221,33 @@ bool GameBuilder::InitialiseTanks(GameData& gamedata,
 
 bool GameBuilder::InitialiseBullets(GameData& gamedata,
                                     SceneData& scenedata, 
-                                    BulletPhysicsWorld& physics)
+                                    PhysicsEngine& physics)
 
 {
-    const int bulletAmount = 25;
     const int bulletHealth = 2;
     const int bullletDamage = 2;
     const float bulletMass = 0.1f;
+    const bool createBullets = gamedata.bullets.empty();
 
     auto& bullet = *scenedata.meshes[MeshID::BULLET];
+    const int shape = physics.LoadConvexShape(bullet.VertexPositions());
+
     for (int i = 0; i < bullet.Instances(); ++i)
     {
-        bullet.Visible(false, i);
+        if (createBullets)
+        {
+            gamedata.bullets.push_back(
+                std::make_unique<Bullet>(bullet, i));
+        }
+
+        ++m_collisionGroupIndex;
+
+        const int ID = physics.LoadRigidBody(glm::mat4(), shape, 
+            bulletMass, m_collisionGroupIndex, MeshID::BULLET, i, true);
+        
+        gamedata.bullets[i]->SetActive(false);
+        gamedata.bullets[i]->SetPhysicsID(ID);
+        physics.AddToWorld(ID, false);
     }
 
     return true;

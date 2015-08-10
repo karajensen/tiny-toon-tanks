@@ -111,6 +111,13 @@ private:
     /**
     * Updates the shader for a mesh per instance
     * @param world The world matrix for the mesh
+    * @param texture The texture to render for the instance
+    */
+    void UpdateShader(const glm::mat4& world, int texture);
+
+    /**
+    * Updates the shader for a mesh per instance
+    * @param world The world matrix for the mesh
     */
     void UpdateShader(const glm::mat4& world);
 

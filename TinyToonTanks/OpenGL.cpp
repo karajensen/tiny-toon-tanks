@@ -159,26 +159,36 @@ void OpenGL::RenderPostProcessing()
 
 void OpenGL::RenderNormals()
 {
+    auto renderInstance = [this](const glm::mat4& world)
+    {
+        UpdateShader(world); 
+    };
+
     for (const auto& mesh : m_scene.meshes)
     {
         if (mesh->IsVisible() && UpdateNormalShader(*mesh))
         {
             mesh->PreRender();
             EnableSelectedShader();
-            mesh->Render([this](const glm::mat4& world){ UpdateShader(world); });
+            mesh->Render(renderInstance);
         }
     }
 }
 
 void OpenGL::RenderMeshes()
 {
+    auto renderInstance = [this](const glm::mat4& world, int texture)
+    {
+        UpdateShader(world, texture); 
+    };
+
     for (const auto& mesh : m_scene.meshes)
     {
         if (mesh->IsVisible() && UpdateShader(*mesh))
         {
             mesh->PreRender();
             EnableSelectedShader();
-            mesh->Render([this](const glm::mat4& world){ UpdateShader(world); });
+            mesh->RenderTextured(renderInstance);
         }
     }
 }
@@ -189,10 +199,15 @@ void OpenGL::EndRender()
     glfwPollEvents();
 }
 
+void OpenGL::UpdateShader(const glm::mat4& world, int texture)
+{
+    UpdateShader(world);
+    SendTexture("DiffuseSampler", texture);
+}
+
 void OpenGL::UpdateShader(const glm::mat4& world)
 {
-    auto& shader = *m_scene.shaders[m_selectedShader];
-    shader.SendUniform("world", world);
+    m_scene.shaders[m_selectedShader]->SendUniform("world", world);
 }
 
 bool OpenGL::UpdateNormalShader(const Mesh& mesh)
@@ -226,7 +241,6 @@ bool OpenGL::UpdateShader(const Mesh& mesh)
             shader.SendUniform("viewProjection", m_camera.ViewProjection());
         }
 
-        SendTexture("DiffuseSampler", mesh.GetTexture());
         EnableBackfaceCull(mesh.BackfaceCull());
         EnableAlphaBlending(false, false);
         return true;

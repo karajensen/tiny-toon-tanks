@@ -64,7 +64,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
-    <ClCompile Include="BulletPhysics.cpp" />
+    <ClCompile Include="Bullet.cpp" />
+    <ClCompile Include="PhysicsEngine.cpp" />
+    <ClCompile Include="BulletSpawner.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -77,7 +79,7 @@
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="OpenGL.cpp" />
     <ClCompile Include="opengl\gl_core_4_4.c" />
-    <ClCompile Include="PhysicsUpdater.cpp" />
+    <ClCompile Include="MovementUpdater.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Postprocessing.cpp" />
     <ClCompile Include="Quad.cpp" />
@@ -95,7 +97,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
-    <ClInclude Include="BulletPhysics.h" />
+    <ClInclude Include="Bullet.h" />
+    <ClInclude Include="PhysicsEngine.h" />
+    <ClInclude Include="BulletSpawner.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CollisionEvent.h" />
     <ClInclude Include="Common.h" />
@@ -116,7 +120,7 @@
     <ClInclude Include="OpenGL.h" />
     <ClInclude Include="opengl\GL.h" />
     <ClInclude Include="opengl\gl_core_4_4.h" />
-    <ClInclude Include="PhysicsUpdater.h" />
+    <ClInclude Include="MovementUpdater.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Postprocessing.h" />
     <ClInclude Include="Quad.h" />
@@ -129,7 +133,6 @@
     <ClInclude Include="SoundEngine.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Tank.h" />
-    <ClInclude Include="TankData.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Tweaker.h" />

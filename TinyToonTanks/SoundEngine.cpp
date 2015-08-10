@@ -59,6 +59,8 @@ void SoundEngine::PlayMusic(Sound ID)
 
 void SoundEngine::FadeMusic()
 {
+    return;
+
     if (!m_shouldFade)
     {
         return;

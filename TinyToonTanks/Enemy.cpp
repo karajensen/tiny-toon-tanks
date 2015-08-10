@@ -4,7 +4,7 @@
 
 #include "Enemy.h"
 
-Enemy::Enemy(TankMesh& tankmesh, int instance) :
+Enemy::Enemy(MeshGroup& tankmesh, int instance) :
     Tank(tankmesh, instance)
 {  
 }

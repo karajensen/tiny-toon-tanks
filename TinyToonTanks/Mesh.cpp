@@ -99,6 +99,18 @@ void Mesh::Render(RenderInstance renderInstance) const
     }
 }
 
+void Mesh::RenderTextured(RenderTexturedInstance renderInstance) const
+{
+    for (const Instance& instance : m_instances)
+    {
+        if (instance.render)
+        {
+            renderInstance(instance.world, instance.texture);
+            Render();
+        }
+    }
+}
+
 void Mesh::Render() const
 {
     assert(m_initialised);
@@ -125,19 +137,18 @@ const std::vector<unsigned long>& Mesh::Indices() const
     return m_indices;
 }
 
-int Mesh::GetTexture() const
+int Mesh::GetTexture(int index) const
 {
-    return m_textureID;
+    return m_instances[index].texture;
 }
 
-void Mesh::SetTexture(int ID)
+void Mesh::SetTexture(int ID, int index)
 {
     if (ID == -1)
     {
         LogError("Texture ID invalid");
     }
-
-    m_textureID = ID;
+    m_instances[index].texture = ID;
 }
 
 bool Mesh::BackfaceCull() const
@@ -277,6 +288,11 @@ bool Mesh::IsVisible() const
 {
     return std::find_if(m_instances.begin(), m_instances.end(), 
         [](const Instance& instance){ return instance.render; }) != m_instances.end();
+}
+
+bool Mesh::IsVisible(int index) const
+{
+    return m_instances[index].render;
 }
 
 const glm::mat4& Mesh::GetWorld(int index)

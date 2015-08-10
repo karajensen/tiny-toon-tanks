@@ -6,13 +6,9 @@
 #include "SceneBuilder.h"
 #include "SceneData.h"
 #include "Tweaker.h"
-#include "Game.h"
-#include "Camera.h"
 
-Scene::Scene(Camera& camera) :
-    m_camera(camera),
-    m_data(std::make_unique<SceneData>()),
-    m_game(std::make_unique<Game>())
+Scene::Scene() :
+    m_data(std::make_unique<SceneData>())
 {
 }
 
@@ -24,32 +20,12 @@ void Scene::Tick(float deltatime)
     {
         mesh->Tick();
     }
-
-    m_game->Tick(deltatime);
-
-    if (!m_camera.IsFlyCamera())
-    {
-        const float cameraOffset = 20.0f;
-        const glm::vec3 tankPosition = m_game->GetFocusTankPosition();
-        const glm::vec3 cameraPosition(
-            tankPosition.x - cameraOffset,
-            tankPosition.y + cameraOffset,
-            tankPosition.z - cameraOffset);
-
-        m_camera.SetPosition(cameraPosition);
-        m_camera.SetTarget(tankPosition);
-    }
 }
 
-bool Scene::Initialise(BulletPhysicsWorld& physics)
+bool Scene::Initialise(PhysicsEngine& physics)
 {
     SceneBuilder builder;
     if (!builder.Initialise(*m_data, physics))
-    {
-        return false;
-    }
-
-    if (!m_game->Initialise(*m_data, physics))
     {
         return false;
     }
@@ -58,15 +34,8 @@ bool Scene::Initialise(BulletPhysicsWorld& physics)
     return true;
 }
 
-void Scene::Reload()
-{
-    m_game->Reload();
-}
-
 void Scene::AddToTweaker(Tweaker& tweaker, std::function<void(void)> reset)
 {
-    m_game->AddToTweaker(tweaker, reset);
-
     tweaker.SetGroup("PostProcessing");
     m_data->post->AddToTweaker(tweaker);
 
@@ -96,6 +65,11 @@ void Scene::SetPostMap(PostProcessing::Map map)
 }
 
 const SceneData& Scene::GetSceneData() const
+{
+    return *m_data;
+}
+
+SceneData& Scene::GetSceneData()
 {
     return *m_data;
 }

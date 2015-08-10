@@ -142,7 +142,7 @@ namespace Instance
     {
         GROUND = 1,
         TANKS = 6,
-        BULLETS = 100,
+        BULLETS = 50,
         WALLS = 4,
         ENEMIES = 5
     };

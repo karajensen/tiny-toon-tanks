@@ -10,10 +10,8 @@
 #include <functional>
 #include "Postprocessing.h"
 
-class Game;
 class Camera;
-class BulletPhysicsWorld;
-class PhysicsUpdater;
+class PhysicsEngine;
 class Tweaker;
 struct SceneData;
 
@@ -26,9 +24,8 @@ public:
 
     /**
     * Constructor
-    * @param camera The main view camera
     */
-    Scene(Camera& camera);
+    Scene();
 
     /**
     * Destructor
@@ -46,12 +43,7 @@ public:
     * @param physics The physics engine
     * @return whether initialisation was successful
     */
-    bool Initialise(BulletPhysicsWorld& physics);
-
-    /**
-    * Reloads the scene
-    */
-    void Reload();
+    bool Initialise(PhysicsEngine& physics);
 
     /**
     * Adds data for this element to be tweaked by the gui
@@ -71,6 +63,11 @@ public:
     */
     const SceneData& GetSceneData() const;
 
+    /**
+    * @return the data for the scene
+    */
+    SceneData& GetSceneData();
+
 private:
 
     /**
@@ -79,10 +76,7 @@ private:
     Scene(const Scene&) = delete;
     Scene& operator=(const Scene&) = delete;
 
-    Camera& m_camera;                   ///< Main camera
-    std::unique_ptr<Game> m_game;       ///< Game objects build on scene elements
     std::unique_ptr<SceneData> m_data;  ///< Elements of the scene
-
     int m_selectedLight = 0;            ///< Currently selected light in the tweak bar
     int m_selectedMesh = 0;             ///< Currently selected mesh in the tweak bar
     int m_selectedHull = 0;             ///< Currently selected hull in the tweak bar

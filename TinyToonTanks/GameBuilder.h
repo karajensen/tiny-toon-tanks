@@ -6,7 +6,7 @@
 
 #include <vector>
 
-class BulletPhysicsWorld;
+class PhysicsEngine;
 struct SceneData;
 struct GameData;
 
@@ -29,7 +29,7 @@ public:
     */
     bool Initialise(GameData& gamedata, 
                     SceneData& scenedata, 
-                    BulletPhysicsWorld& physics);
+                    PhysicsEngine& physics);
 
 private:
 
@@ -48,7 +48,7 @@ private:
     */
     bool InitialiseWorld(GameData& gamedata,
                          SceneData& scenedata, 
-                         BulletPhysicsWorld& physics);
+                         PhysicsEngine& physics);
 
     /**
     * Initialises the controllable tanks
@@ -59,7 +59,7 @@ private:
     */
     bool InitialiseTanks(GameData& gamedata,
                          SceneData& scenedata, 
-                         BulletPhysicsWorld& physics);
+                         PhysicsEngine& physics);
 
     /**
     * Initialises the tank bullets
@@ -70,7 +70,7 @@ private:
     */
     bool InitialiseBullets(GameData& gamedata,
                            SceneData& scenedata, 
-                           BulletPhysicsWorld& physics);
+                           PhysicsEngine& physics);
 
 private:
 

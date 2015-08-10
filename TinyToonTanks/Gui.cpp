@@ -8,15 +8,17 @@
 #include "Input.h"
 #include "Camera.h"
 #include "Timer.h"
+#include "Game.h"
 #include "Scene.h"
 #include "Glcommon.h"
 #include <sstream>
 
 Gui::Gui(Scene& scene,
+         Game& game,
          Camera& camera,
          Input& input,
          Timer& timer) :
-
+    m_game(game),
     m_camera(camera),
     m_scene(scene),
     m_timer(timer)
@@ -120,6 +122,7 @@ void Gui::FillTweakBar()
     TwRemoveAllVars(m_tweakbar);
     m_tweaker->ClearEntries();
     m_scene.AddToTweaker(*m_tweaker, [this](){ FillTweakBar(); });
+    m_game.AddToTweaker(*m_tweaker, [this](){ FillTweakBar(); });
     m_camera.AddToTweaker(*m_tweaker);
     m_timer.AddToTweaker(*m_tweaker);
 }
