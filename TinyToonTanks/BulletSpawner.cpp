@@ -49,31 +49,31 @@ void BulletSpawner::Tick(float deltatime)
 void BulletSpawner::MoveBullet(Bullet& bullet)
 {
     const int ID = bullet.GetPhysicsID();
-
+    
     m_physics.SetInternalDamping(ID, 0.0f, 0.0f);
     m_physics.SetFriction(ID, 0);
-	m_physics.SetGravity(ID, BulletGravity);
-
+    m_physics.SetGravity(ID, BulletGravity);
+    
     bullet.SetWorld(m_physics.GetTransform(ID));    
     glm::vec3 velocity = m_physics.GetVelocity(ID);
-
+    
     if (glm::vec3_is_zero(velocity))
     {
         bullet.SetActive(false);
         m_physics.AddToWorld(ID, false);
         m_physics.ResetVelocityAndForce(ID);
     }
-	else if(bullet.ShouldGenerateImpulse())
-	{
+    else if(bullet.ShouldGenerateImpulse())
+    {
         bullet.SetGenerateImpulse(false);
         m_physics.ResetVelocityAndForce(ID);
-	    m_physics.AddImpulse(glm::normalize(velocity) * 
-            BulletImpulse, glm::vec3(0, 0, 0), ID);
-	}
+        m_physics.AddImpulse(glm::normalize(velocity) * 
+        BulletImpulse, glm::vec3(0, 0, 0), ID);
+    }
     else // Generate continous force
     {
         m_physics.AddForce(glm::normalize(velocity) * 
-            BulletImpulse, glm::vec3(0, 0, 0), ID);
+        BulletImpulse, glm::vec3(0, 0, 0), ID);
     }
 }
 
@@ -97,7 +97,7 @@ void BulletSpawner::FireBullet(const Tank& tank)
                 const int bulletID = bullet->GetPhysicsID();
                 const int tankID = tank.GetPhysicsIDs().Body;
                 m_physics.SetFriction(bulletID, 0);
-	            m_physics.SetGravity(bulletID, BulletGravity);
+                m_physics.SetGravity(bulletID, BulletGravity);
                 m_physics.SetMotionState(bulletID, world);
                 m_physics.AddToWorld(bulletID, true);
                 m_physics.SetGroup(bulletID, m_physics.GetGroup(tankID));
