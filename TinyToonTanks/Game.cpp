@@ -22,6 +22,12 @@ Game::~Game() = default;
 
 void Game::Tick(float deltatime)
 {
+    m_data->player->Update(deltatime);
+    for (auto& enemy : m_data->enemies)
+    {
+        enemy->Update(deltatime);
+    } 
+
     m_movement->Tick(deltatime);
     m_spawner->Tick(deltatime);
 

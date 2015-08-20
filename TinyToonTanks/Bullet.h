@@ -47,6 +47,16 @@ public:
     */
     void SetWorld(const glm::mat4& world);
 
+    /**
+    * Sets whether to generate a quick impulse or continuous movement
+    */
+    void SetGenerateImpulse(bool generate);
+
+    /**
+    * Gets whether to generate a quick impulse or continuous movement
+    */
+    bool ShouldGenerateImpulse() const;
+
 private:
 
     /**
@@ -55,7 +65,8 @@ private:
     Bullet(const Bullet&) = delete;
     Bullet& operator=(const Bullet&) = delete;
 
-    Mesh& m_mesh;         ///< The graphical mesh for a bullet
-    int m_instance = 0;   ///< Which instance this bullet should update
-    int m_physicsID = 0;  ///< The physics body ID
+    Mesh& m_mesh;                  ///< The graphical mesh for a bullet
+    int m_instance = 0;            ///< Which instance this bullet should update
+    int m_physicsID = 0;           ///< The physics body ID
+    bool m_generateImpuse = false; ///< Whether to generate a quick impulse or continuous movement
 };

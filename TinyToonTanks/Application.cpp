@@ -114,29 +114,29 @@ void Application::InitialiseInput()
         m_game->Reset(m_scene->GetSceneData(), *m_physics);
     });
 
-    m_input->AddCallback(GLFW_KEY_F2, false, [this]()
-    { 
-        m_gui->Toggle(); 
-    });
-
-    m_input->AddCallback(GLFW_KEY_F3, true, [this]()
+    m_input->AddCallback(GLFW_KEY_F2, true, [this]()
     { 
         m_scene->SetPostMap(PostProcessing::FINAL_MAP); 
     });
 
-    m_input->AddCallback(GLFW_KEY_F4, true, [this]()
+    m_input->AddCallback(GLFW_KEY_F3, true, [this]()
     { 
         m_scene->SetPostMap(PostProcessing::SCENE_MAP); 
     });
 
-    m_input->AddCallback(GLFW_KEY_F5, true, [this]()
+    m_input->AddCallback(GLFW_KEY_F4, true, [this]()
     { 
         m_scene->SetPostMap(PostProcessing::NORMAL_MAP); 
     });
 
-    m_input->AddCallback(GLFW_KEY_F6, true, [this]()
+    m_input->AddCallback(GLFW_KEY_F5, true, [this]()
     { 
         m_scene->SetPostMap(PostProcessing::TOONLINE_MAP); 
+    });
+
+    m_input->AddCallback(GLFW_KEY_T, false, [this]()
+    { 
+        m_gui->Toggle(); 
     });
 
     m_input->AddCallback(GLFW_KEY_W, true, [this]()

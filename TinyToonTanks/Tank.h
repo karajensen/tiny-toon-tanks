@@ -96,6 +96,12 @@ public:
     virtual void AddToTweaker(Tweaker& tweaker);
 
     /**
+    * Updates the tank
+    * @param deltatime The time passed between ticks in seconds
+    */
+    void Update(float deltatime);
+
+    /**
     * @return the position of the tank
     */
     const glm::vec3& GetPosition() const;
@@ -131,7 +137,8 @@ public:
     int GetInstance() const;
 
     /**
-    * Sends a request to fire the  gun
+    * Sends a request to fire the gun
+    * @note requests are time restricted
     */
     void Fire();
 
@@ -234,4 +241,5 @@ protected:
     float m_linearDamping = 1.0f;           ///< Damping value for linear movement
     float m_rotationalDamping = 1.0f;       ///< Damping value for rotational movement
     float m_gunDamping = 1.0f;              ///< Damping value for the gun rotation
+    float m_fireGunTime = 0.0f;             ///< Time passed since a fire gun request
 };

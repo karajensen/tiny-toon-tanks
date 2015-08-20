@@ -9,6 +9,14 @@
 namespace glm
 {
     /**
+    * Returns if the vector is a zero vector
+    */
+    inline bool vec3_is_zero(const glm::vec3& vec)
+    {
+        return vec.x == 0.0f && vec.y == 0.0f && vec.z == 0.0f;
+    }
+
+    /**
     * Retrieves position from the matrix
     */
     inline glm::vec3 matrix_get_position(const glm::mat4& matrix)

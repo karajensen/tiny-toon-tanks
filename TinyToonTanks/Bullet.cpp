@@ -11,6 +11,16 @@ Bullet::Bullet(Mesh& mesh, int instance) :
 {  
 }
 
+void Bullet::SetGenerateImpulse(bool generate)
+{
+    m_generateImpuse = generate;
+}
+
+bool Bullet::ShouldGenerateImpulse() const
+{
+    return m_generateImpuse;
+}
+
 void Bullet::SetPhysicsID(int ID)
 {
     m_physicsID = ID;

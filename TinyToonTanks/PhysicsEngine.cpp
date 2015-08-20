@@ -53,7 +53,6 @@ bool PhysicsEngine::CollisionFilterCallback::needBroadphaseCollision(btBroadphas
     {
         //groups: members of a group don't collide with each other
         return false;
-
     } 
     else if(proxy0->m_collisionFilterMask != PhysicsEngine::NO_MASK ||
             proxy1->m_collisionFilterMask != PhysicsEngine::NO_MASK)

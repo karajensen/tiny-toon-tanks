@@ -1,7 +1,4 @@
 
-- Add forced break between firing
-- Moving the bullet
-
 - CollisionSolver: Collision detection/resolution
 - Add breaking tanks apart
 - Add toon text
@@ -30,9 +27,9 @@ RELEASE REQUIREMENTS: Windows 7/8, OpenGL
 BUILD REQUIREMENTS: Windows 7/8, Visual Studio 2013
 
 F1      Reset game
-F2      Toggle debug GUI
-F3-F6   Switch render layers
+F2-F5   Switch render layers
 WASD    Tank movement/Fly camera movement
+T       Toggle debug Tweak bar
 I       Shoot gun
 O       Rotate turrent anti-clockwise
 P       Rotate turrent clockwise

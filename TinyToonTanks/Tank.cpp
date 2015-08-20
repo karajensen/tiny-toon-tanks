@@ -7,6 +7,11 @@
 #include "Tweaker.h"
 #include <algorithm>
 
+namespace
+{
+    float FIRE_GUN_DELAY = 0.5f; ///< Seconds to delay before allowing firing again
+}
+
 Tank::Tank(MeshGroup& tankmesh, int instance) :
     m_instance(instance),
     m_tankmesh(tankmesh)
@@ -24,6 +29,12 @@ void Tank::Reset()
     m_linearDamping = 1.0f; 
     m_rotationalDamping = 1.0f; 
     m_gunDamping = 1.0f;
+    m_fireGunTime = 0.0f;
+}
+
+void Tank::Update(float deltatime)
+{
+    m_fireGunTime = std::max(0.0f, m_fireGunTime - deltatime);
 }
 
 int Tank::GetInstance() const
@@ -61,7 +72,11 @@ bool Tank::IsAlive() const
 
 void Tank::Fire()
 {
-    m_movement |= FIRE;
+    if (m_fireGunTime == 0.0f)
+    {
+        m_movement |= FIRE;
+        m_fireGunTime = FIRE_GUN_DELAY;
+    }
 }
 
 void Tank::Flip()
