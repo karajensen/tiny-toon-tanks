@@ -8,23 +8,25 @@
 #include "Conversions.h"
 #include <algorithm>
 
-PhysicsEngine::PhysicsEngine()
+PhysicsEngine::PhysicsEngine() :
+    m_collisionConfig(std::make_unique<btDefaultCollisionConfiguration>()),
+    m_overlappingPairCache(std::make_unique<btDbvtBroadphase>()),
+    m_solver(std::make_unique<btSequentialImpulseConstraintSolver>()),
+    m_filterCallback(std::make_unique<CollisionFilterCallback>())
 {
-    m_collisionConfig = std::make_unique<btDefaultCollisionConfiguration>();
-    m_overlappingPairCache = std::make_unique<btDbvtBroadphase>();
-    m_solver = std::make_unique<btSequentialImpulseConstraintSolver>();
-    m_filterCallback = std::make_unique<CollisionFilterCallback>();
     m_dispatcher = std::make_unique<btCollisionDispatcher>(m_collisionConfig.get());
 
-    m_world = std::make_unique<btDiscreteDynamicsWorld>(m_dispatcher.get(),
-        m_overlappingPairCache.get(), m_solver.get(), m_collisionConfig.get());
+    m_world = std::make_unique<btDiscreteDynamicsWorld>(
+        m_dispatcher.get(),
+        m_overlappingPairCache.get(), 
+        m_solver.get(), 
+        m_collisionConfig.get());
 
     m_world->getPairCache()->setOverlapFilterCallback(m_filterCallback.get());
 }
 
 PhysicsEngine::~PhysicsEngine()
 {
-    ResetSimulation();
 }
 
 void PhysicsEngine::ResetSimulation()
@@ -47,7 +49,7 @@ void PhysicsEngine::ResetSimulation()
 }
 
 bool PhysicsEngine::CollisionFilterCallback::needBroadphaseCollision(btBroadphaseProxy* proxy0, 
-                                                                          btBroadphaseProxy* proxy1) const
+                                                                     btBroadphaseProxy* proxy1) const
 {
     if(proxy0->m_collisionFilterGroup == proxy1->m_collisionFilterGroup)
     {
@@ -131,7 +133,9 @@ int PhysicsEngine::GetCollisionAmount() const
     return m_dispatcher->getNumManifolds();
 }
 
-void PhysicsEngine::AddForce(const glm::vec3& force, const glm::vec3& position, int rigidBodyID)
+void PhysicsEngine::AddForce(const glm::vec3& force, 
+                             const glm::vec3& position, 
+                             int rigidBodyID)
 {
     if(!m_bodies[rigidBodyID]->Body->isActive())
     {
@@ -146,7 +150,9 @@ float PhysicsEngine::GetFriction(int rigidBodyID) const
     return m_bodies[rigidBodyID]->Body->getFriction();
 }
 
-void PhysicsEngine::AddImpulse(const glm::vec3& force, const glm::vec3& position, int rigidBodyID)
+void PhysicsEngine::AddImpulse(const glm::vec3& force, 
+                               const glm::vec3& position, 
+                               int rigidBodyID)
 {
     if(!m_bodies[rigidBodyID]->Body->isActive())
     {
@@ -157,9 +163,9 @@ void PhysicsEngine::AddImpulse(const glm::vec3& force, const glm::vec3& position
 }
 
 void PhysicsEngine::SetVelocity(const glm::vec3& velocity,
-                                     int rigidBodyID, 
-                                     float linearDamping, 
-                                     float angularDamping)
+                                int rigidBodyID, 
+                                float linearDamping, 
+                                float angularDamping)
 {
     if(!m_bodies[rigidBodyID]->Body->isActive())
     {
@@ -258,17 +264,18 @@ void PhysicsEngine::Tick(float timestep)
 }
 
 int PhysicsEngine::CreateHinge(int rigidBodyID1, 
-                                    int rigidBodyID2, 
-                                    const glm::vec3& pos1local, 
-                                    const glm::vec3& pos2local, 
-                                    const glm::vec3& axis1,   
-                                    const glm::vec3& axis2, 
-                                    float breakthreshold)
+                               int rigidBodyID2, 
+                               const glm::vec3& pos1local, 
+                               const glm::vec3& pos2local, 
+                               const glm::vec3& axis1,   
+                               const glm::vec3& axis2, 
+                               float breakthreshold)
 {   
     const int index = m_hinges.size();
 
     m_hinges.push_back(std::unique_ptr<btHingeConstraint>(new btHingeConstraint(
-                *m_bodies[rigidBodyID1]->Body, *m_bodies[rigidBodyID2]->Body,
+                *m_bodies[rigidBodyID1]->Body, 
+                *m_bodies[rigidBodyID2]->Body,
                 Conversion::Convert(pos1local),
                 Conversion::Convert(pos2local),
                 Conversion::Convert(axis1),
@@ -334,13 +341,13 @@ int PhysicsEngine::LoadConvexShape(std::vector<glm::vec3> vertices)
 }
 
 int PhysicsEngine::LoadRigidBody(const glm::mat4& matrix, 
-                                      int shape, 
-                                      float mass, 
-                                      int group, 
-                                      int meshID,
-                                      int meshInstance,
-                                      bool createEvents, 
-                                      const glm::vec3 inertia)
+                                 int shape, 
+                                 float mass, 
+                                 int group, 
+                                 int meshID,
+                                 int meshInstance,
+                                 bool createEvents, 
+                                 const glm::vec3 inertia)
 {
     btTransform transform = Conversion::Convert(matrix);
 

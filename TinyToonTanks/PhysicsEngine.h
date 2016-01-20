@@ -50,8 +50,9 @@ public:
     int GetCollisionAmount() const;
     
     /**
+    * Get the friction for the rigid body
     * @param rigidBody The index for the rigid body
-    * @return the friction of the given rigid body
+    * @return the friction of the rigid body
     */
     float GetFriction(int rigidBodyID) const;
 
@@ -70,7 +71,7 @@ public:
     int GetGroup(int rigidBodyID) const;
 
     /**
-    * Get the current velocity of a rigid body
+    * Get the current velocity of the rigid body
     * @param rigidBody The index for the rigid body
     * @return The velocity of the rigid body
     */
@@ -241,7 +242,6 @@ public:
                     const glm::vec3& axis2, 
                     float breakthreshold = 0.0f);
 
-
     /**
     * Load a custom shape from an array of vertices
     * @param vertices The array of vertex positions
@@ -308,9 +308,9 @@ private:
     PhysicsEngine(const PhysicsEngine&) = delete;
     PhysicsEngine& operator=(const PhysicsEngine&) = delete;
 
-    float m_sleepvalue = 0.0f;     ///< Threshold before a body is asleep
-    int m_iterations = 1;          ///< Number of iterations for the world
-    static const int NO_MASK = -1; ///< No collision masking
+    float m_sleepvalue = 0.0f;      ///< Threshold before a body is asleep
+    int m_iterations = 1;           ///< Number of iterations for the world
+    static const int NO_MASK = -1;  ///< No collision masking
 
     std::vector<std::unique_ptr<btConvexHullShape>> m_shapes;            ///< Collision shapes avaliable
     std::vector<std::unique_ptr<RigidBody>> m_bodies;                    ///< Rigid bodies that exist in the scene
