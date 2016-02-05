@@ -1,4 +1,5 @@
 
+- Fix weird normal map
 - CollisionSolver: Collision detection/resolution
 - Add breaking tanks apart
 - Add toon text
@@ -8,13 +9,12 @@
 - Get shadows rendering
 - Create sprite quad rendering in screen space
 - Create menus/game over screens/logic
-- Create new unit tests
-- Replace code examples
 
 • Smoothing on toon lines
 • Change 'N' to '0'
 • Update GUI/Menus
 • Transparent shadows
+• Smooth over mesh edges
 
 =================================================================
 TINY TOON TANKS
@@ -23,8 +23,9 @@ mail@KaraJensen.com
 www.KaraJensen.com
 =================================================================
 
-RELEASE REQUIREMENTS: Windows 7/8, OpenGL
-BUILD REQUIREMENTS: Windows 7/8, Visual Studio 2013
+RELEASE REQUIREMENTS: Windows 8+, OpenGL
+BUILD REQUIREMENTS: Windows 8+, Visual Studio 2015
+LIBRARIES: bullet3-2.83.7
 
 F1      Reset game
 F2-F5   Switch render layers

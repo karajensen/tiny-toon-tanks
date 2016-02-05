@@ -27,6 +27,12 @@ PhysicsEngine::PhysicsEngine() :
 
 PhysicsEngine::~PhysicsEngine()
 {
+	m_world.reset();
+	m_dispatcher.reset();
+	m_filterCallback.reset();
+	m_solver.reset();
+	m_overlappingPairCache.reset();
+	m_collisionConfig.reset();
 }
 
 void PhysicsEngine::ResetSimulation()

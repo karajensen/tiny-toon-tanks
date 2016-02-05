@@ -10,10 +10,14 @@
 *.mll
 *.vcxproj.user
 *.dll.metagen
+*.iobj
+*.ipdb
 ipch/
 html/
 Graphics/
 Versions/
+TinyToonTanks.caw
+TinyToonTanks.VC.opendb
 TinyToonTanks/._LOG.txt
 TinyToonTanks/Debug/
 TinyToonTanks/Release/
