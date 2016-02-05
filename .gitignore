@@ -5,7 +5,6 @@
 *.exe
 *.pdb
 *.ilk
-*.lib
 *.exp
 *.mll
 *.vcxproj.user
