@@ -4,7 +4,7 @@
 
 #version 150
 
-out vec4 out_Color;
+out vec4 out_Color[SCENE_TEXTURES];
 
 in vec2 ex_UVs;
 in vec3 ex_PositionWorld;
@@ -47,6 +47,8 @@ void main(void)
         diffuse += lightDiffuse[i] * lightAmount;
     }
 
-    out_Color.rgb = diffuseTex.rgb * diffuse;
-    out_Color.a = 1.0;
+	out_Color[ID_COLOUR].rgb = diffuseTex.rgb * diffuse;
+	out_Color[ID_COLOUR].a = 1.0;
+	out_Color[ID_NORMAL].rgb = normal;
+	out_Color[ID_NORMAL].a = 1.0;
 }

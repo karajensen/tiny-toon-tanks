@@ -90,23 +90,11 @@ private:
     void RenderMeshes();
 
     /**
-    * Renders the normals for the scene
-    */
-    void RenderNormals();
-
-    /**
     * Updates and switches to main shader the mesh requires
     * @param mesh The mesh currently rendering
     * @return whether the mesh can now be rendered
     */
     bool UpdateShader(const Mesh& mesh);
-
-    /**
-    * Updates and switches to the normal shader
-    * @param mesh The mesh currently rendering
-    * @return whether the mesh can now be rendered
-    */
-    bool UpdateNormalShader(const Mesh& mesh);
 
     /**
     * Updates the shader for a mesh per instance
@@ -172,6 +160,5 @@ private:
 
     std::unique_ptr<Quad> m_quad;                 ///< Post processing quad
     std::unique_ptr<RenderTarget> m_backBuffer;   ///< Back buffer target
-    std::unique_ptr<RenderTarget> m_sceneTarget;  ///< Main scene target
-    std::unique_ptr<RenderTarget> m_normalTarget; ///< Scene normal target
+    std::unique_ptr<RenderTarget> m_sceneTarget;  ///< Main scene target, includes the normal texture
 };

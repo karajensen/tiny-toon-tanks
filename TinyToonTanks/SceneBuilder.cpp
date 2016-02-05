@@ -45,7 +45,10 @@ bool SceneBuilder::InitialiseShaderConstants(SceneData& data)
         std::make_pair("MAX_LIGHTS", std::to_string(LightID::MAX)),
         std::make_pair("WINDOW_WIDTH", std::to_string(WINDOW_WIDTH)),
         std::make_pair("WINDOW_HEIGHT", std::to_string(WINDOW_HEIGHT)),
-        std::make_pair("SAMPLES", std::to_string(MULTISAMPLING_COUNT))
+        std::make_pair("SAMPLES", std::to_string(MULTISAMPLING_COUNT)),
+		std::make_pair("SCENE_TEXTURES", std::to_string(SCENE_TEXTURES)),
+		std::make_pair("ID_COLOUR", std::to_string(ID_COLOUR)),
+		std::make_pair("ID_NORMAL", std::to_string(ID_NORMAL))
     };
 
     Shader::InitialiseConstants(constants);
@@ -63,7 +66,6 @@ bool SceneBuilder::InitialiseShaders(SceneData& data)
     bool success = true;
     data.shaders.resize(ShaderID::MAX);
 
-    success &= Initialise("normal", ShaderID::NORMAL);
     success &= Initialise("proxy", ShaderID::PROXY);
     success &= Initialise("shadow", ShaderID::SHADOW);
     success &= Initialise("toon", ShaderID::TOON);

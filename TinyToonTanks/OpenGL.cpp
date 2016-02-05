@@ -32,7 +32,6 @@ void OpenGL::Release()
     // All resources must be destroyed before the engine
     m_quad.reset();
     m_sceneTarget.reset();
-    m_normalTarget.reset();
     m_backBuffer.reset();
 
     if (m_window)
@@ -85,12 +84,9 @@ bool OpenGL::Initialise()
     glDepthMask(GL_TRUE);
 
     m_backBuffer = std::make_unique<RenderTarget>("BackBuffer");
-    m_sceneTarget = std::make_unique<RenderTarget>("Scene", 1, true);
-    m_normalTarget = std::make_unique<RenderTarget>("Normal", 1, false);
+	m_sceneTarget = std::make_unique<RenderTarget>("Scene", SCENE_TEXTURES, true);
 
-    if (!m_backBuffer->Initialise() ||
-        !m_sceneTarget->Initialise() ||
-        !m_normalTarget->Initialise())
+    if (!m_backBuffer->Initialise() || !m_sceneTarget->Initialise())
     {
         LogError("OpenGL: Failed to initialise render targets");
         return false;
@@ -125,9 +121,6 @@ void OpenGL::RenderScene()
     m_sceneTarget->SetActive();
     RenderMeshes();
 
-    m_normalTarget->SetActive();
-    RenderNormals();
-
     m_backBuffer->SetActive();
     RenderPostProcessing();
 }
@@ -146,33 +139,14 @@ void OpenGL::RenderPostProcessing()
     shader.SendUniform("normalMask", post.Mask(PostProcessing::NORMAL_MAP));
     shader.SendUniform("toonlineMask", post.Mask(PostProcessing::TOONLINE_MAP));
 
-    shader.SendTexture("SceneSampler", *m_sceneTarget);
-    shader.SendTexture("NormalSampler", *m_normalTarget);
+    shader.SendTexture("SceneSampler", *m_sceneTarget, ID_COLOUR);
+	shader.SendTexture("SceneSampler", *m_sceneTarget, ID_NORMAL);
 
     m_quad->PreRender();
     EnableSelectedShader();
     m_quad->Render();
 
-    shader.ClearTexture("SceneSampler", *m_sceneTarget);
-    shader.ClearTexture("NormalSampler", *m_normalTarget);
-}
-
-void OpenGL::RenderNormals()
-{
-    auto renderInstance = [this](const glm::mat4& world)
-    {
-        UpdateShader(world); 
-    };
-
-    for (const auto& mesh : m_scene.meshes)
-    {
-        if (mesh->IsVisible() && UpdateNormalShader(*mesh))
-        {
-            mesh->PreRender();
-            EnableSelectedShader();
-            mesh->Render(renderInstance);
-        }
-    }
+	shader.ClearTexture("SceneSampler", *m_sceneTarget);
 }
 
 void OpenGL::RenderMeshes()
@@ -208,23 +182,6 @@ void OpenGL::UpdateShader(const glm::mat4& world, int texture)
 void OpenGL::UpdateShader(const glm::mat4& world)
 {
     m_scene.shaders[m_selectedShader]->SendUniform("world", world);
-}
-
-bool OpenGL::UpdateNormalShader(const Mesh& mesh)
-{
-    auto index = ShaderID::NORMAL;
-    auto& shader = *m_scene.shaders[index];
-
-    if(index != m_selectedShader)
-    {
-        SetSelectedShader(index);
-        shader.SendUniform("viewProjection", m_camera.ViewProjection());
-    }
-
-    EnableBackfaceCull(mesh.BackfaceCull());
-    EnableAlphaBlending(false, false);
-
-    return true;
 }
 
 bool OpenGL::UpdateShader(const Mesh& mesh)

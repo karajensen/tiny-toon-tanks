@@ -11,6 +11,9 @@
 #include "logger.h"
 
 const int MULTISAMPLING_COUNT = 4;
+const int SCENE_TEXTURES = 2;
+const int ID_COLOUR = 0;
+const int ID_NORMAL = 1;
 
 /**
 * OpenGL call checking
