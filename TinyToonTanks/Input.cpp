@@ -58,16 +58,16 @@ void Input::Update()
 
     for(auto& key : m_keys)
     {
-        const bool pressed = glfwGetKey(&m_window, key.first) == GLFW_PRESS;
-        UpdateKey(pressed, key.second.state);
+        const bool pressed = glfwGetKey(&m_window, key.key) == GLFW_PRESS;
+        UpdateKey(pressed, key.state);
 
-        const bool keyDown = key.second.continuous ? 
-            IsKeyDownContinous(key.second.state) : 
-            IsKeyDown(key.second.state);
+        const bool keyDown = key.continuous ? 
+            IsKeyDownContinous(key.state) : 
+            IsKeyDown(key.state);
 
-        if(keyDown && key.second.onKeyFn != nullptr)
+        if(keyDown && key.onKeyFn != nullptr)
         {
-            key.second.onKeyFn();
+            key.onKeyFn();
         }
     }
 }
@@ -110,9 +110,11 @@ bool Input::IsKeyDown(unsigned int& state)
 
 void Input::AddCallback(unsigned int key, bool onContinous, KeyFn onKeyFn)
 {
-    m_keys[key].state = KEY_NONE;
-    m_keys[key].continuous = onContinous;
-    m_keys[key].onKeyFn = onKeyFn;
+	m_keys.push_back(Key());
+    m_keys.back().state = KEY_NONE;
+	m_keys.back().continuous = onContinous;
+	m_keys.back().onKeyFn = onKeyFn;
+	m_keys.back().key = key;
 }
 
 const glm::vec2& Input::GetMouseDirection() const

@@ -123,6 +123,7 @@ private:
     */
     struct Key
     {
+		unsigned int key = 0;     ///< The ID of the key
         unsigned int state = 0;   ///< Current state of the key
         KeyFn onKeyFn = nullptr;  ///< Function to call if key is down
         bool continuous = false;  ///< Whether key should look at continous or not
@@ -139,11 +140,9 @@ private:
         MOVED = 4
     };
 
-    typedef std::unordered_map<unsigned int, Key> KeyMap;
-
-    KeyMap m_keys;                        ///< Key states and callbacks
+    std::vector<Key> m_keys;              ///< Key states and callbacks
     GLFWwindow& m_window;                 ///< The window to get input from
-    glm::vec2 m_mouseDirection;              ///< Direction mouse has moved (normalized) between ticks
+    glm::vec2 m_mouseDirection;           ///< Direction mouse has moved (normalized) between ticks
     int m_mouseX = 0;                     ///< X screen coordinate of the mouse
     int m_mouseY = 0;                     ///< Y screen coordinate of the mouse
     bool m_leftMousePressed = false;      ///< Whether the mouse is currently being pressed

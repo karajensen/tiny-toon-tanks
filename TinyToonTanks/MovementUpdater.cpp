@@ -12,12 +12,12 @@
 
 namespace
 {
-    const float ForwardForce = 1000.0f;        ///< Forward force to add for movement
-    const float RotationForceFar = 250.0f;     ///< Force to apply at the far corners
-    const float RotationForceClose = 50.0f;    ///< Force to apply at the near corners
+    const float ForwardForce = 3000.0f;        ///< Forward force to add for movement
+    const float RotationForceFar = 500.0f;     ///< Force to apply at the far corners
+    const float RotationForceClose = 100.0f;   ///< Force to apply at the near corners
     const float GunRotation = 6000.0f;         ///< Amount to apply for rotating the gun
-    const float LinearDamping = 0.0003f;       ///< Linear damping amount for movement
-    const float RotationalDamping = 0.000015f; ///< Rotational damping amount for rotating
+    const float LinearDamping = 0.0005f;       ///< Linear damping amount for movement
+    const float RotationalDamping = 0.00002f;  ///< Rotational damping amount for rotating
     const float GunRotationDamping = 0.5f;     ///< Rotation damping for the gun hinge
 
     /**

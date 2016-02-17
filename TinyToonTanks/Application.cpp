@@ -139,60 +139,72 @@ void Application::InitialiseInput()
         m_gui->Toggle(); 
     });
 
-    m_input->AddCallback(GLFW_KEY_W, true, [this]()
-    { 
-        const float deltatime = m_timer->GetDeltaTime();
-        if (m_camera->IsFlyCamera())
-        {
-            m_camera->Forward(-deltatime); 
-        }
-        m_game->MovePlayer(true);
-    });
+	m_input->AddCallback(GLFW_KEY_UP, true, [this]()
+	{
+		if (m_camera->IsFlyCamera())
+		{
+			m_camera->Forward(-m_timer->GetDeltaTime());
+		}
+	});
+
+	m_input->AddCallback(GLFW_KEY_DOWN, true, [this]()
+	{
+		if (m_camera->IsFlyCamera())
+		{
+			m_camera->Forward(m_timer->GetDeltaTime());
+		}
+	});
+
+	m_input->AddCallback(GLFW_KEY_LEFT, true, [this]()
+	{
+		if (m_camera->IsFlyCamera())
+		{
+			m_camera->Right(m_timer->GetDeltaTime());
+		}
+	});
+
+	m_input->AddCallback(GLFW_KEY_RIGHT, true, [this]()
+	{
+		if (m_camera->IsFlyCamera())
+		{
+			m_camera->Right(-m_timer->GetDeltaTime());
+		}
+	});
+
+	m_input->AddCallback(GLFW_KEY_Q, true, [this]()
+	{
+		if (m_camera->IsFlyCamera())
+		{
+			m_camera->Up(-m_timer->GetDeltaTime());
+		}
+	});
+
+	m_input->AddCallback(GLFW_KEY_E, true, [this]()
+	{
+		if (m_camera->IsFlyCamera())
+		{
+			m_camera->Up(m_timer->GetDeltaTime());
+		}
+	});
+
+	m_input->AddCallback(GLFW_KEY_W, true, [this]()
+	{
+		m_game->MovePlayer(true);
+	});
 
     m_input->AddCallback(GLFW_KEY_S, true, [this]()
     { 
-        const float deltatime = m_timer->GetDeltaTime();
-        if (m_camera->IsFlyCamera())
-        {
-            m_camera->Forward(deltatime);
-        }
         m_game->MovePlayer(false);
     });
 
     m_input->AddCallback(GLFW_KEY_D, true, [this]()
     { 
-        const float deltatime = m_timer->GetDeltaTime();
-        if (m_camera->IsFlyCamera())
-        {
-            m_camera->Right(deltatime);
-        }
         m_game->RotatePlayer(false);
     });
 
     m_input->AddCallback(GLFW_KEY_A, true, [this]()
     { 
-        const float deltatime = m_timer->GetDeltaTime();
-        if (m_camera->IsFlyCamera())
-        {
-            m_camera->Right(-deltatime);
-        }
         m_game->RotatePlayer(true);
-    });
-
-    m_input->AddCallback(GLFW_KEY_Q, true, [this]()
-    { 
-        if (m_camera->IsFlyCamera())
-        {
-            m_camera->Up(-m_timer->GetDeltaTime());
-        }
-    });
-
-    m_input->AddCallback(GLFW_KEY_E, true, [this]()
-    { 
-        if (m_camera->IsFlyCamera())
-        {
-            m_camera->Up(m_timer->GetDeltaTime());
-        }
     });
 
     m_input->AddCallback(GLFW_KEY_I, true, [this]()

@@ -140,13 +140,14 @@ void OpenGL::RenderPostProcessing()
     shader.SendUniform("toonlineMask", post.Mask(PostProcessing::TOONLINE_MAP));
 
     shader.SendTexture("SceneSampler", *m_sceneTarget, ID_COLOUR);
-	shader.SendTexture("SceneSampler", *m_sceneTarget, ID_NORMAL);
+	shader.SendTexture("NormalSampler", *m_sceneTarget, ID_NORMAL);
 
     m_quad->PreRender();
     EnableSelectedShader();
     m_quad->Render();
 
 	shader.ClearTexture("SceneSampler", *m_sceneTarget);
+	shader.ClearTexture("NormalSampler", *m_sceneTarget);
 }
 
 void OpenGL::RenderMeshes()

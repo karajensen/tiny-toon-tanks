@@ -1,5 +1,4 @@
 
-- Fix weird normal map
 - CollisionSolver: Collision detection/resolution
 - Add breaking tanks apart
 - Add toon text
