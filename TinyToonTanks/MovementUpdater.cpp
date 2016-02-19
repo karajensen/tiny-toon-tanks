@@ -23,14 +23,14 @@ namespace
     /**
     * Offsets from the tank center to apply movement forces to
     */
-	const glm::vec3 BackTopLeft(-1.709f, 1.926f, 3.233f);
-	const glm::vec3 BackTopRight(1.709f, 1.926f, 3.233f);
-	const glm::vec3 BackBotLeft(-1.709f, -1.076f, 3.233f);
-	const glm::vec3 BackBotRight(1.709f, -1.076f, 3.233f);
-	const glm::vec3 FrontTopLeft(-1.709f, 1.926f, -3.238f);
-	const glm::vec3 FrontTopRight(1.709f, 1.926f, -3.238f);
-	const glm::vec3 FrontBotLeft(-1.709f, -1.076f, -3.238f);
-	const glm::vec3 FrontBotRight(1.709f, -1.076f, -3.238f);
+    const glm::vec3 BackTopLeft(-1.709f, 1.926f, 3.233f);
+    const glm::vec3 BackTopRight(1.709f, 1.926f, 3.233f);
+    const glm::vec3 BackBotLeft(-1.709f, -1.076f, 3.233f);
+    const glm::vec3 BackBotRight(1.709f, -1.076f, 3.233f);
+    const glm::vec3 FrontTopLeft(-1.709f, 1.926f, -3.238f);
+    const glm::vec3 FrontTopRight(1.709f, 1.926f, -3.238f);
+    const glm::vec3 FrontBotLeft(-1.709f, -1.076f, -3.238f);
+    const glm::vec3 FrontBotRight(1.709f, -1.076f, -3.238f);
 }
 
 MovementUpdater::MovementUpdater(PhysicsEngine& physics, 
@@ -126,7 +126,7 @@ void MovementUpdater::UpdateTankMovement(float deltatime, Tank& tank)
         const glm::vec3 forceClose = right * RotationForceClose * direction;
         const glm::vec3 forceFar = right * RotationForceFar * direction;
 
-		m_physics.AddForce(rotateRight ? forceFar : forceClose, basis * FrontBotLeft, rb);
+        m_physics.AddForce(rotateRight ? forceFar : forceClose, basis * FrontBotLeft, rb);
         m_physics.AddForce(rotateRight ? forceClose : forceFar, basis * FrontBotRight, rb);
         m_physics.AddForce(rotateRight ? forceFar : forceClose, basis * FrontTopLeft, rb);
         m_physics.AddForce(rotateRight ? forceClose : forceFar, basis * FrontTopRight, rb);
@@ -146,19 +146,19 @@ void MovementUpdater::UpdateGunMovement(float deltatime, Tank& tank)
     const bool rotateLeft = (request & Tank::GUN_LEFT) == Tank::GUN_LEFT;
     const bool rotateRight = (request & Tank::GUN_RIGHT) == Tank::GUN_RIGHT;
 
-	if(rotateLeft || rotateRight)
-	{
+    if(rotateLeft || rotateRight)
+    {
         const float rotation = RadToDeg(m_physics.GetHingeRotation(hinge))
             + ((rotateLeft ? GunRotation : -GunRotation) * deltatime);
        
         m_physics.RotateHinge(hinge, DegToRad(rotation), 1.0f);
         tank.SetGunRotationalDamping(1.0f);
-	}
-	else
-	{
+    }
+    else
+    {
         tank.AddGunRotationalDamping(-GunRotationDamping * deltatime);
-		m_physics.StopHinge(hinge, 1.0f, tank.GetGunRotationalDamping());
-	}
+        m_physics.StopHinge(hinge, 1.0f, tank.GetGunRotationalDamping());
+    }
 }
 
 void MovementUpdater::FlipTank(const Tank& tank)

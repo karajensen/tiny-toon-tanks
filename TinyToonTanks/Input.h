@@ -123,7 +123,7 @@ private:
     */
     struct Key
     {
-		unsigned int key = 0;     ///< The ID of the key
+        unsigned int key = 0;     ///< The ID of the key
         unsigned int state = 0;   ///< Current state of the key
         KeyFn onKeyFn = nullptr;  ///< Function to call if key is down
         bool continuous = false;  ///< Whether key should look at continous or not

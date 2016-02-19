@@ -26,7 +26,7 @@ void main(void)
         vec3 vertToLight = normalize(lightPosition[i] - ex_PositionWorld);
         float lightAmount = (dot(vertToLight, normal) + 1.0) * 0.5;
 
-	    // Create bands of color depending on angle to light
+        // Create bands of color depending on angle to light
         if (lightAmount <= 0.25)
         {
             lightAmount = 0.25;
@@ -47,8 +47,8 @@ void main(void)
         diffuse += lightDiffuse[i] * lightAmount;
     }
 
-	out_Color[ID_COLOUR].rgb = diffuseTex.rgb * diffuse;
-	out_Color[ID_COLOUR].a = 1.0;
-	out_Color[ID_NORMAL].rgb = normal;
-	out_Color[ID_NORMAL].a = 1.0;
+    out_Color[ID_COLOUR].rgb = diffuseTex.rgb * diffuse;
+    out_Color[ID_COLOUR].a = 1.0;
+    out_Color[ID_NORMAL].rgb = normal;
+    out_Color[ID_NORMAL].a = 1.0;
 }

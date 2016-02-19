@@ -27,10 +27,10 @@ bool GameBuilder::InitialiseWorld(GameData& gamedata,
                                   SceneData& scenedata, 
                                   PhysicsEngine& physics)
 {
-	const float groundHeight = -60.0f;
-	const float floorHeight = groundHeight + 2.282f;
-	const float wallDistance = 44.147f;
-	const glm::vec3 wallBox(44.993f, groundHeight + 2.712f, 44.371f);
+    const float groundHeight = -60.0f;
+    const float floorHeight = groundHeight + 2.282f;
+    const float wallDistance = 44.147f;
+    const glm::vec3 wallBox(44.993f, groundHeight + 2.712f, 44.371f);
 
     auto& ground = *scenedata.meshes[MeshID::GROUND];
     auto& wall = *scenedata.meshes[MeshID::WALL];
@@ -81,9 +81,9 @@ bool GameBuilder::InitialiseTanks(GameData& gamedata,
     const int playerDamage = 2;
     const glm::vec3 spawnPosition(0, 0, 0);
     const float spawnSize = 10.0f;
-	const float tankMass = 500.0f;
+    const float tankMass = 500.0f;
     const float tankPartMass = tankMass / 3.0f;
-	const float gunMass = 20.0f;
+    const float gunMass = 20.0f;
 
     auto& tankBody = *scenedata.meshes[MeshID::TANK];
     auto& tankp1 = *scenedata.meshes[MeshID::TANKP1];
@@ -116,10 +116,10 @@ bool GameBuilder::InitialiseTanks(GameData& gamedata,
     int index = 0;
     const int spawnRows = 2;
     const int spawnColumns = 3;
-	for(int r = 0; r < spawnRows; r++)
-	{
-		for(int c = 0; c < spawnColumns; c++)
-		{
+    for(int r = 0; r < spawnRows; r++)
+    {
+        for(int c = 0; c < spawnColumns; c++)
+        {
             const float x = spawnPosition.x + (r * spawnSize);
             const float y = 0.0f;
             const float z = spawnPosition.z + (c * spawnSize);
@@ -133,8 +133,8 @@ bool GameBuilder::InitialiseTanks(GameData& gamedata,
             tankp4.Visible(false, index);
 
             ++index;
-		}
-	}
+        }
+    }
 
     tankBody.UpdateTransforms();
     tankGun.UpdateTransforms();

@@ -13,12 +13,12 @@ uniform vec3 planeNormal;
 
 void main(void)
 {
-	float distance = abs(dot((in_Position.xyz - planePosition), planeNormal));
-	vec3 pointToPlane = -distance * planeNormal;
+    float distance = abs(dot((in_Position.xyz - planePosition), planeNormal));
+    vec3 pointToPlane = -distance * planeNormal;
 
-	vec4 position;
-	position.xyz = in_Position.xyz + pointToPlane;
-	position.w = in_Position.w;
+    vec4 position;
+    position.xyz = in_Position.xyz + pointToPlane;
+    position.w = in_Position.w;
 
     gl_Position = viewProjection * world * position;
 }

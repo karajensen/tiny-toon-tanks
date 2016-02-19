@@ -110,11 +110,11 @@ bool Input::IsKeyDown(unsigned int& state)
 
 void Input::AddCallback(unsigned int key, bool onContinous, KeyFn onKeyFn)
 {
-	m_keys.push_back(Key());
+    m_keys.push_back(Key());
     m_keys.back().state = KEY_NONE;
-	m_keys.back().continuous = onContinous;
-	m_keys.back().onKeyFn = onKeyFn;
-	m_keys.back().key = key;
+    m_keys.back().continuous = onContinous;
+    m_keys.back().onKeyFn = onKeyFn;
+    m_keys.back().key = key;
 }
 
 const glm::vec2& Input::GetMouseDirection() const
