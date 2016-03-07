@@ -5,8 +5,12 @@
 #include "SoundEngine.h"
 #include "common.h"
 
+SoundEngine* SoundEngine::sm_engine = nullptr;
+
 SoundEngine::SoundEngine()
 {
+    sm_engine = this;
+ 
     InitialiseFmod();
 
     m_sounds.resize(NUMBER_OF_SOUNDS);
@@ -39,22 +43,22 @@ SoundEngine::~SoundEngine()
 
 void SoundEngine::PlaySoundEffect(Sound ID)
 {
-	m_system->playSound(m_sounds[ID], 0, false, &m_sfxChannel);
+    sm_engine->m_system->playSound(sm_engine->m_sounds[ID], 0, false, &sm_engine->m_sfxChannel);
 }
 
 void SoundEngine::PlayMusic(Sound ID)
 {
-    m_nextTrack = ID;
+    sm_engine->m_nextTrack = ID;
 
-    if (m_currentTrack == NOTRACK)
+    if (sm_engine->m_currentTrack == NOTRACK)
     {
-        PlayMusic();
+        sm_engine->PlayMusic();
     }
     else
     {
-        m_shouldFade = true;
-        m_fadeIn = false;
-        m_musicChannel->getVolume(&m_volume);
+        sm_engine->m_shouldFade = true;
+        sm_engine->m_fadeIn = false;
+        sm_engine->m_musicChannel->getVolume(&sm_engine->m_volume);
     }
 }
 

@@ -7,6 +7,7 @@
 #include "GameData.h"
 #include "SceneData.h"
 #include "GlmHelper.h"
+#include "SoundEngine.h"
 
 namespace
 {
@@ -86,6 +87,8 @@ void BulletSpawner::FireBullet(const Tank& tank)
             if (!bullet->IsActive())
             {
                 bullet->SetActive(true);
+
+                SoundEngine::PlaySoundEffect(SoundEngine::SHOOT);
 
                 glm::mat4 world = tank.GetGunWorldMatrix();
                 const glm::vec3 up = glm::matrix_get_up(world);
