@@ -15,7 +15,7 @@ namespace
     const float ForwardOffset = -5.0f;   ///< Forward offset from the gun to fire at
     const float RecoilImpulse = 45.0f;   ///< Amount of impulse the tank receives from firing
     const float BulletImpulse = 1.0f;    ///< Amount of impulse the bullet recieves
-    const float BulletGravity = 0.25f;   ///< Artificial gravity on the bullets
+    const float BulletGravity = -0.05f;  ///< Artificial gravity on the bullets
 }
 
 BulletSpawner::BulletSpawner(PhysicsEngine& physics, 

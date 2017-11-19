@@ -1,19 +1,17 @@
 
-- CollisionSolver: Collision detection/resolution
-- Add breaking tanks apart
+- Get Player bullets interacting with player
+- Bullets destroy themselves when hitting tanks
+- Tanks break apart when hit with bullets
+
+- Add health
 - Add toon text
 - Add AI movement for tanks
 - Get background rendering
-- Get lighting matching
 - Get shadows rendering
-- Create sprite quad rendering in screen space
-- Create menus/game over screens/logic
-
-• Smoothing on toon lines
-• Change 'N' to '0'
-• Update GUI/Menus
-• Transparent shadows
-• Smooth over mesh edges
+- Get updated UI/Menus rendering
+- Change 'N' to '0'
+- Transparent shadows
+- Smooth over mesh edges
 
 =================================================================
 TINY TOON TANKS

@@ -28,7 +28,7 @@ void Tank::Reset()
     m_movement = NO_MOVEMENT;      
     m_linearDamping = 1.0f; 
     m_rotationalDamping = 1.0f; 
-    m_gunDamping = 1.0f;
+    m_gunDamping = 2.0f;
     m_fireGunTime = 0.0f;
 }
 

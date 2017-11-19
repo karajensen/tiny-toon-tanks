@@ -309,7 +309,7 @@ private:
     PhysicsEngine& operator=(const PhysicsEngine&) = delete;
 
     float m_sleepvalue = 0.0f;      ///< Threshold before a body is asleep
-    int m_iterations = 4;           ///< Number of iterations for the world
+    int m_iterations = 8;           ///< Number of iterations for the world
     static const int NO_MASK = -1;  ///< No collision masking
 
     std::vector<std::unique_ptr<btConvexHullShape>> m_shapes;            ///< Collision shapes avaliable
