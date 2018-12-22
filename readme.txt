@@ -20,9 +20,8 @@ mail@KaraJensen.com
 www.KaraJensen.com
 =================================================================
 
-RELEASE REQUIREMENTS: Windows 8+, OpenGL
-BUILD REQUIREMENTS: Windows 8+, Visual Studio 2015
-LIBRARIES: bullet3-2.83.7
+RELEASE REQUIREMENTS: Windows 10+, OpenGL
+BUILD REQUIREMENTS: Windows 10+, Visual Studio 2017
 
 F1      Reset game
 F2-F5   Switch render layers
