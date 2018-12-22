@@ -83,7 +83,7 @@ static int dds_test(stbi *s)
 	return 1;
 }
 #ifndef STBI_NO_STDIO
-int      stbi_dds_test_file        (FILE *f)
+int      soil_stbi_dds_test_file        (FILE *f)
 {
    stbi s;
    int r,n = ftell(f);
@@ -94,7 +94,7 @@ int      stbi_dds_test_file        (FILE *f)
 }
 #endif
 
-int      stbi_dds_test_memory      (stbi_uc const *buffer, int len)
+int      soil_stbi_dds_test_memory      (soil_stbi_uc const *buffer, int len)
 {
    stbi s;
    start_mem(&s,buffer, len);
@@ -102,18 +102,18 @@ int      stbi_dds_test_memory      (stbi_uc const *buffer, int len)
 }
 
 //	helper functions
-int stbi_convert_bit_range( int c, int from_bits, int to_bits )
+int soil_stbi_convert_bit_range( int c, int from_bits, int to_bits )
 {
 	int b = (1 << (from_bits - 1)) + c * ((1 << to_bits) - 1);
 	return (b + (b >> from_bits)) >> from_bits;
 }
-void stbi_rgb_888_from_565( unsigned int c, int *r, int *g, int *b )
+void soil_stbi_rgb_888_from_565( unsigned int c, int *r, int *g, int *b )
 {
-	*r = stbi_convert_bit_range( (c >> 11) & 31, 5, 8 );
-	*g = stbi_convert_bit_range( (c >> 05) & 63, 6, 8 );
-	*b = stbi_convert_bit_range( (c >> 00) & 31, 5, 8 );
+	*r = soil_stbi_convert_bit_range( (c >> 11) & 31, 5, 8 );
+	*g = soil_stbi_convert_bit_range( (c >> 05) & 63, 6, 8 );
+	*b = soil_stbi_convert_bit_range( (c >> 00) & 31, 5, 8 );
 }
-void stbi_decode_DXT1_block(
+void soil_stbi_decode_DXT1_block(
 			unsigned char uncompressed[16*4],
 			unsigned char compressed[8] )
 {
@@ -124,12 +124,12 @@ void stbi_decode_DXT1_block(
 	//	find the 2 primary colors
 	c0 = compressed[0] + (compressed[1] << 8);
 	c1 = compressed[2] + (compressed[3] << 8);
-	stbi_rgb_888_from_565( c0, &r, &g, &b );
+	soil_stbi_rgb_888_from_565( c0, &r, &g, &b );
 	decode_colors[0] = r;
 	decode_colors[1] = g;
 	decode_colors[2] = b;
 	decode_colors[3] = 255;
-	stbi_rgb_888_from_565( c1, &r, &g, &b );
+	soil_stbi_rgb_888_from_565( c1, &r, &g, &b );
 	decode_colors[4] = r;
 	decode_colors[5] = g;
 	decode_colors[6] = b;
@@ -169,7 +169,7 @@ void stbi_decode_DXT1_block(
 	}
 	//	done
 }
-void stbi_decode_DXT23_alpha_block(
+void soil_stbi_decode_DXT23_alpha_block(
 			unsigned char uncompressed[16*4],
 			unsigned char compressed[8] )
 {
@@ -177,13 +177,13 @@ void stbi_decode_DXT23_alpha_block(
 	//	each alpha value gets 4 bits
 	for( i = 3; i < 16*4; i += 4 )
 	{
-		uncompressed[i] = stbi_convert_bit_range(
+		uncompressed[i] = soil_stbi_convert_bit_range(
 				(compressed[next_bit>>3] >> (next_bit&7)) & 15,
 				4, 8 );
 		next_bit += 4;
 	}
 }
-void stbi_decode_DXT45_alpha_block(
+void soil_stbi_decode_DXT45_alpha_block(
 			unsigned char uncompressed[16*4],
 			unsigned char compressed[8] )
 {
@@ -227,7 +227,7 @@ void stbi_decode_DXT45_alpha_block(
 	}
 	//	done
 }
-void stbi_decode_DXT_color_block(
+void soil_stbi_decode_DXT_color_block(
 			unsigned char uncompressed[16*4],
 			unsigned char compressed[8] )
 {
@@ -238,11 +238,11 @@ void stbi_decode_DXT_color_block(
 	//	find the 2 primary colors
 	c0 = compressed[0] + (compressed[1] << 8);
 	c1 = compressed[2] + (compressed[3] << 8);
-	stbi_rgb_888_from_565( c0, &r, &g, &b );
+	soil_stbi_rgb_888_from_565( c0, &r, &g, &b );
 	decode_colors[0] = r;
 	decode_colors[1] = g;
 	decode_colors[2] = b;
-	stbi_rgb_888_from_565( c1, &r, &g, &b );
+	soil_stbi_rgb_888_from_565( c1, &r, &g, &b );
 	decode_colors[3] = r;
 	decode_colors[4] = g;
 	decode_colors[5] = b;
@@ -265,12 +265,12 @@ void stbi_decode_DXT_color_block(
 	}
 	//	done
 }
-static stbi_uc *dds_load(stbi *s, int *x, int *y, int *comp, int req_comp)
+static soil_stbi_uc *dds_load(stbi *s, int *x, int *y, int *comp, int req_comp)
 {
 	//	all variables go up front
-	stbi_uc *dds_data = NULL;
-	stbi_uc block[16*4];
-	stbi_uc compressed[8];
+	soil_stbi_uc *dds_data = NULL;
+	soil_stbi_uc block[16*4];
+	soil_stbi_uc compressed[8];
 	int flags, DXT_family;
 	int has_alpha, has_mipmap;
 	int is_compressed, cubemap_faces;
@@ -282,7 +282,7 @@ static stbi_uc *dds_load(stbi *s, int *x, int *y, int *comp, int req_comp)
 	{
 		return NULL;
 	}
-	getn( s, (stbi_uc*)(&header), 128 );
+	getn( s, (soil_stbi_uc*)(&header), 128 );
 	//	and do some checking
 	if( header.dwMagic != (('D' << 0) | ('D' << 8) | ('S' << 16) | (' ' << 24)) ) return NULL;
 	if( header.dwSize != 124 ) return NULL;
@@ -342,21 +342,21 @@ static stbi_uc *dds_load(stbi *s, int *x, int *y, int *comp, int req_comp)
 				{
 					//	DXT1
 					getn( s, compressed, 8 );
-					stbi_decode_DXT1_block( block, compressed );
+					soil_stbi_decode_DXT1_block( block, compressed );
 				} else if( DXT_family < 4 )
 				{
 					//	DXT2/3
 					getn( s, compressed, 8 );
-					stbi_decode_DXT23_alpha_block ( block, compressed );
+					soil_stbi_decode_DXT23_alpha_block ( block, compressed );
 					getn( s, compressed, 8 );
-					stbi_decode_DXT_color_block ( block, compressed );
+					soil_stbi_decode_DXT_color_block ( block, compressed );
 				} else
 				{
 					//	DXT4/5
 					getn( s, compressed, 8 );
-					stbi_decode_DXT45_alpha_block ( block, compressed );
+					soil_stbi_decode_DXT45_alpha_block ( block, compressed );
 					getn( s, compressed, 8 );
-					stbi_decode_DXT_color_block ( block, compressed );
+					soil_stbi_decode_DXT_color_block ( block, compressed );
 				}
 				//	is this a partial block?
 				if( ref_x + 4 > s->img_x )
@@ -485,25 +485,25 @@ static stbi_uc *dds_load(stbi *s, int *x, int *y, int *comp, int req_comp)
 }
 
 #ifndef STBI_NO_STDIO
-stbi_uc *stbi_dds_load_from_file   (FILE *f,                  int *x, int *y, int *comp, int req_comp)
+soil_stbi_uc *soil_stbi_dds_load_from_file   (FILE *f,                  int *x, int *y, int *comp, int req_comp)
 {
 	stbi s;
    start_file(&s,f);
    return dds_load(&s,x,y,comp,req_comp);
 }
 
-stbi_uc *stbi_dds_load             (char *filename,           int *x, int *y, int *comp, int req_comp)
+soil_stbi_uc *soil_stbi_dds_load             (char *filename,           int *x, int *y, int *comp, int req_comp)
 {
-   stbi_uc *data;
+   soil_stbi_uc *data;
    FILE *f = fopen(filename, "rb");
    if (!f) return NULL;
-   data = stbi_dds_load_from_file(f,x,y,comp,req_comp);
+   data = soil_stbi_dds_load_from_file(f,x,y,comp,req_comp);
    fclose(f);
    return data;
 }
 #endif
 
-stbi_uc *stbi_dds_load_from_memory (stbi_uc const *buffer, int len, int *x, int *y, int *comp, int req_comp)
+soil_stbi_uc *soil_stbi_dds_load_from_memory (soil_stbi_uc const *buffer, int len, int *x, int *y, int *comp, int req_comp)
 {
 	stbi s;
    start_mem(&s,buffer, len);

@@ -1,6 +1,6 @@
 /* ========================================================================================== */
 /* FMOD Studio - Built-in effects header file.                                                */
-/* Copyright (c), Firelight Technologies Pty, Ltd. 2004-2016.                                 */
+/* Copyright (c), Firelight Technologies Pty, Ltd. 2004-2018.                                 */
 /*                                                                                            */
 /* In this header you can find parameter structures for FMOD system registered DSP effects    */
 /* and generators.                                                                            */
@@ -30,16 +30,16 @@ typedef enum
     FMOD_DSP_TYPE_UNKNOWN,            /* This unit was created via a non FMOD plugin so has an unknown purpose. */
     FMOD_DSP_TYPE_MIXER,              /* This unit does nothing but take inputs and mix them together then feed the result to the soundcard unit. */
     FMOD_DSP_TYPE_OSCILLATOR,         /* This unit generates sine/square/saw/triangle or noise tones. */
-    FMOD_DSP_TYPE_LOWPASS,            /* This unit filters sound using a high quality, resonant lowpass filter algorithm but consumes more CPU time. */
+    FMOD_DSP_TYPE_LOWPASS,            /* This unit filters sound using a high quality, resonant lowpass filter algorithm but consumes more CPU time. Deprecated and will be removed in a future release (see FMOD_DSP_LOWPASS remarks for alternatives). */
     FMOD_DSP_TYPE_ITLOWPASS,          /* This unit filters sound using a resonant lowpass filter algorithm that is used in Impulse Tracker, but with limited cutoff range (0 to 8060hz). */
-    FMOD_DSP_TYPE_HIGHPASS,           /* This unit filters sound using a resonant highpass filter algorithm. */
+    FMOD_DSP_TYPE_HIGHPASS,           /* This unit filters sound using a resonant highpass filter algorithm. Deprecated and will be removed in a future release (see FMOD_DSP_HIGHPASS remarks for alternatives). */
     FMOD_DSP_TYPE_ECHO,               /* This unit produces an echo on the sound and fades out at the desired rate. */
     FMOD_DSP_TYPE_FADER,              /* This unit pans and scales the volume of a unit. */
     FMOD_DSP_TYPE_FLANGE,             /* This unit produces a flange effect on the sound. */
     FMOD_DSP_TYPE_DISTORTION,         /* This unit distorts the sound. */
     FMOD_DSP_TYPE_NORMALIZE,          /* This unit normalizes or amplifies the sound to a certain level. */
     FMOD_DSP_TYPE_LIMITER,            /* This unit limits the sound to a certain level. */
-    FMOD_DSP_TYPE_PARAMEQ,            /* This unit attenuates or amplifies a selected frequency range. */
+    FMOD_DSP_TYPE_PARAMEQ,            /* This unit attenuates or amplifies a selected frequency range. Deprecated and will be removed in a future release (see FMOD_DSP_PARAMEQ remarks for alternatives). */
     FMOD_DSP_TYPE_PITCHSHIFT,         /* This unit bends the pitch of a sound without changing the speed of playback. */
     FMOD_DSP_TYPE_CHORUS,             /* This unit produces a chorus effect on the sound. */
     FMOD_DSP_TYPE_VSTPLUGIN,          /* This unit allows the use of Steinberg VST plugins */
@@ -47,21 +47,23 @@ typedef enum
     FMOD_DSP_TYPE_ITECHO,             /* This unit produces an echo on the sound and fades out at the desired rate as is used in Impulse Tracker. */
     FMOD_DSP_TYPE_COMPRESSOR,         /* This unit implements dynamic compression (linked/unlinked multichannel, wideband) */
     FMOD_DSP_TYPE_SFXREVERB,          /* This unit implements SFX reverb */
-    FMOD_DSP_TYPE_LOWPASS_SIMPLE,     /* This unit filters sound using a simple lowpass with no resonance, but has flexible cutoff and is fast. */
+    FMOD_DSP_TYPE_LOWPASS_SIMPLE,     /* This unit filters sound using a simple lowpass with no resonance, but has flexible cutoff and is fast. Deprecated and will be removed in a future release (see FMOD_DSP_LOWPASS_SIMPLE remarks for alternatives). */
     FMOD_DSP_TYPE_DELAY,              /* This unit produces different delays on individual channels of the sound. */
     FMOD_DSP_TYPE_TREMOLO,            /* This unit produces a tremolo / chopper effect on the sound. */
     FMOD_DSP_TYPE_LADSPAPLUGIN,       /* Unsupported / Deprecated. */
     FMOD_DSP_TYPE_SEND,               /* This unit sends a copy of the signal to a return DSP anywhere in the DSP tree. */
     FMOD_DSP_TYPE_RETURN,             /* This unit receives signals from a number of send DSPs. */
-    FMOD_DSP_TYPE_HIGHPASS_SIMPLE,    /* This unit filters sound using a simple highpass with no resonance, but has flexible cutoff and is fast. */
+    FMOD_DSP_TYPE_HIGHPASS_SIMPLE,    /* This unit filters sound using a simple highpass with no resonance, but has flexible cutoff and is fast. Deprecated and will be removed in a future release (see FMOD_DSP_HIGHPASS_SIMPLE remarks for alternatives). */
     FMOD_DSP_TYPE_PAN,                /* This unit pans the signal, possibly upmixing or downmixing as well. */
     FMOD_DSP_TYPE_THREE_EQ,           /* This unit is a three-band equalizer. */
     FMOD_DSP_TYPE_FFT,                /* This unit simply analyzes the signal and provides spectrum information back through getParameter. */
     FMOD_DSP_TYPE_LOUDNESS_METER,     /* This unit analyzes the loudness and true peak of the signal. */
-    FMOD_DSP_TYPE_ENVELOPEFOLLOWER,   /* This unit tracks the envelope of the input/sidechain signal. Format to be publicly disclosed soon. */
+    FMOD_DSP_TYPE_ENVELOPEFOLLOWER,   /* This unit tracks the envelope of the input/sidechain signal. Deprecated and will be removed in a future release. */
     FMOD_DSP_TYPE_CONVOLUTIONREVERB,  /* This unit implements convolution reverb. */
     FMOD_DSP_TYPE_CHANNELMIX,         /* This unit provides per signal channel gain, and output channel mapping to allow 1 multichannel signal made up of many groups of signals to map to a single output signal. */
     FMOD_DSP_TYPE_TRANSCEIVER,        /* This unit 'sends' and 'receives' from a selection of up to 32 different slots.  It is like a send/return but it uses global slots rather than returns as the destination.  It also has other features.  Multiple transceivers can receive from a single channel, or multiple transceivers can send to a single channel, or a combination of both. */
+    FMOD_DSP_TYPE_OBJECTPAN,          /* This unit sends the signal to a 3d object encoder like Dolby Atmos.   Supports a subset of the FMOD_DSP_TYPE_PAN parameters. */
+    FMOD_DSP_TYPE_MULTIBAND_EQ,       /* This unit is a flexible five band parametric equalizer. */
 
     FMOD_DSP_TYPE_MAX,                /* Maximum number of pre-defined DSP types. */
     FMOD_DSP_TYPE_FORCEINT = 65536    /* Makes sure this enum is signed 32bit. */
@@ -106,6 +108,15 @@ typedef enum
     Parameter types for the FMOD_DSP_TYPE_LOWPASS filter.
 
     [REMARKS]
+    Deprecated and will be removed in a future release, to emulate with FMOD_DSP_TYPE_MULTIBAND_EQ:
+
+        // Configure a single band (band A) as a lowpass (all other bands default to off).
+        // 24dB rolloff to approximate the old effect curve.
+        // Cutoff frequency can be used the same as with the old effect.
+        // Resonance can be applied by setting the 'Q' value of the new effect.
+        FMOD_DSP_SetParameterInt(multiband, FMOD_DSP_MULTIBAND_EQ_A_FILTER, FMOD_DSP_MULTIBAND_EQ_FILTER_LOWPASS_24DB);
+        FMOD_DSP_SetParameterFloat(multiband, FMOD_DSP_MULTIBAND_EQ_A_FREQUENCY, frequency);
+        FMOD_DSP_SetParameterFloat(multiband, FMOD_DSP_MULTIBAND_EQ_A_Q, resonance);
 
     [SEE_ALSO]
     DSP::setParameterFloat
@@ -155,6 +166,15 @@ typedef enum
     Parameter types for the FMOD_DSP_TYPE_HIGHPASS filter.
 
     [REMARKS]
+    Deprecated and will be removed in a future release, to emulate with FMOD_DSP_TYPE_MULTIBAND_EQ:
+
+        // Configure a single band (band A) as a highpass (all other bands default to off).
+        // 12dB rolloff to approximate the old effect curve.
+        // Cutoff frequency can be used the same as with the old effect.
+        // Resonance can be applied by setting the 'Q' value of the new effect.
+        FMOD_DSP_SetParameterInt(multiband, FMOD_DSP_MULTIBAND_EQ_A_FILTER, FMOD_DSP_MULTIBAND_EQ_FILTER_HIGHPASS_12DB);
+        FMOD_DSP_SetParameterFloat(multiband, FMOD_DSP_MULTIBAND_EQ_A_FREQUENCY, frequency);
+        FMOD_DSP_SetParameterFloat(multiband, FMOD_DSP_MULTIBAND_EQ_A_Q, resonance);
 
     [SEE_ALSO]
     DSP::setParameterFloat
@@ -192,6 +212,27 @@ typedef enum
     FMOD_DSP_ECHO_DRYLEVEL,    /* (Type:float) - Original sound volume in dB.  -80.0 to 10.0.  Default = 0. */
     FMOD_DSP_ECHO_WETLEVEL     /* (Type:float) - Volume of echo signal to pass to output in dB.  -80.0 to 10.0.  Default = 0. */
 } FMOD_DSP_ECHO;
+
+
+/*
+[ENUM]
+[
+    [DESCRIPTION]
+    Parameter types for the FMOD_DSP_TYPE_FADER filter.
+
+    [REMARKS]
+
+    [SEE_ALSO]
+    DSP::setParameterFloat
+    DSP::getParameterFloat
+    FMOD_DSP_TYPE
+]
+*/
+typedef enum FMOD_DSP_FADER
+{
+    FMOD_DSP_FADER_GAIN,            /* (Type:float) - Signal gain in dB. -80.0 to 10.0. Default = 0.0. */
+    FMOD_DSP_FADER_OVERALL_GAIN,    /* (Type:data)  - Overall gain. For information only, not set by user. Data of type FMOD_DSP_PARAMETER_DATA_TYPE_OVERALLGAIN to provide to FMOD, to allow FMOD to know the DSP is scaling the signal for virtualization purposes. */
+} FMOD_DSP_FADER;
 
 
 /*
@@ -298,11 +339,20 @@ typedef enum
     Parameter types for the FMOD_DSP_TYPE_PARAMEQ filter.
 
     [REMARKS]
-    Parametric EQ is a bandpass filter that attenuates or amplifies a selected frequency and its neighbouring frequencies.<br>
-    <br>
-    To create a multi-band EQ create multiple FMOD_DSP_TYPE_PARAMEQ units and set each unit to different frequencies, for example 1000hz, 2000hz, 4000hz, 8000hz, 16000hz with a range of 1 octave each.<br>
-    <br>
-    When a frequency has its gain set to 1.0, the sound will be unaffected and represents the original signal exactly.<br>
+    Deprecated and will be removed in a future release, to emulate with FMOD_DSP_TYPE_MULTIBAND_EQ:
+
+        // Configure a single band (band A) as a peaking EQ (all other bands default to off).
+        // Center frequency can be used as with the old effect.
+        // Bandwidth can be applied by setting the 'Q' value of the new effect.
+        // Gain at the center frequency can be used the same as with the old effect.
+        FMOD_DSP_SetParameterInt(multiband, FMOD_DSP_MULTIBAND_EQ_A_FILTER, FMOD_DSP_MULTIBAND_EQ_FILTER_PEAKING);
+        FMOD_DSP_SetParameterFloat(multiband, FMOD_DSP_MULTIBAND_EQ_A_FREQUENCY, center);
+        FMOD_DSP_SetParameterFloat(multiband, FMOD_DSP_MULTIBAND_EQ_A_Q, bandwidth);
+        FMOD_DSP_SetParameterFloat(multiband, FMOD_DSP_MULTIBAND_EQ_A_GAIN, gain);
+
+    Parametric EQ is a single band peaking EQ filter that attenuates or amplifies a selected frequency and its neighbouring frequencies.
+
+    When a frequency has its gain set to 1.0, the sound will be unaffected and represents the original signal exactly.
 
     [SEE_ALSO]
     DSP::setParameterFloat
@@ -317,6 +367,77 @@ typedef enum
     FMOD_DSP_PARAMEQ_GAIN        /* (Type:float) - Frequency Gain in dB.  -30 to 30.  Default = 0.  */
 } FMOD_DSP_PARAMEQ;
 
+
+/*
+[ENUM]
+[
+    [DESCRIPTION]
+    Parameter types for the FMOD_DSP_TYPE_MULTIBAND_EQ filter.
+
+    [REMARKS]
+    Flexible five band parametric equalizer.
+
+    [SEE_ALSO]
+    DSP::setParameterInt
+    DSP::getParameterInt
+    DSP::setParameterFloat
+    DSP::getParameterFloat
+    FMOD_DSP_TYPE
+]
+*/
+typedef enum FMOD_DSP_MULTIBAND_EQ
+{
+    FMOD_DSP_MULTIBAND_EQ_A_FILTER,    /* (Type:int)   - Band A: FMOD_DSP_MULTIBAND_EQ_FILTER_TYPE used to interpret the behavior of the remaining parameters. Default = FMOD_DSP_MULTIBAND_EQ_FILTER_LOWPASS_12DB */
+    FMOD_DSP_MULTIBAND_EQ_A_FREQUENCY, /* (Type:float) - Band A: Significant frequency in Hz, cutoff [low/high pass, low/high shelf], center [notch, peaking, band-pass], phase transition point [all-pass]. 20 to 22000. Default = 8000. */
+    FMOD_DSP_MULTIBAND_EQ_A_Q,         /* (Type:float) - Band A: Quality factor, resonance [low/high pass], bandwidth [notch, peaking, band-pass], phase transition sharpness [all-pass], unused [low/high shelf]. 0.1 to 10.0. Default = 0.707. */
+    FMOD_DSP_MULTIBAND_EQ_A_GAIN,      /* (Type:float) - Band A: Boost or attenuation in dB [peaking, high/low shelf only]. -30 to 30. Default = 0. */
+    FMOD_DSP_MULTIBAND_EQ_B_FILTER,    /* (Type:int)   - Band B: See Band A. Default = FMOD_DSP_MULTIBAND_EQ_FILTER_DISABLED */
+    FMOD_DSP_MULTIBAND_EQ_B_FREQUENCY, /* (Type:float) - Band B: See Band A */
+    FMOD_DSP_MULTIBAND_EQ_B_Q,         /* (Type:float) - Band B: See Band A */
+    FMOD_DSP_MULTIBAND_EQ_B_GAIN,      /* (Type:float) - Band B: See Band A */
+    FMOD_DSP_MULTIBAND_EQ_C_FILTER,    /* (Type:int)   - Band C: See Band A. Default = FMOD_DSP_MULTIBAND_EQ_FILTER_DISABLED */
+    FMOD_DSP_MULTIBAND_EQ_C_FREQUENCY, /* (Type:float) - Band C: See Band A. */
+    FMOD_DSP_MULTIBAND_EQ_C_Q,         /* (Type:float) - Band C: See Band A. */
+    FMOD_DSP_MULTIBAND_EQ_C_GAIN,      /* (Type:float) - Band C: See Band A. */
+    FMOD_DSP_MULTIBAND_EQ_D_FILTER,    /* (Type:int)   - Band D: See Band A. Default = FMOD_DSP_MULTIBAND_EQ_FILTER_DISABLED */
+    FMOD_DSP_MULTIBAND_EQ_D_FREQUENCY, /* (Type:float) - Band D: See Band A. */
+    FMOD_DSP_MULTIBAND_EQ_D_Q,         /* (Type:float) - Band D: See Band A. */
+    FMOD_DSP_MULTIBAND_EQ_D_GAIN,      /* (Type:float) - Band D: See Band A. */
+    FMOD_DSP_MULTIBAND_EQ_E_FILTER,    /* (Type:int)   - Band E: See Band A. Default = FMOD_DSP_MULTIBAND_EQ_FILTER_DISABLED */
+    FMOD_DSP_MULTIBAND_EQ_E_FREQUENCY, /* (Type:float) - Band E: See Band A. */
+    FMOD_DSP_MULTIBAND_EQ_E_Q,         /* (Type:float) - Band E: See Band A. */
+    FMOD_DSP_MULTIBAND_EQ_E_GAIN,      /* (Type:float) - Band E: See Band A. */
+} FMOD_DSP_MULTIBAND_EQ;
+
+
+/*
+[ENUM]
+[
+    [DESCRIPTION]
+    Filter types for FMOD_DSP_MULTIBAND_EQ.
+
+    [REMARKS]
+
+    [SEE_ALSO]
+    FMOD_DSP_MULTIBAND_EQ
+]
+*/
+typedef enum FMOD_DSP_MULTIBAND_EQ_FILTER_TYPE
+{
+    FMOD_DSP_MULTIBAND_EQ_FILTER_DISABLED,       /* Disabled filter, no processing. */
+    FMOD_DSP_MULTIBAND_EQ_FILTER_LOWPASS_12DB,   /* Resonant low-pass filter, attenuates frequencies (12dB per octave) above a given point (with specificed resonance) while allowing the rest to pass. */
+    FMOD_DSP_MULTIBAND_EQ_FILTER_LOWPASS_24DB,   /* Resonant low-pass filter, attenuates frequencies (24dB per octave) above a given point (with specificed resonance) while allowing the rest to pass. */
+    FMOD_DSP_MULTIBAND_EQ_FILTER_LOWPASS_48DB,   /* Resonant low-pass filter, attenuates frequencies (48dB per octave) above a given point (with specificed resonance) while allowing the rest to pass. */
+    FMOD_DSP_MULTIBAND_EQ_FILTER_HIGHPASS_12DB,  /* Resonant low-pass filter, attenuates frequencies (12dB per octave) below a given point (with specificed resonance) while allowing the rest to pass. */
+    FMOD_DSP_MULTIBAND_EQ_FILTER_HIGHPASS_24DB,  /* Resonant low-pass filter, attenuates frequencies (24dB per octave) below a given point (with specificed resonance) while allowing the rest to pass. */
+    FMOD_DSP_MULTIBAND_EQ_FILTER_HIGHPASS_48DB,  /* Resonant low-pass filter, attenuates frequencies (48dB per octave) below a given point (with specificed resonance) while allowing the rest to pass. */
+    FMOD_DSP_MULTIBAND_EQ_FILTER_LOWSHELF,       /* Low-shelf filter, boosts or attenuates frequencies (with specified gain) below a given point while allowing the rest to pass. */
+    FMOD_DSP_MULTIBAND_EQ_FILTER_HIGHSHELF,      /* High-shelf filter, boosts or attenuates frequencies (with specified gain) above a given point while allowing the rest to pass. */
+    FMOD_DSP_MULTIBAND_EQ_FILTER_PEAKING,        /* Peaking filter, boosts or attenuates frequencies (with specified gain) at a given point (with specificed bandwidth) while allowing the rest to pass. */
+    FMOD_DSP_MULTIBAND_EQ_FILTER_BANDPASS,       /* Band-pass filter, allows frequencies at a given point (with specificed bandwidth) to pass while attenuating frequencies outside this range. */
+    FMOD_DSP_MULTIBAND_EQ_FILTER_NOTCH,          /* Notch or band-reject filter, attenuates frequencies at a given point (with specificed bandwidth) while allowing frequencies outside this range to pass. */
+    FMOD_DSP_MULTIBAND_EQ_FILTER_ALLPASS,        /* All-pass filter, allows all frequencies to pass, but changes the phase response at a given point (with specified sharpness). */
+} FMOD_DSP_MULTIBAND_EQ_FILTER_TYPE;
 
 
 /*
@@ -366,7 +487,7 @@ typedef enum
     Parameter types for the FMOD_DSP_TYPE_CHORUS filter.
 
     [REMARKS]
-    Chorous is an effect where the sound is more 'spacious' due to 1 to 3 versions of the sound being played along side the original signal but with the pitch of each copy modulating on a sine wave.<br>
+    Chorus is an effect where the sound is more 'spacious' due to 1 to 3 versions of the sound being played along side the original signal but with the pitch of each copy modulating on a sine wave.<br>
 
     [SEE_ALSO]
     DSP::setParameterFloat
@@ -487,11 +608,21 @@ typedef enum
 [ENUM]
 [
     [DESCRIPTION]
-    Parameter types for the FMOD_DSP_TYPE_LOWPASS_SIMPLE filter.<br>
-    This is a very simple low pass filter, based on two single-pole RC time-constant modules.
-    The emphasis is on speed rather than accuracy, so this should not be used for task requiring critical filtering.<br> 
+    Parameter types for the FMOD_DSP_TYPE_LOWPASS_SIMPLE filter.
 
     [REMARKS]
+    Deprecated and will be removed in a future release, to emulate with FMOD_DSP_TYPE_MULTIBAND_EQ:
+
+        //  Configure a single band (band A) as a lowpass (all other bands default to off).
+        //  12dB rolloff to approximate the old effect curve.
+        //  Cutoff frequency can be used the same as with the old effect.
+        //  Resonance / 'Q' should remain at default 0.707.
+        FMOD_DSP_SetParameterInt(multiband, FMOD_DSP_MULTIBAND_EQ_A_FILTER, FMOD_DSP_MULTIBAND_EQ_FILTER_LOWPASS_12DB);
+        FMOD_DSP_SetParameterFloat(multiband, FMOD_DSP_MULTIBAND_EQ_A_FREQUENCY, frequency);
+
+    This is a very simple low pass filter, based on two single-pole RC time-constant modules.
+
+    The emphasis is on speed rather than accuracy, so this should not be used for task requiring critical filtering.
 
     [SEE_ALSO]
     DSP::setParameterFloat
@@ -627,11 +758,21 @@ typedef enum
 [ENUM]
 [
     [DESCRIPTION]
-    Parameter types for the FMOD_DSP_TYPE_HIGHPASS_SIMPLE filter.<br>
-    This is a very simple single-order high pass filter.
-    The emphasis is on speed rather than accuracy, so this should not be used for task requiring critical filtering.<br> 
+    Parameter types for the FMOD_DSP_TYPE_HIGHPASS_SIMPLE filter.
 
     [REMARKS]
+    Deprecated and will be removed in a future release, to emulate with FMOD_DSP_TYPE_MULTIBAND_EQ:
+
+        // Configure a single band (band A) as a highpass (all other bands default to off).
+        // 12dB rolloff to approximate the old effect curve.
+        // Cutoff frequency can be used the same as with the old effect.
+        // Resonance / 'Q' should remain at default 0.707.
+        FMOD_DSP_SetParameterInt(multiband, FMOD_DSP_MULTIBAND_EQ_A_FILTER, FMOD_DSP_MULTIBAND_EQ_FILTER_HIGHPASS_12DB);
+        FMOD_DSP_SetParameterFloat(multiband, FMOD_DSP_MULTIBAND_EQ_A_FREQUENCY, frequency);
+
+    This is a very simple single-order high pass filter.
+
+    The emphasis is on speed rather than accuracy, so this should not be used for task requiring critical filtering.
 
     [SEE_ALSO]
     DSP::setParameterFloat
@@ -649,7 +790,7 @@ typedef enum
 [ENUM]
 [
     [DESCRIPTION]
-    Parameter values for the FMOD_DSP_PAN_SURROUND_FROM_STEREO_MODE parameter of the FMOD_DSP_TYPE_PAN DSP.
+    Parameter values for the FMOD_DSP_PAN_2D_STEREO_MODE parameter of the FMOD_DSP_TYPE_PAN DSP.
 
     [REMARKS]
 
@@ -659,9 +800,9 @@ typedef enum
 */
 typedef enum
 {
-    FMOD_DSP_PAN_SURROUND_FROM_STEREO_MODE_DISTRIBUTED,
-    FMOD_DSP_PAN_SURROUND_FROM_STEREO_MODE_DISCRETE
-} FMOD_DSP_PAN_SURROUND_FROM_STEREO_MODE_TYPE;
+    FMOD_DSP_PAN_2D_STEREO_MODE_DISTRIBUTED,     /* The parts of a stereo sound are spread around desination speakers based on FMOD_DSP_PAN_2D_EXTENT / FMOD_DSP_PAN_2D_DIRECTION */
+    FMOD_DSP_PAN_2D_STEREO_MODE_DISCRETE         /* The L/R parts of a stereo sound are rotated around a circle based on FMOD_DSP_PAN_2D_STEREO_AXIS / FMOD_DSP_PAN_2D_STEREO_SEPARATION. */
+} FMOD_DSP_PAN_2D_STEREO_MODE_TYPE;
 
 
 /*
@@ -733,7 +874,17 @@ typedef enum
     Parameter types for the FMOD_DSP_TYPE_PAN DSP.
 
     [REMARKS]
-    FMOD_DSP_PAN_3D_PAN_BLEND controls the percentage of the effect supplied by FMOD_DSP_PAN_SURROUND_DIRECTION and FMOD_DSP_PAN_SURROUND_EXTENT.
+    FMOD_DSP_PAN_3D_PAN_BLEND controls the percentage of the effect supplied by FMOD_DSP_PAN_2D_DIRECTION and FMOD_DSP_PAN_2D_EXTENT.
+
+    For FMOD_DSP_PAN_3D_POSITION, the following members in the FMOD_DSP_PARAMETER_3DATTRIBUTES_MULTI struct should be non zero.
+    - numlisteners                   - This is typically 1, can be up to 8.  Typically more than 1 is only used for split screen purposes.  The FMOD Panner will average angles and produce the best compromise for panning and attenuation.
+    - relative[listenernum].position - This is the delta between the listener position and the sound position.  Typically the listener position is subtracted from the sound position.
+    - relative[listenernum].forward  - This is the sound's forward vector.  Optional, set to 0,0,1 if not needed.  This is only relevant for more than mono sounds in 3D, that are spread amongst the destination speakers at the time of panning.   
+                                       If the sound rotates then the L/R part of a stereo sound will rotate amongst its destination speakers.
+                                       If the sound has moved and pinpointed into a single speaker, rotation of the sound will have no effect as at that point the channels are collapsed into a single point.
+
+    For FMOD_DSP_PAN_2D_STEREO_MODE, when it is set to FMOD_DSP_PAN_2D_STEREO_MODE_DISCRETE, only FMOD_DSP_PAN_2D_STEREO_SEPARATION and FMOD_DSP_PAN_2D_STEREO_AXIS are used.
+    When it is set to FMOD_DSP_PAN_2D_STEREO_MODE_DISTRIBUTED, then standard FMOD_DSP_PAN_2D_DIRECTION/FMOD_DSP_PAN_2D_EXTENT parameters are used.
 
     [SEE_ALSO]
     DSP::setParameterFloat
@@ -748,26 +899,27 @@ typedef enum
 typedef enum
 {
     FMOD_DSP_PAN_MODE,                          /* (Type:int)   - Panner mode.               FMOD_DSP_PAN_MODE_MONO for mono down-mix, FMOD_DSP_PAN_MODE_STEREO for stereo panning or FMOD_DSP_PAN_MODE_SURROUND for surround panning.  Default = FMOD_DSP_PAN_MODE_SURROUND */
-    FMOD_DSP_PAN_STEREO_POSITION,               /* (Type:float) - Stereo pan position.       -100.0 to 100.0.  Default = 0.0. */
-    FMOD_DSP_PAN_SURROUND_DIRECTION,            /* (Type:float) - Surround pan direction.    -180.0 (degrees) to 180.0 (degrees).  Default = 0.0. */
-    FMOD_DSP_PAN_SURROUND_EXTENT,               /* (Type:float) - Surround pan extent.       0.0 (degrees) to 360.0 (degrees).  Distance from center point of panning circle.  Default = 360.0. */
-    FMOD_DSP_PAN_SURROUND_ROTATION,             /* (Type:float) - Surround pan rotation.     -180.0 (degrees) to 180.0 (degrees).  Default = 0.0. */
-    FMOD_DSP_PAN_SURROUND_LFE_LEVEL,            /* (Type:float) - Surround pan LFE level.    -80.0 (db) to 20.0 (db).  Default = 0.0. */
-    FMOD_DSP_PAN_SURROUND_FROM_STEREO_MODE,     /* (Type:int)   - Stereo-To-Surround Mode.   FMOD_DSP_PAN_SURROUND_FROM_STEREO_MODE_DISTRIBUTED to FMOD_DSP_PAN_SURROUND_FROM_STEREO_MODE_DISCRETE.  Default = FMOD_DSP_PAN_SURROUND_FROM_STEREO_MODE_DISCRETE. */
-    FMOD_DSP_PAN_SURROUND_STEREO_SEPARATION,    /* (Type:float) - Stereo-To-Surround Stereo  Separation. -180.0 (degrees) to +180.0 (degrees).  Default = 60.0. */
-    FMOD_DSP_PAN_SURROUND_STEREO_AXIS,          /* (Type:float) - Stereo-To-Surround Stereo  Axis. -180.0 (degrees) to +180.0 (degrees).  Default = 0.0. */
-    FMOD_DSP_PAN_ENABLED_SURROUND_SPEAKERS,     /* (Type:int)   - Surround Speakers Enabled. 0 to 0xFFF.  Default = 0xFFF.  */
-    FMOD_DSP_PAN_3D_POSITION,                   /* (Type:data)  - 3D Position.               data of type FMOD_DSP_PARAMETER_3DATTRIBUTES_MULTI */
+    FMOD_DSP_PAN_2D_STEREO_POSITION,            /* (Type:float) - 2D Stereo pan position.    -100.0 to 100.0.  Default = 0.0. */
+    FMOD_DSP_PAN_2D_DIRECTION,                  /* (Type:float) - 2D Surround pan direction. Direction from center point of panning circle. -180.0 (degrees) to 180.0 (degrees).  0 = front center, -180 or +180 = rear speakers center point. Default = 0.0. */
+    FMOD_DSP_PAN_2D_EXTENT,                     /* (Type:float) - 2D Surround pan extent.    Distance from center point of panning circle.  0.0 (degrees) to 360.0 (degrees).  Default = 360.0. */
+    FMOD_DSP_PAN_2D_ROTATION,                   /* (Type:float) - 2D Surround pan rotation.  -180.0 (degrees) to 180.0 (degrees).  Default = 0.0. */
+    FMOD_DSP_PAN_2D_LFE_LEVEL,                  /* (Type:float) - 2D Surround pan LFE level. 2D LFE level in dB.  -80.0 (db) to 20.0 (db).  Default = 0.0. */
+    FMOD_DSP_PAN_2D_STEREO_MODE,                /* (Type:int)   - Stereo-To-Surround Mode.   FMOD_DSP_PAN_2D_STEREO_MODE_DISTRIBUTED to FMOD_DSP_PAN_2D_STEREO_MODE_DISCRETE.  Default = FMOD_DSP_PAN_2D_STEREO_MODE_DISCRETE.*/
+    FMOD_DSP_PAN_2D_STEREO_SEPARATION,          /* (Type:float) - Stereo-To-Surround Stereo  For FMOD_DSP_PAN_2D_STEREO_MODE_DISCRETE mode.  Separation/width of L/R parts of stereo sound. -180.0 (degrees) to +180.0 (degrees).  Default = 60.0. */
+    FMOD_DSP_PAN_2D_STEREO_AXIS,                /* (Type:float) - Stereo-To-Surround Stereo  For FMOD_DSP_PAN_2D_STEREO_MODE_DISCRETE mode.  Axis/rotation of L/R parts of stereo sound. -180.0 (degrees) to +180.0 (degrees).  Default = 0.0. */
+    FMOD_DSP_PAN_ENABLED_SPEAKERS,              /* (Type:int)   - Speakers Enabled.          Bitmask for each speaker from 0 to 32 to be considered by panner.  Use to disable speakers from being panned to.  0 to 0xFFF.  Default = 0xFFF (All on).  */
+    FMOD_DSP_PAN_3D_POSITION,                   /* (Type:data)  - 3D Position.               Data of type FMOD_DSP_PARAMETER_3DATTRIBUTES_MULTI.  See remarks on what to fill out. */
     FMOD_DSP_PAN_3D_ROLLOFF,                    /* (Type:int)   - 3D Rolloff.                FMOD_DSP_PAN_3D_ROLLOFF_LINEARSQUARED to FMOD_DSP_PAN_3D_ROLLOFF_CUSTOM.  Default = FMOD_DSP_PAN_3D_ROLLOFF_LINEARSQUARED. */
-    FMOD_DSP_PAN_3D_MIN_DISTANCE,               /* (Type:float) - 3D Min Distance.           0.0 to 1e+19f.  Default = 1.0. */
-    FMOD_DSP_PAN_3D_MAX_DISTANCE,               /* (Type:float) - 3D Max Distance.           0.0 to 1e+19f.  Default = 20.0. */
+    FMOD_DSP_PAN_3D_MIN_DISTANCE,               /* (Type:float) - 3D Min Distance.           0.0 to 1e+18f.  Default = 1.0. */
+    FMOD_DSP_PAN_3D_MAX_DISTANCE,               /* (Type:float) - 3D Max Distance.           0.0 to 1e+18f.  Default = 20.0. */
     FMOD_DSP_PAN_3D_EXTENT_MODE,                /* (Type:int)   - 3D Extent Mode.            FMOD_DSP_PAN_3D_EXTENT_MODE_AUTO to FMOD_DSP_PAN_3D_EXTENT_MODE_OFF.  Default = FMOD_DSP_PAN_3D_EXTENT_MODE_AUTO. */
-    FMOD_DSP_PAN_3D_SOUND_SIZE,                 /* (Type:float) - 3D Sound Size.             0.0 to 1e+19f.  Default = 0.0. */
+    FMOD_DSP_PAN_3D_SOUND_SIZE,                 /* (Type:float) - 3D Sound Size.             0.0 to 1e+18f.  Default = 0.0. */
     FMOD_DSP_PAN_3D_MIN_EXTENT,                 /* (Type:float) - 3D Min Extent.             0.0 (degrees) to 360.0 (degrees).  Default = 0.0. */
     FMOD_DSP_PAN_3D_PAN_BLEND,                  /* (Type:float) - 3D Pan Blend.              0.0 (fully 2D) to 1.0 (fully 3D).  Default = 0.0. */
-    FMOD_DSP_PAN_LFE_UPMIX_ENABLED,             /* (Type:int)   - LFE Upmix Enabled.         0 to 1.  Default = 0. */
-    FMOD_DSP_PAN_OVERALL_GAIN,                  /* (Type:data)  - Overall gain.              data of type FMOD_DSP_PARAMETER_DATA_TYPE_OVERALLGAIN */
-    FMOD_DSP_PAN_SURROUND_SPEAKER_MODE          /* (Type:int)   - Surround speaker mode.     Target speaker mode for surround panning.  Default = FMOD_SPEAKERMODE_DEFAULT. */
+    FMOD_DSP_PAN_LFE_UPMIX_ENABLED,             /* (Type:int)   - LFE Upmix Enabled.         Determines whether non-LFE source channels should mix to the LFE or leave it alone.  0 (off) to 1 (on).  Default = 0 (off). */
+    FMOD_DSP_PAN_OVERALL_GAIN,                  /* (Type:data)  - Overall gain.              For information only, not set by user.  Data of type FMOD_DSP_PARAMETER_DATA_TYPE_OVERALLGAIN to provide to FMOD, to allow FMOD to know the DSP is scaling the signal for virtualization purposes. */
+    FMOD_DSP_PAN_SURROUND_SPEAKER_MODE,         /* (Type:int)   - Surround speaker mode.     Target speaker mode for surround panning.  Default = FMOD_SPEAKERMODE_DEFAULT. */
+    FMOD_DSP_PAN_2D_HEIGHT_BLEND,               /* (Type:float) - 2D Height blend.           When the input or FMOD_DSP_PAN_SURROUND_SPEAKER_MODE has height speakers, control the blend between ground and height. -1.0 (push top speakers to ground), 0.0 (preserve top / ground separation), 1.0 (push ground speakers to top). Default = 0.0. */
 } FMOD_DSP_PAN;
 
 
@@ -902,11 +1054,15 @@ typedef enum
 [ENUM]
 [  
     [DESCRIPTION]
+    Deprecated and will be removed in a future release.
+
     Parameter types for the FMOD_DSP_TYPE_ENVELOPEFOLLOWER unit.
     This is a simple envelope follower for tracking the signal level.<br>
 
     [REMARKS]
-    This unit does not affect the incoming signal
+    Deprecated and will be removed in a future release.
+
+    This unit does not affect the incoming signal.
     <br>
 
     [SEE_ALSO]
@@ -944,9 +1100,10 @@ typedef enum
 */
 typedef enum
 {
-    FMOD_DSP_CONVOLUTION_REVERB_PARAM_IR,       /* (Type:data)  - [w]   16-bit reverb IR (short*) with an extra sample prepended to the start which specifies the number of channels. */
+    FMOD_DSP_CONVOLUTION_REVERB_PARAM_IR,       /* (Type:data)  - [w]   Array of signed 16-bit (short) PCM data to be used as reverb IR.  First member of the array should be a 16 bit value (short) which specifies the number of channels.  Array looks like [index 0=numchannels][index 1+ = raw 16 bit PCM data].  Data is copied internally so source can be freed. */
     FMOD_DSP_CONVOLUTION_REVERB_PARAM_WET,      /* (Type:float) - [r/w] Volume of echo signal to pass to output in dB.  -80.0 to 10.0.  Default = 0. */
-    FMOD_DSP_CONVOLUTION_REVERB_PARAM_DRY       /* (Type:float) - [r/w] Original sound volume in dB.  -80.0 to 10.0.  Default = 0. */
+    FMOD_DSP_CONVOLUTION_REVERB_PARAM_DRY,      /* (Type:float) - [r/w] Original sound volume in dB.  -80.0 to 10.0.  Default = 0. */
+    FMOD_DSP_CONVOLUTION_REVERB_PARAM_LINKED    /* (Type:bool)  - [r/w] Linked - channels are mixed together before processing through the reverb.  Default = TRUE. */
 } FMOD_DSP_CONVOLUTION_REVERB;
 
 /*
@@ -973,14 +1130,6 @@ typedef enum
     FMOD_DSP_CHANNELMIX_OUTPUT_ALL7POINT1,   /*  Output channel count = 8.  Mapping: Repeating pattern of Front Left, Front Right, Center, LFE, Surround Left, Surround Right, Back Left, Back Right.  */
     FMOD_DSP_CHANNELMIX_OUTPUT_ALLLFE        /*  Output channel count = 6.  Mapping: Repeating pattern of LFE in a 5.1 output signal.  */
 } FMOD_DSP_CHANNELMIX_OUTPUT;
-
-#define FMOD_DSP_CHANNELGAIN_OUTPUT_DEFAULT     FMOD_DSP_CHANNELMIX_OUTPUT_DEFAULT      // Deprecated. Please use FMOD_DSP_CHANNELMIX_OUTPUT_DEFAULT.
-#define FMOD_DSP_CHANNELGAIN_OUTPUT_ALLMONO     FMOD_DSP_CHANNELMIX_OUTPUT_ALLMONO      // Deprecated. Please use FMOD_DSP_CHANNELMIX_OUTPUT_ALLMONO.
-#define FMOD_DSP_CHANNELGAIN_OUTPUT_ALLSTEREO   FMOD_DSP_CHANNELMIX_OUTPUT_ALLSTEREO    // Deprecated. Please use FMOD_DSP_CHANNELMIX_OUTPUT_ALLSTEREO.
-#define FMOD_DSP_CHANNELGAIN_OUTPUT_ALLQUAD     FMOD_DSP_CHANNELMIX_OUTPUT_ALLQUAD      // Deprecated. Please use FMOD_DSP_CHANNELMIX_OUTPUT_ALLQUAD.
-#define FMOD_DSP_CHANNELGAIN_OUTPUT_ALL5POINT1  FMOD_DSP_CHANNELMIX_OUTPUT_ALL5POINT1   // Deprecated. Please use FMOD_DSP_CHANNELMIX_OUTPUT_ALL5POINT1.
-#define FMOD_DSP_CHANNELGAIN_OUTPUT_ALL7POINT1  FMOD_DSP_CHANNELMIX_OUTPUT_ALL7POINT1   // Deprecated. Please use FMOD_DSP_CHANNELMIX_OUTPUT_ALL7POINT1.
-#define FMOD_DSP_CHANNELGAIN_OUTPUT_ALLLFE      FMOD_DSP_CHANNELMIX_OUTPUT_ALLLFE       // Deprecated. Please use FMOD_DSP_CHANNELMIX_OUTPUT_ALLLFE.
 
 /*
 [ENUM]
@@ -1113,6 +1262,38 @@ typedef enum
     FMOD_DSP_TRANSCEIVER_TRANSMITSPEAKERMODE  /* (Type:int)   - [r/w] - Speaker mode (transmitter mode only).  Specifies either 0 (Auto) Default = 0.*/
 } FMOD_DSP_TRANSCEIVER;
 
+
+/*
+[ENUM]
+[
+    [DESCRIPTION]
+    Parameter types for the FMOD_DSP_TYPE_OBJECTPAN DSP.  3D Object panners are meant for hardware 3d object systems like Dolby Atmos or Sony Morpheus.
+    These object panners take input in, and send it to the 7.1 bed, but do not send the signal further down the DSP chain (the output of the dsp is silence).
+
+    [REMARKS]
+
+    [SEE_ALSO]
+    DSP::setParameterFloat
+    DSP::getParameterFloat
+    DSP::setParameterInt
+    DSP::getParameterInt
+    DSP::setParameterData
+    DSP::getParameterData
+    FMOD_DSP_TYPE
+]
+*/
+typedef enum
+{
+    FMOD_DSP_OBJECTPAN_3D_POSITION,                   /* (Type:data)  - 3D Position.               data of type FMOD_DSP_PARAMETER_3DATTRIBUTES_MULTI */
+    FMOD_DSP_OBJECTPAN_3D_ROLLOFF,                    /* (Type:int)   - 3D Rolloff.                FMOD_DSP_PAN_3D_ROLLOFF_LINEARSQUARED to FMOD_DSP_PAN_3D_ROLLOFF_CUSTOM.  Default = FMOD_DSP_PAN_3D_ROLLOFF_LINEARSQUARED. */
+    FMOD_DSP_OBJECTPAN_3D_MIN_DISTANCE,               /* (Type:float) - 3D Min Distance.           0.0 to 1e+18f.  Default = 1.0. */
+    FMOD_DSP_OBJECTPAN_3D_MAX_DISTANCE,               /* (Type:float) - 3D Max Distance.           0.0 to 1e+18f.  Default = 20.0. */
+    FMOD_DSP_OBJECTPAN_3D_EXTENT_MODE,                /* (Type:int)   - 3D Extent Mode.            FMOD_DSP_PAN_3D_EXTENT_MODE_AUTO to FMOD_DSP_PAN_3D_EXTENT_MODE_OFF.  Default = FMOD_DSP_PAN_3D_EXTENT_MODE_AUTO. */
+    FMOD_DSP_OBJECTPAN_3D_SOUND_SIZE,                 /* (Type:float) - 3D Sound Size.             0.0 to 1e+18f.  Default = 0.0. */
+    FMOD_DSP_OBJECTPAN_3D_MIN_EXTENT,                 /* (Type:float) - 3D Min Extent.             0.0 (degrees) to 360.0 (degrees).  Default = 0.0. */
+    FMOD_DSP_OBJECTPAN_OVERALL_GAIN,                  /* (Type:data)  - Overall gain.              For information only, not set by user.  Data of type FMOD_DSP_PARAMETER_DATA_TYPE_OVERALLGAIN to provide to FMOD, to allow FMOD to know the DSP is scaling the signal for virtualization purposes. */
+    FMOD_DSP_OBJECTPAN_OUTPUTGAIN                     /* (Type:float) - Output gain level.         0.0 to 1.0 linear scale.  For the user to scale the output of the object panner's signal. */
+} FMOD_DSP_OBJECTPAN;
 
 #endif
 

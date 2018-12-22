@@ -16,7 +16,7 @@
       supports installable dequantizing-IDCT, YCbCr-to-RGB conversion (define STBI_SIMD)
         
    TODO:
-      stbi_info_*
+      soil_stbi_info_*
   
    history:
       1.16   major bugfix - convert_format converted one too many pixels
@@ -32,11 +32,11 @@
       1.07   attempt to fix C++ warning/errors again
       1.06   attempt to fix C++ warning/errors again
       1.05   fix TGA loading to return correct *comp and use good luminance calc
-      1.04   default float alpha is 1, not 255; use 'void *' for stbi_image_free
+      1.04   default float alpha is 1, not 255; use 'void *' for soil_stbi_image_free
       1.03   bugfixes to STBI_NO_STDIO, STBI_NO_HDR
       1.02   support for (subset of) HDR files, float interface for preferred access to them
       1.01   fix bug: possible bug in handling right-side up bmps... not sure
-             fix bug: the stbi_bmp_load() and stbi_tga_load() functions didn't work at all
+             fix bug: the soil_stbi_bmp_load() and soil_stbi_tga_load() functions didn't work at all
       1.00   interface to zlib that skips zlib header
       0.99   correct handling of alpha in palette
       0.98   TGA loader by lonesock; dynamically add loaders (untested)
@@ -77,11 +77,11 @@
 //
 // Basic usage (see HDR discussion below):
 //    int x,y,n;
-//    unsigned char *data = stbi_load(filename, &x, &y, &n, 0);
+//    unsigned char *data = soil_stbi_load(filename, &x, &y, &n, 0);
 //    // ... process data if not NULL ... 
 //    // ... x = width, y = height, n = # 8-bit components per pixel ...
 //    // ... replace '0' with '1'..'4' to force that many components per pixel
-//    stbi_image_free(data)
+//    soil_stbi_image_free(data)
 //
 // Standard parameters:
 //    int *x       -- outputs image width in pixels
@@ -109,7 +109,7 @@
 //       4           red, green, blue, alpha
 //
 // If image loading fails for any reason, the return value will be NULL,
-// and *x, *y, *comp will be unchanged. The function stbi_failure_reason()
+// and *x, *y, *comp will be unchanged. The function soil_stbi_failure_reason()
 // can be queried for an extremely brief, end-user unfriendly explanation
 // of why the load failed. Define STBI_NO_FAILURE_STRINGS to avoid
 // compiling these strings at all, and STBI_FAILURE_USERMSG to get slightly
@@ -129,30 +129,30 @@
 // LDR, assuming gamma 2.2 and an arbitrary scale factor defaulting to 1;
 // both of these constants can be reconfigured through this interface:
 //
-//     stbi_hdr_to_ldr_gamma(2.2f);
-//     stbi_hdr_to_ldr_scale(1.0f);
+//     soil_stbi_hdr_to_ldr_gamma(2.2f);
+//     soil_stbi_hdr_to_ldr_scale(1.0f);
 //
-// (note, do not use _inverse_ constants; stbi_image will invert them
+// (note, do not use _inverse_ constants; soil_stbi_image will invert them
 // appropriately).
 //
 // Additionally, there is a new, parallel interface for loading files as
 // (linear) floats to preserve the full dynamic range:
 //
-//    float *data = stbi_loadf(filename, &x, &y, &n, 0);
+//    float *data = soil_stbi_loadf(filename, &x, &y, &n, 0);
 // 
 // If you load LDR images through this interface, those images will
 // be promoted to floating point values, run through the inverse of
 // constants corresponding to the above:
 //
-//     stbi_ldr_to_hdr_scale(1.0f);
-//     stbi_ldr_to_hdr_gamma(2.2f);
+//     soil_stbi_ldr_to_hdr_scale(1.0f);
+//     soil_stbi_ldr_to_hdr_gamma(2.2f);
 //
 // Finally, given a filename (or an open file or memory block--see header
 // file for details) containing image data, you can query for the "most
 // appropriate" interface to use (that is, whether the image is HDR or
 // not), using:
 //
-//     stbi_is_hdr(char *filename);
+//     soil_stbi_is_hdr(char *filename);
 
 #ifndef STBI_NO_STDIO
 #include <stdio.h>
@@ -170,7 +170,7 @@ enum
    STBI_rgb_alpha  = 4,
 };
 
-typedef unsigned char stbi_uc;
+typedef unsigned char soil_stbi_uc;
 
 #ifdef __cplusplus
 extern "C" {
@@ -182,157 +182,157 @@ extern "C" {
 // write a BMP/TGA file given tightly packed 'comp' channels (no padding, nor bmp-stride-padding)
 // (you must include the appropriate extension in the filename).
 // returns TRUE on success, FALSE if couldn't open file, error writing file
-extern int      stbi_write_bmp       (char const *filename,     int x, int y, int comp, void *data);
-extern int      stbi_write_tga       (char const *filename,     int x, int y, int comp, void *data);
+extern int      soil_stbi_write_bmp       (char const *filename,     int x, int y, int comp, void *data);
+extern int      soil_stbi_write_tga       (char const *filename,     int x, int y, int comp, void *data);
 #endif
 
 // PRIMARY API - works on images of any type
 
 // load image by filename, open file, or memory buffer
 #ifndef STBI_NO_STDIO
-extern stbi_uc *stbi_load            (char const *filename,     int *x, int *y, int *comp, int req_comp);
-extern stbi_uc *stbi_load_from_file  (FILE *f,                  int *x, int *y, int *comp, int req_comp);
-extern int      stbi_info_from_file  (FILE *f,                  int *x, int *y, int *comp);
+extern soil_stbi_uc *soil_stbi_load            (char const *filename,     int *x, int *y, int *comp, int req_comp);
+extern soil_stbi_uc *soil_stbi_load_from_file  (FILE *f,                  int *x, int *y, int *comp, int req_comp);
+extern int      soil_stbi_info_from_file  (FILE *f,                  int *x, int *y, int *comp);
 #endif
-extern stbi_uc *stbi_load_from_memory(stbi_uc const *buffer, int len, int *x, int *y, int *comp, int req_comp);
-// for stbi_load_from_file, file pointer is left pointing immediately after image
+extern soil_stbi_uc *soil_stbi_load_from_memory(soil_stbi_uc const *buffer, int len, int *x, int *y, int *comp, int req_comp);
+// for soil_stbi_load_from_file, file pointer is left pointing immediately after image
 
 #ifndef STBI_NO_HDR
 #ifndef STBI_NO_STDIO
-extern float *stbi_loadf            (char const *filename,     int *x, int *y, int *comp, int req_comp);
-extern float *stbi_loadf_from_file  (FILE *f,                  int *x, int *y, int *comp, int req_comp);
+extern float *soil_stbi_loadf            (char const *filename,     int *x, int *y, int *comp, int req_comp);
+extern float *soil_stbi_loadf_from_file  (FILE *f,                  int *x, int *y, int *comp, int req_comp);
 #endif
-extern float *stbi_loadf_from_memory(stbi_uc const *buffer, int len, int *x, int *y, int *comp, int req_comp);
+extern float *soil_stbi_loadf_from_memory(soil_stbi_uc const *buffer, int len, int *x, int *y, int *comp, int req_comp);
 
-extern void   stbi_hdr_to_ldr_gamma(float gamma);
-extern void   stbi_hdr_to_ldr_scale(float scale);
+extern void   soil_stbi_hdr_to_ldr_gamma(float gamma);
+extern void   soil_stbi_hdr_to_ldr_scale(float scale);
 
-extern void   stbi_ldr_to_hdr_gamma(float gamma);
-extern void   stbi_ldr_to_hdr_scale(float scale);
+extern void   soil_stbi_ldr_to_hdr_gamma(float gamma);
+extern void   soil_stbi_ldr_to_hdr_scale(float scale);
 
 #endif // STBI_NO_HDR
 
 // get a VERY brief reason for failure
 // NOT THREADSAFE
-extern char    *stbi_failure_reason  (void); 
+extern char    *soil_stbi_failure_reason  (void); 
 
 // free the loaded image -- this is just free()
-extern void     stbi_image_free      (void *retval_from_stbi_load);
+extern void     soil_stbi_image_free      (void *retval_from_soil_stbi_load);
 
 // get image dimensions & components without fully decoding
-extern int      stbi_info_from_memory(stbi_uc const *buffer, int len, int *x, int *y, int *comp);
-extern int      stbi_is_hdr_from_memory(stbi_uc const *buffer, int len);
+extern int      soil_stbi_info_from_memory(soil_stbi_uc const *buffer, int len, int *x, int *y, int *comp);
+extern int      soil_stbi_is_hdr_from_memory(soil_stbi_uc const *buffer, int len);
 #ifndef STBI_NO_STDIO
-extern int      stbi_info            (char const *filename,     int *x, int *y, int *comp);
-extern int      stbi_is_hdr          (char const *filename);
-extern int      stbi_is_hdr_from_file(FILE *f);
+extern int      soil_stbi_info            (char const *filename,     int *x, int *y, int *comp);
+extern int      soil_stbi_is_hdr          (char const *filename);
+extern int      soil_stbi_is_hdr_from_file(FILE *f);
 #endif
 
 // ZLIB client - used by PNG, available for other purposes
 
-extern char *stbi_zlib_decode_malloc_guesssize(const char *buffer, int len, int initial_size, int *outlen);
-extern char *stbi_zlib_decode_malloc(const char *buffer, int len, int *outlen);
-extern int   stbi_zlib_decode_buffer(char *obuffer, int olen, const char *ibuffer, int ilen);
+extern char *soil_stbi_zlib_decode_malloc_guesssize(const char *buffer, int len, int initial_size, int *outlen);
+extern char *soil_stbi_zlib_decode_malloc(const char *buffer, int len, int *outlen);
+extern int   soil_stbi_zlib_decode_buffer(char *obuffer, int olen, const char *ibuffer, int ilen);
 
-extern char *stbi_zlib_decode_noheader_malloc(const char *buffer, int len, int *outlen);
-extern int   stbi_zlib_decode_noheader_buffer(char *obuffer, int olen, const char *ibuffer, int ilen);
+extern char *soil_stbi_zlib_decode_noheader_malloc(const char *buffer, int len, int *outlen);
+extern int   soil_stbi_zlib_decode_noheader_buffer(char *obuffer, int olen, const char *ibuffer, int ilen);
 
 // TYPE-SPECIFIC ACCESS
 
 // is it a jpeg?
-extern int      stbi_jpeg_test_memory     (stbi_uc const *buffer, int len);
-extern stbi_uc *stbi_jpeg_load_from_memory(stbi_uc const *buffer, int len, int *x, int *y, int *comp, int req_comp);
-extern int      stbi_jpeg_info_from_memory(stbi_uc const *buffer, int len, int *x, int *y, int *comp);
+extern int      soil_stbi_jpeg_test_memory     (soil_stbi_uc const *buffer, int len);
+extern soil_stbi_uc *soil_stbi_jpeg_load_from_memory(soil_stbi_uc const *buffer, int len, int *x, int *y, int *comp, int req_comp);
+extern int      soil_stbi_jpeg_info_from_memory(soil_stbi_uc const *buffer, int len, int *x, int *y, int *comp);
 
 #ifndef STBI_NO_STDIO
-extern stbi_uc *stbi_jpeg_load            (char const *filename,     int *x, int *y, int *comp, int req_comp);
-extern int      stbi_jpeg_test_file       (FILE *f);
-extern stbi_uc *stbi_jpeg_load_from_file  (FILE *f,                  int *x, int *y, int *comp, int req_comp);
+extern soil_stbi_uc *soil_stbi_jpeg_load            (char const *filename,     int *x, int *y, int *comp, int req_comp);
+extern int      soil_stbi_jpeg_test_file       (FILE *f);
+extern soil_stbi_uc *soil_stbi_jpeg_load_from_file  (FILE *f,                  int *x, int *y, int *comp, int req_comp);
 
-extern int      stbi_jpeg_info            (char const *filename,     int *x, int *y, int *comp);
-extern int      stbi_jpeg_info_from_file  (FILE *f,                  int *x, int *y, int *comp);
+extern int      soil_stbi_jpeg_info            (char const *filename,     int *x, int *y, int *comp);
+extern int      soil_stbi_jpeg_info_from_file  (FILE *f,                  int *x, int *y, int *comp);
 #endif
 
 // is it a png?
-extern int      stbi_png_test_memory      (stbi_uc const *buffer, int len);
-extern stbi_uc *stbi_png_load_from_memory (stbi_uc const *buffer, int len, int *x, int *y, int *comp, int req_comp);
-extern int      stbi_png_info_from_memory (stbi_uc const *buffer, int len, int *x, int *y, int *comp);
+extern int      soil_stbi_png_test_memory      (soil_stbi_uc const *buffer, int len);
+extern soil_stbi_uc *soil_stbi_png_load_from_memory (soil_stbi_uc const *buffer, int len, int *x, int *y, int *comp, int req_comp);
+extern int      soil_stbi_png_info_from_memory (soil_stbi_uc const *buffer, int len, int *x, int *y, int *comp);
 
 #ifndef STBI_NO_STDIO
-extern stbi_uc *stbi_png_load             (char const *filename,     int *x, int *y, int *comp, int req_comp);
-extern int      stbi_png_info             (char const *filename,     int *x, int *y, int *comp);
-extern int      stbi_png_test_file        (FILE *f);
-extern stbi_uc *stbi_png_load_from_file   (FILE *f,                  int *x, int *y, int *comp, int req_comp);
-extern int      stbi_png_info_from_file   (FILE *f,                  int *x, int *y, int *comp);
+extern soil_stbi_uc *soil_stbi_png_load             (char const *filename,     int *x, int *y, int *comp, int req_comp);
+extern int      soil_stbi_png_info             (char const *filename,     int *x, int *y, int *comp);
+extern int      soil_stbi_png_test_file        (FILE *f);
+extern soil_stbi_uc *soil_stbi_png_load_from_file   (FILE *f,                  int *x, int *y, int *comp, int req_comp);
+extern int      soil_stbi_png_info_from_file   (FILE *f,                  int *x, int *y, int *comp);
 #endif
 
 // is it a bmp?
-extern int      stbi_bmp_test_memory      (stbi_uc const *buffer, int len);
+extern int      soil_stbi_bmp_test_memory      (soil_stbi_uc const *buffer, int len);
 
-extern stbi_uc *stbi_bmp_load             (char const *filename,     int *x, int *y, int *comp, int req_comp);
-extern stbi_uc *stbi_bmp_load_from_memory (stbi_uc const *buffer, int len, int *x, int *y, int *comp, int req_comp);
+extern soil_stbi_uc *soil_stbi_bmp_load             (char const *filename,     int *x, int *y, int *comp, int req_comp);
+extern soil_stbi_uc *soil_stbi_bmp_load_from_memory (soil_stbi_uc const *buffer, int len, int *x, int *y, int *comp, int req_comp);
 #ifndef STBI_NO_STDIO
-extern int      stbi_bmp_test_file        (FILE *f);
-extern stbi_uc *stbi_bmp_load_from_file   (FILE *f,                  int *x, int *y, int *comp, int req_comp);
+extern int      soil_stbi_bmp_test_file        (FILE *f);
+extern soil_stbi_uc *soil_stbi_bmp_load_from_file   (FILE *f,                  int *x, int *y, int *comp, int req_comp);
 #endif
 
 // is it a tga?
-extern int      stbi_tga_test_memory      (stbi_uc const *buffer, int len);
+extern int      soil_stbi_tga_test_memory      (soil_stbi_uc const *buffer, int len);
 
-extern stbi_uc *stbi_tga_load             (char const *filename,     int *x, int *y, int *comp, int req_comp);
-extern stbi_uc *stbi_tga_load_from_memory (stbi_uc const *buffer, int len, int *x, int *y, int *comp, int req_comp);
+extern soil_stbi_uc *soil_stbi_tga_load             (char const *filename,     int *x, int *y, int *comp, int req_comp);
+extern soil_stbi_uc *soil_stbi_tga_load_from_memory (soil_stbi_uc const *buffer, int len, int *x, int *y, int *comp, int req_comp);
 #ifndef STBI_NO_STDIO
-extern int      stbi_tga_test_file        (FILE *f);
-extern stbi_uc *stbi_tga_load_from_file   (FILE *f,                  int *x, int *y, int *comp, int req_comp);
+extern int      soil_stbi_tga_test_file        (FILE *f);
+extern soil_stbi_uc *soil_stbi_tga_load_from_file   (FILE *f,                  int *x, int *y, int *comp, int req_comp);
 #endif
 
 // is it a psd?
-extern int      stbi_psd_test_memory      (stbi_uc const *buffer, int len);
+extern int      soil_stbi_psd_test_memory      (soil_stbi_uc const *buffer, int len);
 
-extern stbi_uc *stbi_psd_load             (char const *filename,     int *x, int *y, int *comp, int req_comp);
-extern stbi_uc *stbi_psd_load_from_memory (stbi_uc const *buffer, int len, int *x, int *y, int *comp, int req_comp);
+extern soil_stbi_uc *soil_stbi_psd_load             (char const *filename,     int *x, int *y, int *comp, int req_comp);
+extern soil_stbi_uc *soil_stbi_psd_load_from_memory (soil_stbi_uc const *buffer, int len, int *x, int *y, int *comp, int req_comp);
 #ifndef STBI_NO_STDIO
-extern int      stbi_psd_test_file        (FILE *f);
-extern stbi_uc *stbi_psd_load_from_file   (FILE *f,                  int *x, int *y, int *comp, int req_comp);
+extern int      soil_stbi_psd_test_file        (FILE *f);
+extern soil_stbi_uc *soil_stbi_psd_load_from_file   (FILE *f,                  int *x, int *y, int *comp, int req_comp);
 #endif
 
 // is it an hdr?
-extern int      stbi_hdr_test_memory      (stbi_uc const *buffer, int len);
+extern int      soil_stbi_hdr_test_memory      (soil_stbi_uc const *buffer, int len);
 
-extern float *  stbi_hdr_load             (char const *filename,     int *x, int *y, int *comp, int req_comp);
-extern float *  stbi_hdr_load_from_memory (stbi_uc const *buffer, int len, int *x, int *y, int *comp, int req_comp);
-extern stbi_uc *stbi_hdr_load_rgbe        (char const *filename,           int *x, int *y, int *comp, int req_comp);
-extern float *  stbi_hdr_load_from_memory (stbi_uc const *buffer, int len, int *x, int *y, int *comp, int req_comp);
+extern float *  soil_stbi_hdr_load             (char const *filename,     int *x, int *y, int *comp, int req_comp);
+extern float *  soil_stbi_hdr_load_from_memory (soil_stbi_uc const *buffer, int len, int *x, int *y, int *comp, int req_comp);
+extern soil_stbi_uc *soil_stbi_hdr_load_rgbe        (char const *filename,           int *x, int *y, int *comp, int req_comp);
+extern float *  soil_stbi_hdr_load_from_memory (soil_stbi_uc const *buffer, int len, int *x, int *y, int *comp, int req_comp);
 #ifndef STBI_NO_STDIO
-extern int      stbi_hdr_test_file        (FILE *f);
-extern float *  stbi_hdr_load_from_file   (FILE *f,                  int *x, int *y, int *comp, int req_comp);
-extern stbi_uc *stbi_hdr_load_rgbe_file   (FILE *f,                  int *x, int *y, int *comp, int req_comp);
+extern int      soil_stbi_hdr_test_file        (FILE *f);
+extern float *  soil_stbi_hdr_load_from_file   (FILE *f,                  int *x, int *y, int *comp, int req_comp);
+extern soil_stbi_uc *soil_stbi_hdr_load_rgbe_file   (FILE *f,                  int *x, int *y, int *comp, int req_comp);
 #endif
 
 // define new loaders
 typedef struct
 {
-   int       (*test_memory)(stbi_uc const *buffer, int len);
-   stbi_uc * (*load_from_memory)(stbi_uc const *buffer, int len, int *x, int *y, int *comp, int req_comp);
+   int       (*test_memory)(soil_stbi_uc const *buffer, int len);
+   soil_stbi_uc * (*load_from_memory)(soil_stbi_uc const *buffer, int len, int *x, int *y, int *comp, int req_comp);
    #ifndef STBI_NO_STDIO
    int       (*test_file)(FILE *f);
-   stbi_uc * (*load_from_file)(FILE *f, int *x, int *y, int *comp, int req_comp);
+   soil_stbi_uc * (*load_from_file)(FILE *f, int *x, int *y, int *comp, int req_comp);
    #endif
-} stbi_loader;
+} soil_stbi_loader;
 
 // register a loader by filling out the above structure (you must defined ALL functions)
 // returns 1 if added or already added, 0 if not added (too many loaders)
 // NOT THREADSAFE
-extern int stbi_register_loader(stbi_loader *loader);
+extern int soil_stbi_register_loader(soil_stbi_loader *loader);
 
 // define faster low-level operations (typically SIMD support)
 #if STBI_SIMD
-typedef void (*stbi_idct_8x8)(uint8 *out, int out_stride, short data[64], unsigned short *dequantize);
+typedef void (*soil_stbi_idct_8x8)(uint8 *out, int out_stride, short data[64], unsigned short *dequantize);
 // compute an integer IDCT on "input"
 //     input[x] = data[x] * dequantize[x]
 //     write results to 'out': 64 samples, each run of 8 spaced by 'out_stride'
 //                             CLAMP results to 0..255
-typedef void (*stbi_YCbCr_to_RGB_run)(uint8 *output, uint8 const *y, uint8 const *cb, uint8 const *cr, int count, int step);
+typedef void (*soil_stbi_YCbCr_to_RGB_run)(uint8 *output, uint8 const *y, uint8 const *cb, uint8 const *cr, int count, int step);
 // compute a conversion from YCbCr to RGB
 //     'count' pixels
 //     write pixels to 'output'; each pixel is 'step' bytes (either 3 or 4; if 4, write '255' as 4th), order R,G,B
@@ -340,8 +340,8 @@ typedef void (*stbi_YCbCr_to_RGB_run)(uint8 *output, uint8 const *y, uint8 const
 //     cb: Cb input channel; scale/biased to be 0..255
 //     cr: Cr input channel; scale/biased to be 0..255
 
-extern void stbi_install_idct(stbi_idct_8x8 func);
-extern void stbi_install_YCbCr_to_RGB(stbi_YCbCr_to_RGB_run func);
+extern void soil_stbi_install_idct(soil_stbi_idct_8x8 func);
+extern void soil_stbi_install_YCbCr_to_RGB(soil_stbi_YCbCr_to_RGB_run func);
 #endif // STBI_SIMD
 
 #ifdef __cplusplus
