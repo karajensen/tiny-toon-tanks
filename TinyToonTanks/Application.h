@@ -55,7 +55,7 @@ private:
     */
     void InitialiseInput();
 
-    std::unique_ptr<PhysicsEngine> m_physics;  ///< Physics world
+    std::unique_ptr<PhysicsEngine> m_physics;       ///< Physics world
     std::unique_ptr<SoundEngine> m_sound;           ///< Controller for sound
     std::unique_ptr<Camera> m_camera;               ///< The camera viewing the scene
     std::unique_ptr<Input> m_input;                 ///< Manages input from the window

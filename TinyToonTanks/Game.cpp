@@ -5,14 +5,16 @@
 #include "Game.h"
 #include "GameBuilder.h"
 #include "GameData.h"
-#include "BulletSpawner.h"
-#include "MovementUpdater.h"
+#include "BulletManager.h"
+#include "CollisionManager.h"
+#include "TankMovementUpdater.h"
 #include "SceneData.h"
 #include "Tweaker.h"
 #include "Camera.h"
 
-Game::Game(Camera& camera) :
+Game::Game(Camera& camera, PhysicsEngine& physicsEngine) :
     m_camera(camera),
+    m_physicsEngine(physicsEngine),
     m_data(std::make_unique<GameData>()),
     m_builder(std::make_unique<GameBuilder>())
 {
@@ -20,7 +22,7 @@ Game::Game(Camera& camera) :
 
 Game::~Game() = default;
 
-void Game::Tick(float deltatime)
+void Game::PrePhysicsTick(float deltatime)
 {
     m_data->player->Update(deltatime);
     for (auto& enemy : m_data->enemies)
@@ -28,8 +30,8 @@ void Game::Tick(float deltatime)
         enemy->Update(deltatime);
     } 
 
-    m_movement->Tick(deltatime);
-    m_spawner->Tick(deltatime);
+    m_tankMovementUpdater->PrePhysicsTick(deltatime);
+    m_bulletManager->PrePhysicsTick();
 
     // Fix the camera to the player
     if (!m_camera.IsFlyCamera())
@@ -45,7 +47,7 @@ void Game::Tick(float deltatime)
         m_camera.SetTarget(tankPosition);
     }
 
-    // Post tick to reset requests
+    // Reset movement requests
     m_data->player->ResetMovementRequest();
     for (auto& enemy : m_data->enemies)
     {
@@ -53,20 +55,32 @@ void Game::Tick(float deltatime)
     } 
 }
 
-bool Game::Initialise(SceneData& data, PhysicsEngine& physics)
+void Game::PostPhysicsTick()
 {
-    m_movement = std::make_unique<MovementUpdater>(
-        physics, *m_data, data);
+    m_tankMovementUpdater->PostPhysicsTick();
+    m_bulletManager->PostPhysicsTick();
 
-    m_spawner = std::make_unique<BulletSpawner>(
-        physics, *m_data, data);
-
-    return Reset(data, physics);
+    m_collisionManager->CollisionDetection();
+    m_collisionManager->CollisionResolution();
 }
 
-bool Game::Reset(SceneData& data, PhysicsEngine& physics)
+bool Game::Initialise(SceneData& data)
 {
-    return m_builder->Initialise(*m_data, data, physics);
+    m_tankMovementUpdater = std::make_unique<TankMovementUpdater>(
+        m_physicsEngine, *m_data, data);
+
+    m_bulletManager = std::make_unique<BulletManager>(
+        m_physicsEngine, *m_data, data);
+
+    m_collisionManager = std::make_unique<CollisionManager>(
+        m_physicsEngine, *m_data, data);
+
+    return Reset(data);
+}
+
+bool Game::Reset(SceneData& data)
+{
+    return m_builder->Initialise(*m_data, data, m_physicsEngine);
 }
 
 void Game::AddToTweaker(Tweaker& tweaker, std::function<void(void)> reset)

@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////////////
-// Kara Jensen - mail@karajensen.com - MovementUpdater.h
+// Kara Jensen - mail@karajensen.com - TankMovementUpdater.h
 ////////////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -12,7 +12,7 @@ struct GameData;
 /**
 * Controls the movement of the tanks
 */
-class MovementUpdater
+class TankMovementUpdater
 {
 public:
 
@@ -22,28 +22,33 @@ public:
     * @param gameData Objects from the game to update
     * @param sceneData Meshes from the scene to update
     */
-    MovementUpdater(PhysicsEngine& physics, 
-                    GameData& gameData,
-                    SceneData& sceneData);
+    TankMovementUpdater(PhysicsEngine& physics,
+                        GameData& gameData,
+                        SceneData& sceneData);
 
     /**
     * Destructor
     */
-    ~MovementUpdater();
+    ~TankMovementUpdater();
 
     /**
-    * Ticks the updater
+    * Ticks the updater before physics have updated
     * @param deltatime The time between ticks in seconds
     */
-    void Tick(float deltatime);
+    void PrePhysicsTick(float deltatime);
+
+    /**
+    * Ticks the updater after physics have updated
+    */
+    void PostPhysicsTick();
 
 private:
 
     /**
     * Prevent copying
     */
-    MovementUpdater(const MovementUpdater&) = delete;
-    MovementUpdater& operator=(const MovementUpdater&) = delete;
+    TankMovementUpdater(const TankMovementUpdater&) = delete;
+    TankMovementUpdater& operator=(const TankMovementUpdater&) = delete;
 
     /**
     * Updates the tank positions from the physics engine

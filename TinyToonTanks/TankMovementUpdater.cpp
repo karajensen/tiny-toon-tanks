@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////////////
-// Kara Jensen - mail@karajensen.com - MovementUpdater.cpp
+// Kara Jensen - mail@karajensen.com - TankMovementUpdater.cpp
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#include "MovementUpdater.h"
+#include "TankMovementUpdater.h"
 #include "PhysicsEngine.h"
 #include "GameData.h"
 #include "SceneData.h"
@@ -33,33 +33,41 @@ namespace
     const glm::vec3 FrontBotRight(1.709f, -1.076f, -3.238f);
 }
 
-MovementUpdater::MovementUpdater(PhysicsEngine& physics, 
-                                 GameData& gameData,
-                                 SceneData& sceneData) :
+TankMovementUpdater::TankMovementUpdater(PhysicsEngine& physics,
+                                         GameData& gameData,
+                                         SceneData& sceneData) :
     m_physics(physics),
     m_gameData(gameData),
     m_sceneData(sceneData)
 {
 }
 
-MovementUpdater::~MovementUpdater() = default;
+TankMovementUpdater::~TankMovementUpdater() = default;
 
-void MovementUpdater::Tick(float deltatime)
+void TankMovementUpdater::PrePhysicsTick(float deltatime)
 {
-    UpdateTankPositions(*m_gameData.player);
     UpdateTankMovement(deltatime, *m_gameData.player);
     UpdateGunMovement(deltatime, *m_gameData.player);
     FlipTank(*m_gameData.player);
 
     for (auto& enemy : m_gameData.enemies)
     {
-        UpdateTankPositions(*enemy);
         UpdateTankMovement(deltatime, *enemy);
         UpdateGunMovement(deltatime, *enemy);
     } 
 }
 
-void MovementUpdater::UpdateTankPositions(const Tank& tank)
+void TankMovementUpdater::PostPhysicsTick()
+{
+    UpdateTankPositions(*m_gameData.player);
+
+    for (auto& enemy : m_gameData.enemies)
+    {
+        UpdateTankPositions(*enemy);
+    }
+}
+
+void TankMovementUpdater::UpdateTankPositions(const Tank& tank)
 {
     const int instance = tank.GetInstance();
     const auto& physicsIDs = tank.GetPhysicsIDs();
@@ -88,7 +96,7 @@ void MovementUpdater::UpdateTankPositions(const Tank& tank)
     }
 }
 
-void MovementUpdater::UpdateTankMovement(float deltatime, Tank& tank)
+void TankMovementUpdater::UpdateTankMovement(float deltatime, Tank& tank)
 {
     const int rb = tank.GetPhysicsIDs().Body;
     const unsigned int request = tank.GetMovementRequest();
@@ -139,7 +147,7 @@ void MovementUpdater::UpdateTankMovement(float deltatime, Tank& tank)
     }
 }
 
-void MovementUpdater::UpdateGunMovement(float deltatime, Tank& tank)
+void TankMovementUpdater::UpdateGunMovement(float deltatime, Tank& tank)
 {
     const unsigned int request = tank.GetMovementRequest();
     const int hinge = tank.GetPhysicsIDs().Hinge;
@@ -161,7 +169,7 @@ void MovementUpdater::UpdateGunMovement(float deltatime, Tank& tank)
     }
 }
 
-void MovementUpdater::FlipTank(const Tank& tank)
+void TankMovementUpdater::FlipTank(const Tank& tank)
 {
     if ((tank.GetMovementRequest() & Tank::FLIP) == Tank::FLIP)
     {

@@ -8,6 +8,7 @@
 #include "glm/glm.hpp"
 
 class Tweaker;
+class Input;
 
 /**
 * Camera class to view the world with
@@ -29,13 +30,10 @@ public:
 
     /**
     * Updates the view matrix
-    * @param mouseDown whether the mouse was pressed
-    * @param mouseDirection the direction of mouse movement
+    * @param input Player input
     * @param deltatime Time passed between frames
     */
-    void Update(bool mouseDown, 
-                const glm::vec2& mouseDirection, 
-                float deltatime);
+    void Update(const Input& input, float deltatime);
 
     /**
     * Resets the camera to the initial state

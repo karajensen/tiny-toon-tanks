@@ -36,7 +36,7 @@ SoundEngine::~SoundEngine()
 
     if(m_system)
     {
-		m_system->close();
+        m_system->close();
         m_system->release();
     }
 }
@@ -64,33 +64,33 @@ void SoundEngine::PlayMusic(Sound ID)
 
 void SoundEngine::Update()
 {
-	CheckResult(m_system->update());
+    CheckResult(m_system->update());
 
-	if (m_shouldFade && m_musicChannel)
-	{
-		if (m_fadeIn)
-		{
-			m_volume += m_fadeSpeed;
-			if (m_volume >= m_maxVolume)
-			{
-				m_volume = m_maxVolume;
-				m_shouldFade = false;
-			}
-			m_musicChannel->setVolume(m_volume);
-		}
-		else
-		{
-			m_volume -= m_fadeSpeed;
-			m_musicChannel->setVolume(m_volume);
-			if (m_volume <= 0)
-			{
-				m_volume = 0;
-				m_shouldFade = false;
-				m_musicChannel->stop();
-				PlayMusic();
-			}
-		}
-	}
+    if (m_shouldFade && m_musicChannel)
+    {
+        if (m_fadeIn)
+        {
+            m_volume += m_fadeSpeed;
+            if (m_volume >= m_maxVolume)
+            {
+                m_volume = m_maxVolume;
+                m_shouldFade = false;
+            }
+            m_musicChannel->setVolume(m_volume);
+        }
+        else
+        {
+            m_volume -= m_fadeSpeed;
+            m_musicChannel->setVolume(m_volume);
+            if (m_volume <= 0)
+            {
+                m_volume = 0;
+                m_shouldFade = false;
+                m_musicChannel->stop();
+                PlayMusic();
+            }
+        }
+    }
 }
 
 void SoundEngine::PlayMusic()
@@ -121,19 +121,19 @@ void SoundEngine::CheckResult(FMOD_RESULT result)
 
 void SoundEngine::InitialiseFmod()
 {
-	FMOD_RESULT result = FMOD::System_Create(&m_system);
-	CheckResult(result);
+    FMOD_RESULT result = FMOD::System_Create(&m_system);
+    CheckResult(result);
 
-	unsigned int version;
-	result = m_system->getVersion(&version);
-	CheckResult(result);
+    unsigned int version;
+    result = m_system->getVersion(&version);
+    CheckResult(result);
 
-	if (version < FMOD_VERSION)
-	{
-		LogError("FMOD lib version mismatch");
-	}
+    if (version < FMOD_VERSION)
+    {
+        LogError("FMOD lib version mismatch");
+    }
 
-	void* extradriverdata = 0;
-	result = m_system->init(32, FMOD_INIT_NORMAL, extradriverdata);
-	CheckResult(result);
+    void* extradriverdata = 0;
+    result = m_system->init(32, FMOD_INIT_NORMAL, extradriverdata);
+    CheckResult(result);
 }

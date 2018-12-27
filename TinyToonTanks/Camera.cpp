@@ -5,6 +5,7 @@
 #include "Camera.h"
 #include "Common.h"
 #include "Tweaker.h"
+#include "Input.h"
 #include "GLMHelper.h"
 #include "glm/ext.hpp"
 
@@ -108,12 +109,11 @@ void Camera::SetTarget(const glm::vec3& position)
     m_target = position;
 }
 
-void Camera::Update(bool mouseDown, 
-                    const glm::vec2& mouseDirection,
-                    float deltatime)
+void Camera::Update(const Input& input, float deltatime)
 {
-    if (m_useFlyCamera && mouseDown)
+    if (m_useFlyCamera && input.IsRightMouseDown())
     {
+        const auto& mouseDirection = input.GetMouseDirection();
         if(mouseDirection.x != 0.0f)
         {
             Yaw(mouseDirection.x < 0.0f ? -deltatime : deltatime);

@@ -74,7 +74,7 @@ private:
     static SoundEngine* sm_engine;                 ///< Sound engine singleton
     FMOD::System* m_system = nullptr;              ///< FMOD System controller
     FMOD::Channel* m_musicChannel = nullptr;       ///< Current channel music is played on
-	FMOD::Channel* m_sfxChannel = nullptr;         ///< Current channel sounds are played on
+    FMOD::Channel* m_sfxChannel = nullptr;         ///< Current channel sounds are played on
     Sound m_currentTrack = NOTRACK;                ///< The current music track playing
     Sound m_nextTrack = NOTRACK;                   ///< The next music track to play
     float m_maxVolume = 0.0f;                      ///< The maximum volume for the track

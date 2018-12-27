@@ -20,7 +20,7 @@ Application::Application() :
     m_camera(std::make_unique<Camera>()),
     m_timer(std::make_unique<Timer>()),
     m_physics(std::make_unique<PhysicsEngine>()),
-    m_game(std::make_unique<Game>(*m_camera))
+    m_game(std::make_unique<Game>(*m_camera, *m_physics))
 {
 }
 
@@ -32,32 +32,27 @@ void Application::Run()
 
     while(m_engine->IsRunning())
     {
-        m_timer->StartSection(Timer::SCENE);
-
         m_timer->UpdateTimer();
         const float deltaTime = m_timer->GetDeltaTime();
 
+        m_timer->StartSection(Timer::SCENE);
         m_sound->Update();
         m_input->Update();       
         m_gui->Update(*m_input);
         m_scene->Tick(deltaTime);
-        m_game->Tick(deltaTime);
-
-        m_camera->Update(m_input->IsRightMouseDown(), 
-            m_input->GetMouseDirection(), deltaTime);
-
+        m_game->PrePhysicsTick(deltaTime);
+        m_camera->Update(*m_input, deltaTime);
         m_timer->StopSection(Timer::SCENE);
+
         m_timer->StartSection(Timer::PHYSICS);
-
         m_physics->Tick(0.01f);
-
+        m_game->PostPhysicsTick();
         m_timer->StopSection(Timer::PHYSICS);
-        m_timer->StartSection(Timer::RENDERING);
 
+        m_timer->StartSection(Timer::RENDERING);
         m_engine->RenderScene();
         m_gui->Render();
         m_engine->EndRender();
-
         m_timer->StopSection(Timer::RENDERING);
     }
 }
@@ -90,7 +85,7 @@ bool Application::Initialise()
         return false;
     }
 
-    if (!m_game->Initialise(m_scene->GetSceneData(), *m_physics))
+    if (!m_game->Initialise(m_scene->GetSceneData()))
     {
         LogError("Could not initialise game");
         return false;
@@ -111,7 +106,7 @@ void Application::InitialiseInput()
 
     m_input->AddCallback(GLFW_KEY_F1, false, [this]()
     { 
-        m_game->Reset(m_scene->GetSceneData(), *m_physics);
+        m_game->Reset(m_scene->GetSceneData());
     });
 
     m_input->AddCallback(GLFW_KEY_F2, true, [this]()

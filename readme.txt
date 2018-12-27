@@ -2,16 +2,12 @@
 - Get Player bullets interacting with player
 - Bullets destroy themselves when hitting tanks
 - Tanks break apart when hit with bullets
-
 - Add health
 - Add toon text
 - Add AI movement for tanks
 - Get background rendering
 - Get shadows rendering
 - Get updated UI/Menus rendering
-- Change 'N' to '0'
-- Transparent shadows
-- Smooth over mesh edges
 
 ===========================================================================
 TINY TOON TANKS

@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////////////
-// Kara Jensen - mail@karajensen.com - BulletSpawner.cpp
+// Kara Jensen - mail@karajensen.com - BulletManager.cpp
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#include "BulletSpawner.h"
+#include "BulletManager.h"
 #include "PhysicsEngine.h"
 #include "GameData.h"
 #include "SceneData.h"
@@ -18,7 +18,7 @@ namespace
     const float BulletGravity = -0.05f;  ///< Artificial gravity on the bullets
 }
 
-BulletSpawner::BulletSpawner(PhysicsEngine& physics, 
+BulletManager::BulletManager(PhysicsEngine& physics,
                              GameData& gameData,
                              SceneData& sceneData) :
     m_physics(physics),
@@ -27,9 +27,9 @@ BulletSpawner::BulletSpawner(PhysicsEngine& physics,
 {
 }
 
-BulletSpawner::~BulletSpawner() = default;
+BulletManager::~BulletManager() = default;
 
-void BulletSpawner::Tick(float deltatime)
+void BulletManager::PrePhysicsTick()
 {
     FireBullet(*m_gameData.player);
 
@@ -47,7 +47,25 @@ void BulletSpawner::Tick(float deltatime)
     }
 }
 
-void BulletSpawner::MoveBullet(Bullet& bullet)
+void BulletManager::PostPhysicsTick()
+{
+    for (auto& bullet : m_gameData.bullets)
+    {
+        if (bullet->IsActive())
+        {
+            UpdateButtonPosition(*bullet);
+        }
+    }
+}
+
+void BulletManager::UpdateButtonPosition(Bullet& bullet)
+{
+    const int ID = bullet.GetPhysicsID();
+
+    bullet.SetWorld(m_physics.GetTransform(ID));
+}
+
+void BulletManager::MoveBullet(Bullet& bullet)
 {
     const int ID = bullet.GetPhysicsID();
     
@@ -55,9 +73,7 @@ void BulletSpawner::MoveBullet(Bullet& bullet)
     m_physics.SetFriction(ID, 0);
     m_physics.SetGravity(ID, BulletGravity);
     
-    bullet.SetWorld(m_physics.GetTransform(ID));    
     glm::vec3 velocity = m_physics.GetVelocity(ID);
-    
     if (glm::vec3_is_zero(velocity))
     {
         bullet.SetActive(false);
@@ -78,7 +94,7 @@ void BulletSpawner::MoveBullet(Bullet& bullet)
     }
 }
 
-void BulletSpawner::FireBullet(const Tank& tank)
+void BulletManager::FireBullet(const Tank& tank)
 {
     if ((tank.GetMovementRequest() & Tank::FIRE) == Tank::FIRE)
     {

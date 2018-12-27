@@ -11,9 +11,9 @@ struct SceneData;
 struct GameData;
 
 /**
-* Controls the spawning of bullets
+* Controls the spawning and movement of bullets
 */
-class BulletSpawner
+class BulletManager
 {
 public:
 
@@ -23,28 +23,32 @@ public:
     * @param gameData Objects from the game to update
     * @param sceneData Meshes from the scene to update
     */
-    BulletSpawner(PhysicsEngine& physics, 
+	BulletManager(PhysicsEngine& physics,
                   GameData& gameData,
                   SceneData& sceneData);
 
     /**
     * Destructor
     */
-    ~BulletSpawner();
+    ~BulletManager();
 
     /**
-    * Ticks the updater
-    * @param deltatime The time between ticks in seconds
+    * Ticks the updater before physics have updated
     */
-    void Tick(float deltatime);
+    void PrePhysicsTick();
+
+	/**
+	* Ticks the updater after physics has been updated
+	*/
+	void PostPhysicsTick();
 
 private:
 
     /**
     * Prevent copying
     */
-    BulletSpawner(const BulletSpawner&) = delete;
-    BulletSpawner& operator=(const BulletSpawner&) = delete;
+	BulletManager(const BulletManager&) = delete;
+	BulletManager& operator=(const BulletManager&) = delete;
 
     /**
     * Fires a bullet from the tank if requested
@@ -55,6 +59,11 @@ private:
     * Moves the bullet
     */
     void MoveBullet(Bullet& bullet);
+
+	/**
+	* Updates the bullet position from the physics engine
+	*/
+	void UpdateButtonPosition(Bullet& bullet);
 
     PhysicsEngine& m_physics;  ///< The physics world to update from
     GameData& m_gameData;      ///< Objects from the game to update
