@@ -72,7 +72,7 @@
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="OpenGL.cpp" />
     <ClCompile Include="opengl\gl_core_4_4.c" />
-    <ClCompile Include="TankMovementUpdater.cpp" />
+    <ClCompile Include="TankManager.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Postprocessing.cpp" />
     <ClCompile Include="Quad.cpp" />
@@ -114,7 +114,7 @@
     <ClInclude Include="OpenGL.h" />
     <ClInclude Include="opengl\GL.h" />
     <ClInclude Include="opengl\gl_core_4_4.h" />
-    <ClInclude Include="TankMovementUpdater.h" />
+    <ClInclude Include="TankManager.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Postprocessing.h" />
     <ClInclude Include="Quad.h" />

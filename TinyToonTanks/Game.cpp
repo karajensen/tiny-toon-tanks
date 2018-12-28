@@ -7,7 +7,7 @@
 #include "GameData.h"
 #include "BulletManager.h"
 #include "CollisionManager.h"
-#include "TankMovementUpdater.h"
+#include "TankManager.h"
 #include "SceneData.h"
 #include "Tweaker.h"
 #include "Camera.h"
@@ -30,7 +30,7 @@ void Game::PrePhysicsTick(float deltatime)
         enemy->Update(deltatime);
     } 
 
-    m_tankMovementUpdater->PrePhysicsTick(deltatime);
+    m_tankManager->PrePhysicsTick(deltatime);
     m_bulletManager->PrePhysicsTick();
 
     // Fix the camera to the player
@@ -57,7 +57,7 @@ void Game::PrePhysicsTick(float deltatime)
 
 void Game::PostPhysicsTick()
 {
-    m_tankMovementUpdater->PostPhysicsTick();
+    m_tankManager->PostPhysicsTick();
     m_bulletManager->PostPhysicsTick();
 
     m_collisionManager->CollisionDetection();
@@ -66,7 +66,7 @@ void Game::PostPhysicsTick()
 
 bool Game::Initialise(SceneData& data)
 {
-    m_tankMovementUpdater = std::make_unique<TankMovementUpdater>(
+    m_tankManager = std::make_unique<TankManager>(
         m_physicsEngine, *m_data, data);
 
     m_bulletManager = std::make_unique<BulletManager>(
@@ -80,7 +80,7 @@ bool Game::Initialise(SceneData& data)
 
 bool Game::Reset(SceneData& data)
 {
-    return m_builder->Initialise(*m_data, data, m_physicsEngine);
+    return m_builder->Initialise(*m_data, data, m_physicsEngine, *m_collisionManager);
 }
 
 void Game::AddToTweaker(Tweaker& tweaker, std::function<void(void)> reset)

@@ -156,12 +156,12 @@ bool SceneBuilder::InitialiseMeshes(SceneData& data)
     success &= Initialise("tankp4", MeshID::TANKP4, ShaderID::TOON, TextureID::TANK_NPC_BODY, Instance::TANKS);
 
     // Player has different texture to enemies
-    data.meshes[MeshID::TANK]->SetTexture(TextureID::TANK_BODY, 0);
-    data.meshes[MeshID::TANKGUN]->SetTexture(TextureID::TANK_GUN, 0);
-    data.meshes[MeshID::TANKP1]->SetTexture(TextureID::TANK_BODY, 0);
-    data.meshes[MeshID::TANKP2]->SetTexture(TextureID::TANK_BODY, 0);
-    data.meshes[MeshID::TANKP3]->SetTexture(TextureID::TANK_BODY, 0);
-    data.meshes[MeshID::TANKP4]->SetTexture(TextureID::TANK_BODY, 0);
+    data.meshes[MeshID::TANK]->SetTexture(TextureID::TANK_BODY, Instance::PLAYER);
+    data.meshes[MeshID::TANKGUN]->SetTexture(TextureID::TANK_GUN, Instance::PLAYER);
+    data.meshes[MeshID::TANKP1]->SetTexture(TextureID::TANK_BODY, Instance::PLAYER);
+    data.meshes[MeshID::TANKP2]->SetTexture(TextureID::TANK_BODY, Instance::PLAYER);
+    data.meshes[MeshID::TANKP3]->SetTexture(TextureID::TANK_BODY, Instance::PLAYER);
+    data.meshes[MeshID::TANKP4]->SetTexture(TextureID::TANK_BODY, Instance::PLAYER);
 
     return success;
 }

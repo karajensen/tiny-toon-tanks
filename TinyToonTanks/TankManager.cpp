@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////////////
-// Kara Jensen - mail@karajensen.com - TankMovementUpdater.cpp
+// Kara Jensen - mail@karajensen.com - TankManager.cpp
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#include "TankMovementUpdater.h"
+#include "TankManager.h"
 #include "PhysicsEngine.h"
 #include "GameData.h"
 #include "SceneData.h"
@@ -33,7 +33,7 @@ namespace
     const glm::vec3 FrontBotRight(1.709f, -1.076f, -3.238f);
 }
 
-TankMovementUpdater::TankMovementUpdater(PhysicsEngine& physics,
+TankManager::TankManager(PhysicsEngine& physics,
                                          GameData& gameData,
                                          SceneData& sceneData) :
     m_physics(physics),
@@ -42,9 +42,9 @@ TankMovementUpdater::TankMovementUpdater(PhysicsEngine& physics,
 {
 }
 
-TankMovementUpdater::~TankMovementUpdater() = default;
+TankManager::~TankManager() = default;
 
-void TankMovementUpdater::PrePhysicsTick(float deltatime)
+void TankManager::PrePhysicsTick(float deltatime)
 {
     UpdateTankMovement(deltatime, *m_gameData.player);
     UpdateGunMovement(deltatime, *m_gameData.player);
@@ -57,7 +57,7 @@ void TankMovementUpdater::PrePhysicsTick(float deltatime)
     } 
 }
 
-void TankMovementUpdater::PostPhysicsTick()
+void TankManager::PostPhysicsTick()
 {
     UpdateTankPositions(*m_gameData.player);
 
@@ -67,7 +67,7 @@ void TankMovementUpdater::PostPhysicsTick()
     }
 }
 
-void TankMovementUpdater::UpdateTankPositions(const Tank& tank)
+void TankManager::UpdateTankPositions(const Tank& tank)
 {
     const int instance = tank.GetInstance();
     const auto& physicsIDs = tank.GetPhysicsIDs();
@@ -96,7 +96,7 @@ void TankMovementUpdater::UpdateTankPositions(const Tank& tank)
     }
 }
 
-void TankMovementUpdater::UpdateTankMovement(float deltatime, Tank& tank)
+void TankManager::UpdateTankMovement(float deltatime, Tank& tank)
 {
     const int rb = tank.GetPhysicsIDs().Body;
     const unsigned int request = tank.GetMovementRequest();
@@ -147,7 +147,7 @@ void TankMovementUpdater::UpdateTankMovement(float deltatime, Tank& tank)
     }
 }
 
-void TankMovementUpdater::UpdateGunMovement(float deltatime, Tank& tank)
+void TankManager::UpdateGunMovement(float deltatime, Tank& tank)
 {
     const unsigned int request = tank.GetMovementRequest();
     const int hinge = tank.GetPhysicsIDs().Hinge;
@@ -169,7 +169,7 @@ void TankMovementUpdater::UpdateGunMovement(float deltatime, Tank& tank)
     }
 }
 
-void TankMovementUpdater::FlipTank(const Tank& tank)
+void TankManager::FlipTank(const Tank& tank)
 {
     if ((tank.GetMovementRequest() & Tank::FLIP) == Tank::FLIP)
     {

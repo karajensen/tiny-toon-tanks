@@ -9,7 +9,8 @@
 
 namespace
 {
-    float FIRE_GUN_DELAY = 0.5f; ///< Seconds to delay before allowing firing again
+    const float FireGunDelay = 0.5f;   ///< Seconds to delay before allowing firing again
+    const int InitialTankHealth = 2;   ///< Amount of initial tank health
 }
 
 Tank::Tank(MeshGroup& tankmesh, int instance) :
@@ -24,12 +25,24 @@ Tank::~Tank()
 
 void Tank::Reset()
 {
-    m_alive = true;
+    SetIsAlive(true);
     m_movement = NO_MOVEMENT;      
     m_linearDamping = 1.0f; 
     m_rotationalDamping = 1.0f; 
     m_gunDamping = 2.0f;
     m_fireGunTime = 0.0f;
+    m_isDropping = true;
+    m_health = InitialTankHealth;
+}
+
+void Tank::SetDropping(bool dropping)
+{
+    m_isDropping = dropping;
+}
+
+bool Tank::IsDropping() const
+{
+    return m_isDropping;
 }
 
 void Tank::Update(float deltatime)
@@ -46,8 +59,20 @@ void Tank::AddToTweaker(Tweaker& tweaker)
 {
     tweaker.AddButton("Kill Tank", [this]()
     {
-        m_alive = false;
+        SetIsAlive(false);
     });
+}
+
+void Tank::SetIsAlive(bool alive)
+{
+    m_alive = alive;
+
+    m_tankmesh.Body.IsVisible(alive);
+    m_tankmesh.Gun.IsVisible(alive);
+    m_tankmesh.P1.IsVisible(!alive);
+    m_tankmesh.P2.IsVisible(!alive);
+    m_tankmesh.P3.IsVisible(!alive);
+    m_tankmesh.P4.IsVisible(!alive);
 }
 
 const glm::vec3& Tank::GetPosition() const
@@ -75,7 +100,7 @@ void Tank::Fire()
     if (m_fireGunTime == 0.0f)
     {
         m_movement |= FIRE;
-        m_fireGunTime = FIRE_GUN_DELAY;
+        m_fireGunTime = FireGunDelay;
     }
 }
 
@@ -162,4 +187,14 @@ const glm::mat4& Tank::GetWorldMatrix() const
 const glm::mat4& Tank::GetGunWorldMatrix() const
 {
     return m_tankmesh.Gun.GetWorld(m_instance);
+}
+
+void Tank::TakeDamage(int amount)
+{
+    m_health = std::max(0, m_health - amount);
+}
+
+int Tank::Health() const
+{
+    return m_health;
 }

@@ -32,15 +32,15 @@ namespace HullID
 {
     enum ID
     {
-        TANK,
-        GUN,
-        BULLET,
         GROUND,
         WALL,
+        TANK,
+        GUN,
         TANKP1,
         TANKP2,
         TANKP3,
         TANKP4,
+        BULLET,
         MAX
     };
 }
@@ -145,5 +145,10 @@ namespace Instance
         BULLETS = 50,
         WALLS = 4,
         ENEMIES = 5
+    };
+
+    enum ID
+    {
+        PLAYER = Amount::ENEMIES
     };
 }

@@ -15,14 +15,6 @@
 */
 struct GameData
 {
-    GameData()
-    {
-    }
-
-    ~GameData()
-    {
-    }
-
     std::unique_ptr<Tank::MeshGroup> tankMesh;
     std::unique_ptr<Player> player;
     std::vector<std::unique_ptr<Enemy>> enemies;

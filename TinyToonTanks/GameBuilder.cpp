@@ -6,6 +6,7 @@
 #include "GameData.h"
 #include "SceneData.h"
 #include "PhysicsEngine.h"
+#include "CollisionManager.h"
 #include "Common.h"
 
 GameBuilder::GameBuilder() = default;
@@ -13,19 +14,20 @@ GameBuilder::~GameBuilder() = default;
 
 bool GameBuilder::Initialise(GameData& gamedata,
                              SceneData& scenedata, 
-                             PhysicsEngine& physics)
+                             PhysicsEngine& physics,
+                             CollisionManager& collisionManager)
 {
-    m_collisionGroupIndex = 0;
     physics.ResetSimulation();
 
-    return InitialiseWorld(gamedata, scenedata, physics) &&
-        InitialiseTanks(gamedata, scenedata, physics) &&
-        InitialiseBullets(gamedata, scenedata, physics);
+    return InitialiseWorld(gamedata, scenedata, physics, collisionManager) &&
+        InitialiseTanks(gamedata, scenedata, physics, collisionManager) &&
+        InitialiseBullets(gamedata, scenedata, physics, collisionManager);
 }
 
 bool GameBuilder::InitialiseWorld(GameData& gamedata,
                                   SceneData& scenedata, 
-                                  PhysicsEngine& physics)
+                                  PhysicsEngine& physics,
+                                  CollisionManager& collisionManager)
 {
     const float groundHeight = -60.0f;
     const float floorHeight = groundHeight + 2.282f;
@@ -51,19 +53,23 @@ bool GameBuilder::InitialiseWorld(GameData& gamedata,
     ground.UpdateTransforms();
     wall.UpdateTransforms();
 
+    const int environmentGroup = collisionManager.GetCollisionGroupIndex();
+
     const int groundShape = physics.LoadConvexShape(
         scenedata.hulls[HullID::GROUND]->VertexPositions());
+    assert(groundShape == HullID::GROUND);
 
     physics.LoadRigidBody(ground.GetWorld(), groundShape, 
-        0.0f, m_collisionGroupIndex, MeshID::GROUND, 0, true);
+        0.0f, environmentGroup, MeshID::GROUND, 0, true);
 
     const int wallShape = physics.LoadConvexShape(
         scenedata.hulls[HullID::WALL]->VertexPositions());
+    assert(wallShape == HullID::WALL);
 
     for (int i = 0; i < 4; ++i)
     {
         physics.LoadRigidBody(wall.GetWorld(i), wallShape, 
-            0.0f, m_collisionGroupIndex, MeshID::WALL, i, true);
+            0.0f, environmentGroup, MeshID::WALL, i, true);
     }
 
     return true;
@@ -71,7 +77,8 @@ bool GameBuilder::InitialiseWorld(GameData& gamedata,
 
 bool GameBuilder::InitialiseTanks(GameData& gamedata,
                                   SceneData& scenedata, 
-                                  PhysicsEngine& physics)
+                                  PhysicsEngine& physics,
+                                  CollisionManager& collisionManager)
 
 {
     const int enemyHealth = 2;
@@ -97,8 +104,8 @@ bool GameBuilder::InitialiseTanks(GameData& gamedata,
         gamedata.tankMesh = std::make_unique<Tank::MeshGroup>(
             tankBody, tankGun, tankp1, tankp2, tankp3, tankp4);
 
-        gamedata.player = std::make_unique<Player>(*gamedata.tankMesh, 0);
-        for (int i = 1; i <= Instance::ENEMIES; ++i)
+        gamedata.player = std::make_unique<Player>(*gamedata.tankMesh, Instance::PLAYER);
+        for (int i = 0; i < Instance::ENEMIES; ++i)
         {
             gamedata.enemies.push_back(
                 std::make_unique<Enemy>(*gamedata.tankMesh, i));
@@ -113,7 +120,7 @@ bool GameBuilder::InitialiseTanks(GameData& gamedata,
         }
     }
 
-    int index = 0;
+    int index = Instance::PLAYER;
     const int spawnRows = 2;
     const int spawnColumns = 3;
     for(int r = 0; r < spawnRows; r++)
@@ -132,7 +139,7 @@ bool GameBuilder::InitialiseTanks(GameData& gamedata,
             tankp3.Visible(false, index);
             tankp4.Visible(false, index);
 
-            ++index;
+            --index;
         }
     }
 
@@ -146,56 +153,62 @@ bool GameBuilder::InitialiseTanks(GameData& gamedata,
     // Initialise tank physics
     const int tankBodyShape = physics.LoadConvexShape(
         scenedata.hulls[HullID::TANK]->VertexPositions());
+    assert(tankBodyShape == HullID::TANK);
 
     const int tankGunShape = physics.LoadConvexShape(
         scenedata.hulls[HullID::GUN]->VertexPositions());
+    assert(tankGunShape == HullID::GUN);
 
     const int tankP1Shape = physics.LoadConvexShape(
         scenedata.hulls[HullID::TANKP1]->VertexPositions());
+    assert(tankP1Shape == HullID::TANKP1);
 
     const int tankP2Shape = physics.LoadConvexShape(
         scenedata.hulls[HullID::TANKP2]->VertexPositions());
+    assert(tankP2Shape == HullID::TANKP2);
 
     const int tankP3Shape = physics.LoadConvexShape(
         scenedata.hulls[HullID::TANKP3]->VertexPositions());
+    assert(tankP3Shape == HullID::TANKP3);
 
     const int tankP4Shape = physics.LoadConvexShape(
         scenedata.hulls[HullID::TANKP4]->VertexPositions());
+    assert(tankP4Shape == HullID::TANKP4);
 
     auto CreateTankPhysics = [&](int instance) -> Tank::PhysicsIDs
     {
         Tank::PhysicsIDs IDs;
 
-        ++m_collisionGroupIndex;
+        collisionManager.IncrementCollisionGroupIndex();
 
         IDs.Body = physics.LoadRigidBody(tankBody.GetWorld(instance), tankBodyShape, 
-            tankMass, m_collisionGroupIndex, MeshID::TANK, instance, true);
+            tankMass, collisionManager.GetCollisionGroupIndex(), MeshID::TANK, instance, true);
 
         IDs.Gun = physics.LoadRigidBody(tankGun.GetWorld(instance), tankGunShape, 
-            gunMass, m_collisionGroupIndex, MeshID::TANKGUN, instance, true);
+            gunMass, collisionManager.GetCollisionGroupIndex(), MeshID::TANKGUN, instance, true);
 
-        ++m_collisionGroupIndex;
+        collisionManager.IncrementCollisionGroupIndex();
 
         IDs.P1 = physics.LoadRigidBody(tankp1.GetWorld(instance), tankP1Shape, 
-            tankPartMass, m_collisionGroupIndex, MeshID::TANKP1, instance, false,
+            tankPartMass, collisionManager.GetCollisionGroupIndex(), MeshID::TANKP1, instance, false,
             glm::vec3(-0.158f, 0.414f, 2.21f));
 
-        ++m_collisionGroupIndex;
+        collisionManager.IncrementCollisionGroupIndex();
 
         IDs.P2 = physics.LoadRigidBody(tankp2.GetWorld(instance), tankP2Shape, 
-            tankPartMass, m_collisionGroupIndex, MeshID::TANKP2, instance, false,
+            tankPartMass, collisionManager.GetCollisionGroupIndex(), MeshID::TANKP2, instance, false,
             glm::vec3(-0.158f, 0.345f, 0.191f));
 
-        ++m_collisionGroupIndex;
+        collisionManager.IncrementCollisionGroupIndex();
 
         IDs.P3 = physics.LoadRigidBody(tankp3.GetWorld(instance), tankP3Shape, 
-            tankPartMass, m_collisionGroupIndex, MeshID::TANKP3, instance, false,
+            tankPartMass, collisionManager.GetCollisionGroupIndex(), MeshID::TANKP3, instance, false,
             glm::vec3(-0.158f, 0.0f, -1.916f));
 
-        ++m_collisionGroupIndex;
+        collisionManager.IncrementCollisionGroupIndex();
 
         IDs.P4 = physics.LoadRigidBody(tankp4.GetWorld(instance), tankP4Shape, 
-            gunMass, m_collisionGroupIndex, MeshID::TANKP4, instance, false,
+            gunMass, collisionManager.GetCollisionGroupIndex(), MeshID::TANKP4, instance, false,
             glm::vec3(0.0f, 2.096f, 0.0f));
 
         physics.AddToWorld(IDs.P1, false);
@@ -210,10 +223,10 @@ bool GameBuilder::InitialiseTanks(GameData& gamedata,
         return IDs;
     };
 
-    gamedata.player->SetPhysicsIDs(CreateTankPhysics(0));
+    gamedata.player->SetPhysicsIDs(CreateTankPhysics(Instance::PLAYER));
     for (int i = 0; i < Instance::ENEMIES; ++i)
     {
-        gamedata.enemies[i]->SetPhysicsIDs(CreateTankPhysics(i+1));
+        gamedata.enemies[i]->SetPhysicsIDs(CreateTankPhysics(i));
     }
 
     return true;
@@ -221,7 +234,8 @@ bool GameBuilder::InitialiseTanks(GameData& gamedata,
 
 bool GameBuilder::InitialiseBullets(GameData& gamedata,
                                     SceneData& scenedata, 
-                                    PhysicsEngine& physics)
+                                    PhysicsEngine& physics,
+                                    CollisionManager& collisionManager)
 
 {
     const int bulletHealth = 2;
@@ -231,6 +245,7 @@ bool GameBuilder::InitialiseBullets(GameData& gamedata,
 
     auto& bullet = *scenedata.meshes[MeshID::BULLET];
     const int shape = physics.LoadConvexShape(bullet.VertexPositions());
+    assert(shape == HullID::BULLET);
 
     for (int i = 0; i < bullet.Instances(); ++i)
     {
@@ -240,12 +255,13 @@ bool GameBuilder::InitialiseBullets(GameData& gamedata,
                 std::make_unique<Bullet>(bullet, i));
         }
 
-        ++m_collisionGroupIndex;
+        collisionManager.IncrementCollisionGroupIndex();
 
         const int ID = physics.LoadRigidBody(glm::mat4(), shape, 
-            bulletMass, m_collisionGroupIndex, MeshID::BULLET, i, true);
+            bulletMass, collisionManager.GetCollisionGroupIndex(),
+            MeshID::BULLET, i, true);
         
-        gamedata.bullets[i]->SetActive(false);
+        gamedata.bullets[i]->SetIsAlive(false);
         gamedata.bullets[i]->SetPhysicsID(ID);
         physics.AddToWorld(ID, false);
     }

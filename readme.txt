@@ -1,7 +1,9 @@
 
-- Get Player bullets interacting with player
-- Bullets destroy themselves when hitting tanks
-- Tanks break apart when hit with bullets
+- Add collision resolution logic
+    - Get Player bullets interacting with player
+    - Bullets destroy themselves when hitting tanks
+    - Tanks break apart when hit with bullets
+
 - Add health
 - Add toon text
 - Add AI movement for tanks

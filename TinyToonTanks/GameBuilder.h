@@ -7,6 +7,7 @@
 #include <vector>
 
 class PhysicsEngine;
+class CollisionManager;
 struct SceneData;
 struct GameData;
 
@@ -25,11 +26,13 @@ public:
     * @param scenedata All information for the scene
     * @param gamedata All information for the game
     * @param physics The physics engine
+    * @param collisionManager Manages interaction between physics bodies
     * @return Whether the initialization was successful
     */
     bool Initialise(GameData& gamedata, 
                     SceneData& scenedata, 
-                    PhysicsEngine& physics);
+                    PhysicsEngine& physics,
+                    CollisionManager& collisionManager);
 
 private:
 
@@ -44,35 +47,37 @@ private:
     * @param scenedata All information for the scene
     * @param gamedata All information for the game
     * @param physics The physics world
+    * @param collisionManager Manages interaction between physics bodies
     * @return Whether the initialization was successful
     */
     bool InitialiseWorld(GameData& gamedata,
                          SceneData& scenedata, 
-                         PhysicsEngine& physics);
+                         PhysicsEngine& physics,
+                         CollisionManager& collisionManager);
 
     /**
     * Initialises the controllable tanks
     * @param scenedata All information for the scene
     * @param gamedata All information for the game
     * @param physics The physics world
+    * @param collisionManager Manages interaction between physics bodies
     * @return Whether the initialization was successful
     */
     bool InitialiseTanks(GameData& gamedata,
                          SceneData& scenedata, 
-                         PhysicsEngine& physics);
+                         PhysicsEngine& physics,
+                         CollisionManager& collisionManager);
 
     /**
     * Initialises the tank bullets
     * @param scenedata All information for the scene
     * @param gamedata All information for the game
     * @param physics The physics world
+    * @param collisionManager Manages interaction between physics bodies
     * @return Whether the initialization was successful
     */
     bool InitialiseBullets(GameData& gamedata,
                            SceneData& scenedata, 
-                           PhysicsEngine& physics);
-
-private:
-
-    int m_collisionGroupIndex = 0; ///< Current index for collision groups
+                           PhysicsEngine& physics,
+                           CollisionManager& collisionManager);
 };                     

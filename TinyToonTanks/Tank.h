@@ -130,6 +130,11 @@ public:
     * @return whether this tank is alive
     */
     bool IsAlive() const;
+
+    /**
+    * Sets whether this tank is alive
+    */
+    void SetIsAlive(bool alive);
     
     /**
     * @return the instance of the graphics mesh
@@ -225,6 +230,26 @@ public:
     */
     void Reset();
 
+    /**
+    * Set whether the tank is dropping to the ground when first spawned
+    */
+    void SetDropping(bool dropping);
+
+    /**
+    * @return whether the tank is dropping to the ground when first spawned
+    */
+    bool IsDropping() const;
+
+    /**
+    * Reduces the life of the tank
+    */
+    void TakeDamage(int amount);
+
+    /**
+    * @return the health of this tank
+    */
+    int Health() const;
+
 protected:
 
     /**
@@ -242,4 +267,6 @@ protected:
     float m_rotationalDamping = 1.0f;       ///< Damping value for rotational movement
     float m_gunDamping = 1.0f;              ///< Damping value for the gun rotation
     float m_fireGunTime = 0.0f;             ///< Time passed since a fire gun request
+    bool m_isDropping = true;               ///< Whether the tank is dropping to the ground when first spawned
+    int m_health = 0;                       ///< The health of this tank
 };

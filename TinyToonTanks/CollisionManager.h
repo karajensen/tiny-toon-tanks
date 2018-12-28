@@ -45,6 +45,15 @@ public:
     */
     void CollisionResolution();
 
+    /**
+    * Returns the collision group index
+    */
+    int GetCollisionGroupIndex() const;
+
+    /**
+    * Increments the collision group index
+    */
+    void IncrementCollisionGroupIndex();
 
 private:
 
@@ -54,8 +63,29 @@ private:
     CollisionManager(const CollisionManager&) = delete;
     CollisionManager& operator=(const CollisionManager&) = delete;
 
+    /**
+    * Determines what to do for a specific collision event
+    */
+    void ResolveCollisionEvent(CollisionEvent* colEvent);
+
+    /**
+    * Obtain a tank depending on the ID
+    */
+    Tank* GetTank(int instanceID) const;
+
+    /**
+    * Determines what to do when a bullet interacts with another shape
+    */
+    void BulletCollisionLogic(int shape, int shapeHit, int instance, int instanceHit, bool& ignoreEvent);
+
+    /**
+    * Determines what to do when a tank interacts with another shape
+    */
+    void TankCollisionLogic(int shape, int shapeHit, int instance);
+
     PhysicsEngine& m_physics;             ///< The physics world to update from
     GameData& m_gameData;                 ///< Objects from the game to update
     SceneData& m_sceneData;               ///< Meshes from the scene to update
     std::vector<CollisionEvent> m_events; ///< List of currently occuring collision events
+    int m_collisionGroupIndex = 0;        ///< Current index for collision groups
 };

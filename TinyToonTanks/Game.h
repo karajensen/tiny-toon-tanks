@@ -12,7 +12,7 @@
 #include "glm/glm.hpp"
 
 class CollisionManager;
-class TankMovementUpdater;
+class TankManager;
 class BulletManager;
 class GameBuilder;
 class PhysicsEngine;
@@ -110,12 +110,12 @@ private:
     Game(const Game&) = delete;
     Game& operator=(const Game&) = delete;
 
-    Camera& m_camera;                                            ///< Main camera
-    PhysicsEngine& m_physicsEngine;                              ///< Controls the game physics
-    std::unique_ptr<GameBuilder> m_builder;                      ///< Constructs the game
-    std::unique_ptr<CollisionManager> m_collisionManager;        ///< Managers detection and resolve of collisions
-    std::unique_ptr<TankMovementUpdater> m_tankMovementUpdater;  ///< Controls the movement of the tanks
-    std::unique_ptr<BulletManager> m_bulletManager;              ///< Controls the spawning/movement of bullets
-    std::unique_ptr<GameData> m_data;                            ///< Elements of the game
-    int m_selectedEnemy = 0;                                     ///< Currently selected enemy in the tweak bar
+    Camera& m_camera;                                      ///< Main camera
+    PhysicsEngine& m_physicsEngine;                        ///< Controls the game physics
+    std::unique_ptr<GameBuilder> m_builder;                ///< Constructs the game
+    std::unique_ptr<CollisionManager> m_collisionManager;  ///< Managers detection and resolve of collisions
+    std::unique_ptr<TankManager> m_tankManager;            ///< Controls the movement of the tanks
+    std::unique_ptr<BulletManager> m_bulletManager;        ///< Controls the spawning/movement of bullets
+    std::unique_ptr<GameData> m_data;                      ///< Elements of the game
+    int m_selectedEnemy = 0;                               ///< Currently selected enemy in the tweak bar
 }; 
