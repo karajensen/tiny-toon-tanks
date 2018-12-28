@@ -36,46 +36,25 @@ int Bullet::GetPhysicsID() const
 void Bullet::Reset()
 {
     SetIsAlive(false);
-    m_justShot = false;
-    m_needsImpulse = false;
     m_health = InitialBulletHealth;
     m_allowScore = false;
-    m_impulseCounter = 0;
+    m_generateImpuse = false;
 }
 
-void Bullet::SetNeedsImpulse(bool needsImpulse)
+void Bullet::SetGenerateImpulse(bool generate)
 {
-    m_needsImpulse = needsImpulse;
-    m_impulseCounter = 0;
+    m_generateImpuse = generate;
 }
 
-bool Bullet::NeedsImpulse()
+bool Bullet::ShouldGenerateImpulse() const
 {
-    if (m_needsImpulse)
-    {
-        ++m_impulseCounter;
-        if (m_impulseCounter >= ImpulseCounterMax)
-        {
-            SetNeedsImpulse(false);
-            return true;
-        }
-    }
-    return false;
+    return m_generateImpuse;
 }
 
 void Bullet::SetIsAlive(bool alive)
 {
     m_alive = alive;
-
-    if (alive)
-    {
-        m_usingDrawCounter = alive;
-        m_drawCounter = 0;
-    }
-    else
-    {
-        m_mesh.Visible(false, m_instance);
-    }
+    m_mesh.Visible(m_alive, m_instance);
 }
 
 bool Bullet::IsAlive() const
@@ -86,16 +65,6 @@ bool Bullet::IsAlive() const
 void Bullet::SetWorld(const glm::mat4& world)
 {
     m_mesh.SetWorld(world, m_instance);
-}
-
-void Bullet::SetJustShot(bool justShot)
-{
-    m_justShot = justShot;
-}
-
-bool Bullet::JustShot() const
-{
-    return m_justShot;
 }
 
 void Bullet::SetAllowScore(bool allowScore)
@@ -126,31 +95,4 @@ int Bullet::DamageDealt() const
 int Bullet::Health() const
 {
     return m_health;
-}
-
-glm::vec3 Bullet::Forward() const
-{
-    return glm::matrix_get_forward(m_mesh.GetWorld(m_instance));
-}
-
-bool Bullet::UsingDrawCounter() const
-{
-    return m_usingDrawCounter;
-}
-
-void Bullet::UpdateDrawCounter()
-{
-    if (m_alive && m_usingDrawCounter)
-    {
-        if (m_drawCounter < DrawCounterMax)
-        {
-            ++m_drawCounter;
-        }
-        else
-        {
-            m_usingDrawCounter = false;
-            m_drawCounter = 0;
-            m_mesh.Visible(true, m_instance);
-        }
-    }
 }

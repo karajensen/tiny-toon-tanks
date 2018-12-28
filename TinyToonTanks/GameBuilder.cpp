@@ -104,12 +104,12 @@ bool GameBuilder::InitialiseTanks(GameData& gamedata,
         gamedata.tankMesh = std::make_unique<Tank::MeshGroup>(
             tankBody, tankGun, tankp1, tankp2, tankp3, tankp4);
 
-        gamedata.player = std::make_unique<Player>(*gamedata.tankMesh, Instance::PLAYER);
         for (int i = 0; i < Instance::ENEMIES; ++i)
         {
             gamedata.enemies.push_back(
                 std::make_unique<Enemy>(*gamedata.tankMesh, i));
         }
+        gamedata.player = std::make_unique<Player>(*gamedata.tankMesh, Instance::PLAYER);
     }
     else
     {
@@ -223,11 +223,11 @@ bool GameBuilder::InitialiseTanks(GameData& gamedata,
         return IDs;
     };
 
-    gamedata.player->SetPhysicsIDs(CreateTankPhysics(Instance::PLAYER));
     for (int i = 0; i < Instance::ENEMIES; ++i)
     {
         gamedata.enemies[i]->SetPhysicsIDs(CreateTankPhysics(i));
     }
+    gamedata.player->SetPhysicsIDs(CreateTankPhysics(Instance::PLAYER));
 
     return true;
 }

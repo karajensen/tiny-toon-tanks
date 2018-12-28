@@ -154,12 +154,6 @@ void CollisionManager::BulletCollisionLogic(int shape, int shapeHit, int instanc
             bullet = m_gameData.bullets[instanceHit].get();
         }
 
-        // No collision testing if bullet just shot
-        if (bullet->JustShot())
-        {
-            return;
-        }
-
         // Get tank if colliding object is a tank
         Tank* tank = nullptr;
         if ((shape == MeshID::TANK) || (shape == MeshID::TANKGUN))
@@ -218,7 +212,7 @@ void CollisionManager::BulletCollisionLogic(int shape, int shapeHit, int instanc
             bullet->TakeDamage(1);
 
             // Add impulse in new direction
-            bullet->SetNeedsImpulse(true);
+            bullet->SetGenerateImpulse(true);
         }
         else
         {

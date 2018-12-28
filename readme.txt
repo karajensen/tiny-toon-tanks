@@ -1,6 +1,7 @@
 
 - Add collision resolution logic
-    - Get Player bullets interacting with player
+    - Crash when bullet interacts with enemy tank
+    - Player bullets interacting with player
     - Bullets destroy themselves when hitting tanks
     - Tanks break apart when hit with bullets
 

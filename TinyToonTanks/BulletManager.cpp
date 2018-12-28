@@ -44,7 +44,6 @@ void BulletManager::PrePhysicsTick()
         if (bullet->IsAlive())
         {
             MoveBullet(*bullet);
-            bullet->UpdateDrawCounter();
         }
     }
 }
@@ -75,28 +74,26 @@ void BulletManager::MoveBullet(Bullet& bullet)
     m_physics.SetFriction(ID, 0);
     m_physics.SetGravity(ID, BulletGravity);
 
-    if (!bullet.JustShot())
-    {
-        const auto distance = bullet.Position().length(); // Length from center to bullet
-        glm::vec3 velocity = m_physics.GetVelocity(ID);
+    const auto distance = bullet.Position().length(); // Length from center to bullet
+    glm::vec3 velocity = m_physics.GetVelocity(ID);
 
-        if (distance >= BulletWorldMaxDistance || glm::vec3_is_zero(velocity))
-        {
-            bullet.SetIsAlive(false);
-            m_physics.AddToWorld(ID, false);
-            m_physics.ResetVelocityAndForce(ID);
-        }
-        else if (bullet.NeedsImpulse())
-        {
-            m_physics.ResetVelocityAndForce(ID);
-            m_physics.AddImpulse(glm::normalize(velocity) *
-                BulletImpulse, glm::vec3(0, 0, 0), ID);
-        }
-        else // Generate continous force
-        {
-            m_physics.AddForce(glm::normalize(velocity) *
-                BulletImpulse, glm::vec3(0, 0, 0), ID);
-        }
+    if (distance >= BulletWorldMaxDistance || glm::vec3_is_zero(velocity))
+    {
+        bullet.SetIsAlive(false);
+        m_physics.AddToWorld(ID, false);
+        m_physics.ResetVelocityAndForce(ID);
+    }
+    else if (bullet.ShouldGenerateImpulse())
+    {
+        bullet.SetGenerateImpulse(false);
+        m_physics.ResetVelocityAndForce(ID);
+        m_physics.AddImpulse(glm::normalize(velocity) *
+            BulletImpulse, glm::vec3(0, 0, 0), ID);
+    }
+    else // Generate continous force
+    {
+        m_physics.AddForce(glm::normalize(velocity) *
+            BulletImpulse, glm::vec3(0, 0, 0), ID);
     }
 }
 
@@ -134,7 +131,6 @@ void BulletManager::FireBullet(const Tank& tank)
                 m_physics.AddImpulse(forward * RecoilImpulse, glm::vec3(0, 0, 0), tankID);
                 m_physics.AddImpulse(-forward * BulletImpulse, glm::vec3(0, 0, 0), bulletID);
 
-                bullet->SetJustShot(true);
                 return;
             }
         }
