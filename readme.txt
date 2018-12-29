@@ -1,16 +1,14 @@
 
 - Add collision resolution logic:
     - Fix bullets moving down and having weird incrementing force when hitting wall
-    - Bullets moving similar to original game
-    - Player bullets interacting with player
-
+    - Get Bullets moving similar to original game
+    - Fix Player bullets killing self
 - Get tank movement similar to original game
-- Add health
 - Add toon text
 - Add AI movement for tanks
-- Get background rendering
-- Get shadows rendering
-- Get updated UI/Menus rendering
+- Add background rendering
+- Add Shadows
+- Add Health UI
 
 ===========================================================================
 TINY TOON TANKS
