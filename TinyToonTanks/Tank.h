@@ -5,6 +5,7 @@
 #pragma once
 
 #include "glm\glm.hpp"
+#include "DataIDs.h"
 
 class Tweaker;
 class Mesh;
@@ -110,6 +111,11 @@ public:
     * @return the world matrix for the tank
     */
     const glm::mat4& GetWorldMatrix() const;
+
+    /**
+    * Set the world matrix for the tank piece
+    */
+    void SetPieceWorldMatrix(MeshID::ID id, const glm::mat4& matrix);
 
     /**
     * @return the world matrix for the gun

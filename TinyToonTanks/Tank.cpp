@@ -66,13 +66,31 @@ void Tank::AddToTweaker(Tweaker& tweaker)
 void Tank::SetIsAlive(bool alive)
 {
     m_alive = alive;
+    m_tankmesh.Body.Visible(m_alive, m_instance);
+    m_tankmesh.Gun.Visible(m_alive, m_instance);
+    m_tankmesh.P1.Visible(!m_alive, m_instance);
+    m_tankmesh.P2.Visible(!m_alive, m_instance);
+    m_tankmesh.P3.Visible(!m_alive, m_instance);
+    m_tankmesh.P4.Visible(!m_alive, m_instance);
+}
 
-    m_tankmesh.Body.IsVisible(alive);
-    m_tankmesh.Gun.IsVisible(alive);
-    m_tankmesh.P1.IsVisible(!alive);
-    m_tankmesh.P2.IsVisible(!alive);
-    m_tankmesh.P3.IsVisible(!alive);
-    m_tankmesh.P4.IsVisible(!alive);
+void Tank::SetPieceWorldMatrix(MeshID::ID id, const glm::mat4& matrix)
+{
+    switch (id)
+    {
+    case MeshID::TANKP1:
+        m_tankmesh.P1.SetWorld(matrix, m_instance);
+        break;
+    case MeshID::TANKP2:
+        m_tankmesh.P2.SetWorld(matrix, m_instance);
+        break;
+    case MeshID::TANKP3:
+        m_tankmesh.P3.SetWorld(matrix, m_instance);
+        break;
+    case MeshID::TANKP4:
+        m_tankmesh.P4.SetWorld(matrix, m_instance);
+        break;
+    }
 }
 
 const glm::vec3& Tank::GetPosition() const

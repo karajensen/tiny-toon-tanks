@@ -144,7 +144,8 @@ namespace Instance
         TANKS = 6,
         BULLETS = 50,
         WALLS = 4,
-        ENEMIES = 5
+        ENEMIES = 5,
+        TANK_PIECES = 4
     };
 
     enum ID

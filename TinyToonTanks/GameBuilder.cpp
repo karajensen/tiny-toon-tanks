@@ -66,7 +66,7 @@ bool GameBuilder::InitialiseWorld(GameData& gamedata,
         scenedata.hulls[HullID::WALL]->VertexPositions());
     assert(wallShape == HullID::WALL);
 
-    for (int i = 0; i < 4; ++i)
+    for (int i = 0; i < Instance::TANK_PIECES; ++i)
     {
         physics.LoadRigidBody(wall.GetWorld(i), wallShape, 
             0.0f, environmentGroup, MeshID::WALL, i, true);

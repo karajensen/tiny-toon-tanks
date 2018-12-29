@@ -8,6 +8,7 @@
 #include "SceneData.h"
 #include "DataIDs.h"
 #include "SoundEngine.h"
+#include "GlmHelper.h"
 
 CollisionManager::CollisionManager(PhysicsEngine& physics,
                                    GameData& gameData,
@@ -33,6 +34,7 @@ void CollisionManager::CollisionDetection()
             {
                 if (collisionEvent == m_events[j])
                 {
+                    m_events[j].Resolved = false;
                     previouslyGenerated = true;
                     break;
                 }
@@ -41,7 +43,6 @@ void CollisionManager::CollisionDetection()
             // If already in the list, keep current and continue to next event
             if (previouslyGenerated)
             {
-                m_events[i].Resolved = false;
                 continue;
             }
 
@@ -247,13 +248,32 @@ void CollisionManager::BulletCollisionLogic(int shape, int shapeHit, int instanc
 
         if (tank->Health() <= 0)
         {
-            const auto tankBodyId = tank->GetPhysicsIDs().Body;
-            m_physics.AddToWorld(tankBodyId, false);
-            m_physics.ResetVelocityAndForce(tankBodyId);
+            const auto& ids = tank->GetPhysicsIDs();
+            auto world = tank->GetWorldMatrix();
 
-            const auto tankGunId = tank->GetPhysicsIDs().Gun;
-            m_physics.AddToWorld(tankGunId, false);
-            m_physics.ResetVelocityAndForce(tankGunId);
+            m_physics.AddToWorld(ids.Body, false);
+            m_physics.AddToWorld(ids.Gun, false);
+
+            tank->SetPieceWorldMatrix(MeshID::TANKP1, world);
+            m_physics.SetMotionState(ids.P1, world);
+            m_physics.AddToWorld(ids.P1, true);
+
+            tank->SetPieceWorldMatrix(MeshID::TANKP2, world);
+            m_physics.SetMotionState(ids.P2, world);
+            m_physics.AddToWorld(ids.P2, true);
+
+            tank->SetPieceWorldMatrix(MeshID::TANKP3, world);
+            m_physics.SetMotionState(ids.P3, world);
+            m_physics.AddToWorld(ids.P3, true);
+
+            // Offset the gun slightly so it doesn't balance on the tank top
+            const auto gunPieceOffset = 2.0f;
+            const auto position = glm::matrix_get_position(world);
+            const auto forward = -glm::normalize(glm::matrix_get_forward(world));
+            glm::matrix_set_position(world, position + (forward * gunPieceOffset));
+            tank->SetPieceWorldMatrix(MeshID::TANKP4, world);
+            m_physics.SetMotionState(ids.P4, world);
+            m_physics.AddToWorld(ids.P4, true);
 
             tank->SetIsAlive(false);
         }

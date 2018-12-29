@@ -1,10 +1,10 @@
 
-- Add collision resolution logic
-    - Crash when bullet interacts with enemy tank
+- Add collision resolution logic:
+    - Fix bullets moving down and having weird incrementing force when hitting wall
+    - Bullets moving similar to original game
     - Player bullets interacting with player
-    - Bullets destroy themselves when hitting tanks
-    - Tanks break apart when hit with bullets
 
+- Get tank movement similar to original game
 - Add health
 - Add toon text
 - Add AI movement for tanks
