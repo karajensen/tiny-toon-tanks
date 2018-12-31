@@ -62,7 +62,7 @@ void CollisionManager::CollisionResolution()
         {
             ResolveCollisionEvent(collisionEvent);
         }
-        else if (collisionEvent->Resolved || collisionEvent->Ignore)
+        else if (collisionEvent->Resolved)
         {
             // Remove event if no longer happening
             m_events.erase(m_events.begin() + i);
@@ -100,151 +100,107 @@ Tank* CollisionManager::GetTank(int instanceID) const
 
 void CollisionManager::ResolveCollisionEvent(CollisionEvent* collisionEvent)
 {
-    const auto shapeA = collisionEvent->BodyA.MeshID;
-    const auto shapeB = collisionEvent->BodyB.MeshID;
-    const auto instanceA = collisionEvent->BodyA.MeshInstance;
-    const auto instanceB = collisionEvent->BodyB.MeshInstance;
+    const auto meshA = collisionEvent->BodyA.MeshID;
+    const auto meshB = collisionEvent->BodyB.MeshID;
 
-    if ((shapeA == MeshID::BULLET) || (shapeB == MeshID::BULLET))
+    if (meshA == MeshID::BULLET || meshB == MeshID::BULLET)
     {
-        BulletCollisionLogic(shapeA, shapeB, instanceA, instanceB, collisionEvent->Ignore);
-        BulletCollisionLogic(shapeB, shapeA, instanceB, instanceA, collisionEvent->Ignore);
+        BulletCollisionLogic(collisionEvent);
     }
-    else if ((shapeA == MeshID::TANK) || (shapeA == MeshID::TANKGUN) || (shapeB == MeshID::TANK) || (shapeB == MeshID::TANKGUN))
+    else if (meshA == MeshID::TANK || meshA == MeshID::TANKGUN || 
+        meshB == MeshID::TANK || meshB == MeshID::TANKGUN)
     {
-        TankCollisionLogic(shapeA, shapeB, instanceA);
-        TankCollisionLogic(shapeB, shapeA, instanceB);
-
-        if ((shapeA == MeshID::TANK) && (shapeB == MeshID::TANK))
-        {
-            SoundEngine::PlaySoundEffect(SoundEngine::BANG);
-        }
-        else if ((shapeA == MeshID::TANK) && (shapeB == MeshID::WALL) ||
-            (shapeB == MeshID::TANK) && (shapeA == MeshID::WALL))
-        {
-            SoundEngine::PlaySoundEffect(SoundEngine::WALLBANG);
-        }
+        TankCollisionLogic(collisionEvent);
     }
 
     collisionEvent->Processed = true;
 }
 
-void CollisionManager::TankCollisionLogic(int shape, int shapeHit, int instance)
+void CollisionManager::TankCollisionLogic(const CollisionEvent* collisionEvent)
 {
-    if (((shape == MeshID::TANK) || (shape == MeshID::TANKGUN)) && (shapeHit == MeshID::GROUND))
+    const auto meshA = collisionEvent->BodyA.MeshID;
+    const auto meshB = collisionEvent->BodyB.MeshID;
+    const auto instanceA = collisionEvent->BodyA.MeshInstance;
+    const auto instanceB = collisionEvent->BodyB.MeshInstance;
+
+    if ((meshA == MeshID::TANK || meshA == MeshID::TANKGUN) && meshB == MeshID::GROUND)
     {
-        auto tank = GetTank(instance);
+        auto tank = GetTank(instanceA);
         if (tank->IsAlive())
         {
             tank->SetDropping(false);
         }
     }
+    else if ((meshB == MeshID::TANK || meshB == MeshID::TANKGUN) && meshA == MeshID::GROUND)
+    {
+        auto tank = GetTank(instanceB);
+        if (tank->IsAlive())
+        {
+            tank->SetDropping(false);
+        }
+    }
+
+    if (meshA == MeshID::TANK && meshB == MeshID::TANK)
+    {
+        SoundEngine::PlaySoundEffect(SoundEngine::BANG);
+    }
+    else if ((meshA == MeshID::TANK && meshB == MeshID::WALL) ||
+        (meshB == MeshID::TANK && meshA == MeshID::WALL))
+    {
+        SoundEngine::PlaySoundEffect(SoundEngine::WALLBANG);
+    }
 }
 
-void CollisionManager::BulletCollisionLogic(int shape, int shapeHit, int instance, int instanceHit, bool& ignoreEvent)
+void CollisionManager::BulletCollisionLogic(const CollisionEvent* collisionEvent)
 {
-    // Collision between tank and own bullet
+    const auto meshA = collisionEvent->BodyA.MeshID;
+    const auto meshB = collisionEvent->BodyB.MeshID;
+    const auto instanceA = collisionEvent->BodyA.MeshInstance;
+    const auto instanceB = collisionEvent->BodyB.MeshInstance;
+    
+    auto bulletA = meshA == MeshID::BULLET ? m_gameData.bullets[instanceA].get() : nullptr;
+    auto bulletB = meshB == MeshID::BULLET ? m_gameData.bullets[instanceB].get() : nullptr;
+
+    // Bullet-wall and bullet-bullet collision
+    if (meshA == MeshID::WALL || meshB == MeshID::WALL ||
+        (meshA == MeshID::BULLET && meshB == MeshID::BULLET))
     {
-        Bullet* bullet = nullptr;
-        if (shape == MeshID::BULLET)
+        if (bulletA)
         {
-            bullet = m_gameData.bullets[instance].get();
-        }
-        else
-        {
-            bullet = m_gameData.bullets[instanceHit].get();
+            bulletA->TakeDamage();
+            bulletA->SetGenerateImpulse(true);
         }
 
-        // Get tank if colliding object is a tank
-        Tank* tank = nullptr;
-        if ((shape == MeshID::TANK) || (shape == MeshID::TANKGUN))
+        if (bulletB)
         {
-            tank = GetTank(instance);
-        }
-        else if ((shapeHit == MeshID::TANK) || (shapeHit == MeshID::TANKGUN))
-        {
-            tank = GetTank(instanceHit);
-        }
-
-        if (!bullet->AllowScore())
-        {
-            if (tank != nullptr)
-            {
-                // If the bullet isn't colliding with the tank that shot it
-                const auto tankGroup = m_physics.GetGroup(tank->GetPhysicsIDs().Body);
-                const auto bulletGroup = m_physics.GetGroup(bullet->GetPhysicsID());
-                if (tankGroup != bulletGroup)
-                {
-                    bullet->SetAllowScore(true);
-                }
-                else
-                {
-                    ignoreEvent = true;
-                    return;
-                }
-            }
-            else
-            {
-                bullet->SetAllowScore(true);
-            }
-
-            // if now allowing score on bullet, change the bullet's group
-            if (bullet->AllowScore())
-            {
-                m_physics.SetGroup(bullet->GetPhysicsID(), GetCollisionGroupIndex());
-                IncrementCollisionGroupIndex();
-            }
+            bulletB->TakeDamage();
+            bulletB->SetGenerateImpulse(true);
         }
     }
-
-    // Collision between bullet and bullet
-    if (shape == MeshID::BULLET)
+    // Bullet-tank collision
+    else if (meshA == MeshID::TANK || meshA == MeshID::TANKGUN
+        || meshB == MeshID::TANK || meshB == MeshID::TANKGUN)
     {
-        auto* bullet = m_gameData.bullets[instance].get();
-        if (!bullet->IsAlive())
-        { 
+        auto* tank = (meshA == MeshID::TANK || meshA == MeshID::TANKGUN) ?
+            GetTank(instanceA) : GetTank(instanceB);
+
+        if (!tank->IsAlive())
+        {
             return; // No need to go further
         }
 
-        // If hitting a wall, bounce the bullet
-        if (shapeHit == MeshID::WALL)
+        auto bullet = bulletA ? bulletA : bulletB;
+
+        const auto tankGroup = m_physics.GetGroup(tank->GetPhysicsIDs().Body);
+        const auto bulletGroup = m_physics.GetGroup(bullet->GetPhysicsID());
+        if (tankGroup == bulletGroup && !bullet->AllowFriendlyFire())
         {
-            // Bullet hits a wall
-            bullet->TakeDamage(1);
-
-            // Add impulse in new direction
-            bullet->SetGenerateImpulse(true);
-        }
-        else
-        {
-            // If hitting anything else, take damage
-            auto* bulletHit = m_gameData.bullets[instanceHit].get();
-            bullet->TakeDamage(bulletHit->DamageDealt());
+            return; // Bullet cannot currently collide with own tank
         }
 
-        // Check if bullet still alive
-        if (bullet->Health() <= 0)
-        {
-            SoundEngine::PlaySoundEffect(SoundEngine::EXPLODE);
-
-            const int ID = bullet->GetPhysicsID();
-            bullet->SetIsAlive(false);
-            m_physics.AddToWorld(ID, false);
-            m_physics.ResetVelocityAndForce(ID);
-        }
-    }
-    // Collision between bullet and enemy
-    else if (shape == MeshID::TANK || shape == MeshID::TANKGUN)
-    {
-        // Tank takes damage
-        auto* tank = GetTank(instance);
-        if (!tank->IsAlive()) 
-        { 
-            return; // No need to go further
-        }
-
-        auto bullet = m_gameData.bullets[instanceHit].get();
-        tank->TakeDamage(bullet->DamageDealt());
+        bullet->TakeDamage();
+        bullet->SetGenerateImpulse(true);
+        tank->TakeDamage();
 
         if (tank->Health() <= 0)
         {
@@ -277,5 +233,28 @@ void CollisionManager::BulletCollisionLogic(int shape, int shapeHit, int instanc
 
             tank->SetIsAlive(false);
         }
+    }
+
+    bool bulletDestroyed = false;
+
+    if (bulletA && bulletA->Health() <= 0)
+    {
+        bulletDestroyed = true;
+        bulletA->SetIsAlive(false);
+        m_physics.AddToWorld(bulletA->GetPhysicsID(), false);
+        m_physics.ResetVelocityAndForce(bulletA->GetPhysicsID());
+    }
+
+    if (bulletB && bulletB->Health() <= 0)
+    {
+        bulletDestroyed = true;
+        bulletB->SetIsAlive(false);
+        m_physics.AddToWorld(bulletB->GetPhysicsID(), false);
+        m_physics.ResetVelocityAndForce(bulletB->GetPhysicsID());
+    }
+
+    if (bulletDestroyed)
+    {
+        SoundEngine::PlaySoundEffect(SoundEngine::EXPLODE);
     }
 }

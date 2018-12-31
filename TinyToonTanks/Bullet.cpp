@@ -11,7 +11,6 @@
 namespace
 {
     const int InitialBulletHealth = 2; ///< Amount of initial health
-    const int BulletDamageDealt = 2;   ///< Amount of damage a bullet deals
     const int ImpulseCounterMax = 2;   ///< Maximum queries before impulse is needed
     const int DrawCounterMax = 3;      ///< Maximum queries before bullet can be drawn
 }
@@ -37,7 +36,7 @@ void Bullet::Reset()
 {
     SetIsAlive(false);
     m_health = InitialBulletHealth;
-    m_allowScore = false;
+    m_friendlyFire = false;
     m_generateImpuse = false;
 }
 
@@ -67,32 +66,37 @@ void Bullet::SetWorld(const glm::mat4& world)
     m_mesh.SetWorld(world, m_instance);
 }
 
-void Bullet::SetAllowScore(bool allowScore)
+void Bullet::SetAllowFriendlyFire(bool allow)
 {
-    m_allowScore = allowScore;
+    m_friendlyFire = allow;
 }
 
-bool Bullet::AllowScore() const
+bool Bullet::AllowFriendlyFire() const
 {
-    return m_allowScore;
+    return m_friendlyFire;
 }
 
-const glm::vec3& Bullet::Position() const
+const glm::vec3& Bullet::GetPosition() const
 {
     return m_mesh.Position(m_instance);
 }
 
-void Bullet::TakeDamage(int amount)
+void Bullet::TakeDamage()
 {
-    m_health = std::max(0, m_health - amount);
-}
-
-int Bullet::DamageDealt() const
-{
-    return BulletDamageDealt;
+    m_health = std::max(0, m_health - 1);
 }
 
 int Bullet::Health() const
 {
     return m_health;
+}
+
+const glm::vec3& Bullet::GetFiredPosition() const
+{
+    return m_firePosition;
+}
+
+void Bullet::SetFiredPosition(const glm::vec3& position)
+{
+    m_firePosition = position;
 }

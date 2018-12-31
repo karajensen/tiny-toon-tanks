@@ -76,12 +76,12 @@ private:
     /**
     * Determines what to do when a bullet interacts with another shape
     */
-    void BulletCollisionLogic(int shape, int shapeHit, int instance, int instanceHit, bool& ignoreEvent);
+    void BulletCollisionLogic(const CollisionEvent* collisionEvent);
 
     /**
     * Determines what to do when a tank interacts with another shape
     */
-    void TankCollisionLogic(int shape, int shapeHit, int instance);
+    void TankCollisionLogic(const CollisionEvent* collisionEvent);
 
     PhysicsEngine& m_physics;             ///< The physics world to update from
     GameData& m_gameData;                 ///< Objects from the game to update

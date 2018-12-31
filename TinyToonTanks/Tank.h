@@ -249,7 +249,7 @@ public:
     /**
     * Reduces the life of the tank
     */
-    void TakeDamage(int amount);
+    void TakeDamage();
 
     /**
     * @return the health of this tank

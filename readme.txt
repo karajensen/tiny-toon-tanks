@@ -1,9 +1,5 @@
 
-- Add collision resolution logic:
-    - Fix bullets moving down and having weird incrementing force when hitting wall
-    - Get Bullets moving similar to original game
-    - Fix Player bullets killing self
-- Get tank movement similar to original game
+- Get tank movement/bullets similar to original game
 - Add toon text
 - Add AI movement for tanks
 - Add background rendering

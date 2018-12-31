@@ -53,29 +53,24 @@ public:
     void SetWorld(const glm::mat4& world);
 
     /**
-    * Whether this bullet can contribute to scoring
+    * Whether this bullet can contribute to self scoring
     */
-    void SetAllowScore(bool allowScore);
+    void SetAllowFriendlyFire(bool allow);
 
     /**
-    * @return Whether this bullet can contribute to scoring
+    * @return Whether this bullet can contribute to self scoring
     */
-    bool AllowScore() const;
+    bool AllowFriendlyFire() const;
 
     /**
     * @return the position of the bullet
     */
-    const glm::vec3& Position() const;
+    const glm::vec3& GetPosition() const;
 
     /**
     * Reduces the life of the bullet
     */
-    void TakeDamage(int amount);
-
-    /**
-    * @return the amount of damage this bullet can do
-    */
-    int DamageDealt() const;
+    void TakeDamage();
 
     /**
     * @return the amount of health this bullet has
@@ -92,6 +87,16 @@ public:
     */
     bool ShouldGenerateImpulse() const;
 
+    /**
+    * @return the position the bullet was initially fired from
+    */
+    const glm::vec3& GetFiredPosition() const;
+
+    /**
+    * Set the position the bullet was initially fired from
+    */
+    void SetFiredPosition(const glm::vec3& position);
+
 private:
 
     /**
@@ -101,10 +106,11 @@ private:
     Bullet& operator=(const Bullet&) = delete;
 
     Mesh& m_mesh;                    ///< The graphical mesh for a bullet
+    glm::vec3 m_firePosition;        ///< Position the bullet was initially fired from
     bool m_alive = false;            ///< Whether this bullet is considered alive in the world
     int m_instance = 0;              ///< Which instance this bullet should update
     int m_physicsID = 0;             ///< The physics body ID
     int m_health = 0;                ///< The health of the bullet before it is considered dead
-    bool m_allowScore = false;       ///< Whether this bullet can contribute to scoring
-    bool m_generateImpuse = false; ///< Whether to generate a quick impulse or continuous movement
+    bool m_friendlyFire = false;     ///< Whether this bullet can contribute to self scoring
+    bool m_generateImpuse = false;   ///< Whether to generate a quick impulse or continuous movement
 };

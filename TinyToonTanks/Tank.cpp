@@ -207,9 +207,9 @@ const glm::mat4& Tank::GetGunWorldMatrix() const
     return m_tankmesh.Gun.GetWorld(m_instance);
 }
 
-void Tank::TakeDamage(int amount)
+void Tank::TakeDamage()
 {
-    m_health = std::max(0, m_health - amount);
+    m_health = std::max(0, m_health - 1);
 }
 
 int Tank::Health() const

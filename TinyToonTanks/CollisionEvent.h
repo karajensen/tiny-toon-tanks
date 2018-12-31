@@ -32,7 +32,6 @@ struct CollisionEvent
 
     CollisionBody BodyA;    ///< Collidable body 1
     CollisionBody BodyB;    ///< Collidable body 2
-    bool Ignore = false;    ///< Whether to ignore this collision event or not
     bool Processed = false; ///< Whether the collision has been acknowledged and waiting resolution
     bool Resolved = false;  ///< Whether the collision has been resolved
 };
