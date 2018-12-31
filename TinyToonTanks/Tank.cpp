@@ -115,31 +115,35 @@ bool Tank::IsAlive() const
 
 void Tank::Fire()
 {
-    if (m_fireGunTime == 0.0f)
+    if (m_alive && m_fireGunTime == 0.0f)
     {
         m_movement |= FIRE;
         m_fireGunTime = FireGunDelay;
     }
 }
 
-void Tank::Flip()
-{
-    m_movement |= FLIP;
-}
-
 void Tank::Rotate(bool left)
 {
-    m_movement |= left ? ROTATE_LEFT : ROTATE_RIGHT;
+    if (m_alive)
+    {
+        m_movement |= left ? ROTATE_LEFT : ROTATE_RIGHT;
+    }
 }
 
 void Tank::RotateGun(bool left)
 {
-    m_movement |= left ? GUN_LEFT : GUN_RIGHT;
+    if (m_alive)
+    {
+        m_movement |= left ? GUN_LEFT : GUN_RIGHT;
+    }
 }
 
 void Tank::Move(bool forwards)
 {
-    m_movement |= forwards ? FORWARDS : BACKWARDS;
+    if (m_alive)
+    {
+        m_movement |= forwards ? FORWARDS : BACKWARDS;
+    }
 }
 
 unsigned int Tank::GetMovementRequest() const
@@ -149,7 +153,7 @@ unsigned int Tank::GetMovementRequest() const
 
 void Tank::ResetMovementRequest()
 {
-    m_movement = NO_MOVEMENT;;
+    m_movement = NO_MOVEMENT;
 }
 
 void Tank::SetLinearDamping(float value)
@@ -207,9 +211,9 @@ const glm::mat4& Tank::GetGunWorldMatrix() const
     return m_tankmesh.Gun.GetWorld(m_instance);
 }
 
-void Tank::TakeDamage()
+void Tank::TakeDamage(int amount)
 {
-    m_health = std::max(0, m_health - 1);
+    m_health = std::max(0, m_health - amount);
 }
 
 int Tank::Health() const

@@ -94,7 +94,6 @@ bool SceneBuilder::InitialiseTextures(SceneData& data)
     success &= Initialise("butnorm.png", TextureID::BUTTON_LOW, Texture::NEAREST);
     success &= Initialise("diffhigh.png", TextureID::DIFF_HIGH, Texture::NEAREST);
     success &= Initialise("easy.png", TextureID::DIFF_EASY, Texture::NEAREST);
-    success &= Initialise("flip1.png", TextureID::FLIP, Texture::NEAREST);
     success &= Initialise("gameover.png", TextureID::GAME_OVER, Texture::NEAREST);
     success &= Initialise("gomenu.png", TextureID::GAME_OVER_MENU, Texture::NEAREST);
     success &= Initialise("gop1.png", TextureID::GAME_OVER_P1, Texture::NEAREST);

@@ -70,12 +70,6 @@ private:
     */
     void UpdateGunMovement(float deltatime, Tank& tank);
 
-    /**
-    * Flips the tank if requested
-    * @param tank The tank to update
-    */
-    void FlipTank(const Tank& tank);
-
     PhysicsEngine& m_physics;   ///< The physics world to update from
     GameData& m_gameData;       ///< Objects from the game to update
     SceneData& m_sceneData;     ///< Meshes from the scene to update

@@ -50,6 +50,11 @@ bool GameBuilder::InitialiseWorld(GameData& gamedata,
     wallbox.Position(wallBox.x, wallBox.y, -wallBox.z, 2);
     wallbox.Position(-wallBox.x, wallBox.y, wallBox.z, 3);
 
+    gamedata.wallNormals.push_back(glm::vec3(0.0f, 0.0f, -1.0f));
+    gamedata.wallNormals.push_back(glm::vec3(0.0f, 0.0f, 1.0f));
+    gamedata.wallNormals.push_back(glm::vec3(-1.0f, 0.0, 0.0f));
+    gamedata.wallNormals.push_back(glm::vec3(1.0f, 0.0, 0.0f));
+
     ground.UpdateTransforms();
     wall.UpdateTransforms();
 
@@ -256,11 +261,12 @@ bool GameBuilder::InitialiseBullets(GameData& gamedata,
         }
 
         collisionManager.IncrementCollisionGroupIndex();
+        const auto groupID = collisionManager.GetCollisionGroupIndex();
 
         const int ID = physics.LoadRigidBody(glm::mat4(), shape, 
-            bulletMass, collisionManager.GetCollisionGroupIndex(),
-            MeshID::BULLET, i, true);
+            bulletMass, groupID, MeshID::BULLET, i, true);
         
+        gamedata.bullets[i]->SetPhysicsGroupID(groupID);
         gamedata.bullets[i]->SetIsAlive(false);
         gamedata.bullets[i]->SetPhysicsID(ID);
         physics.AddToWorld(ID, false);

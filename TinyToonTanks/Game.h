@@ -80,11 +80,6 @@ public:
     void FirePlayer();
 
     /**
-    * Sends a request to flip the player over
-    */
-    void FlipPlayer();
-
-    /**
     * Sends a request to rotate the player
     * @param left Whether to rotate left or right
     */

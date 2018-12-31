@@ -33,6 +33,16 @@ public:
     int GetPhysicsID() const;
 
     /**
+    * Sets the physics group ID
+    */
+    void SetPhysicsGroupID(int ID);
+
+    /**
+    * @return the ID of the physics group
+    */
+    int GetPhysicsGroupID() const;
+
+    /**
     * @return whether this bullet is alive in the world
     */
     bool IsAlive() const;
@@ -70,7 +80,7 @@ public:
     /**
     * Reduces the life of the bullet
     */
-    void TakeDamage();
+    void TakeDamage(int amount);
 
     /**
     * @return the amount of health this bullet has
@@ -80,12 +90,17 @@ public:
     /**
     * Sets whether to generate a quick impulse or continuous movement
     */
-    void SetGenerateImpulse(bool generate);
+    void SetGenerateImpulse(bool generate, const glm::vec3& direction);
 
     /**
     * Gets whether to generate a quick impulse or continuous movement
     */
     bool ShouldGenerateImpulse() const;
+
+    /**
+    * @return the direction to generate the impulse from
+    */
+    const glm::vec3& GetGeneratedImpulseDirection() const;
 
     /**
     * @return the position the bullet was initially fired from
@@ -105,12 +120,14 @@ private:
     Bullet(const Bullet&) = delete;
     Bullet& operator=(const Bullet&) = delete;
 
-    Mesh& m_mesh;                    ///< The graphical mesh for a bullet
-    glm::vec3 m_firePosition;        ///< Position the bullet was initially fired from
-    bool m_alive = false;            ///< Whether this bullet is considered alive in the world
-    int m_instance = 0;              ///< Which instance this bullet should update
-    int m_physicsID = 0;             ///< The physics body ID
-    int m_health = 0;                ///< The health of the bullet before it is considered dead
-    bool m_friendlyFire = false;     ///< Whether this bullet can contribute to self scoring
-    bool m_generateImpuse = false;   ///< Whether to generate a quick impulse or continuous movement
+    Mesh& m_mesh;                         ///< The graphical mesh for a bullet
+    glm::vec3 m_firePosition;             ///< Position the bullet was initially fired from
+    glm::vec3 m_generateImpulseDirection; ///< Direction to generate the impulse from
+    bool m_alive = false;                 ///< Whether this bullet is considered alive in the world
+    int m_instance = 0;                   ///< Which instance this bullet should update
+    int m_physicsID = 0;                  ///< The physics body ID
+    int m_physicsGroupID = 0;             ///< The physics group the bullet belongs to
+    int m_health = 0;                     ///< The health of the bullet before it is considered dead
+    bool m_friendlyFire = false;          ///< Whether this bullet can contribute to self scoring
+    bool m_generateImpuse = false;        ///< Whether to generate a quick impulse or continuous movement
 };

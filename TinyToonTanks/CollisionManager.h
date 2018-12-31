@@ -5,6 +5,7 @@
 #pragma once
 
 #include "CollisionEvent.h"
+#include "GlmHelper.h"
 
 #include <vector>
 
@@ -82,6 +83,11 @@ private:
     * Determines what to do when a tank interacts with another shape
     */
     void TankCollisionLogic(const CollisionEvent* collisionEvent);
+
+    /**
+    * Generates a normalized direction vector the bullet will take when hitting a wall
+    */
+    glm::vec3 GetBulletDirectionFromWall(const glm::vec3& direction, int wall);
 
     PhysicsEngine& m_physics;             ///< The physics world to update from
     GameData& m_gameData;                 ///< Objects from the game to update

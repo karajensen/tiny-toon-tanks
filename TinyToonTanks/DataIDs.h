@@ -111,7 +111,6 @@ namespace TextureID
         DIFF_EASY,
         DIFF_HARD,
         DIFF_MED,
-        FLIP,
         GAME_OVER,
         GAME_OVER_MENU,
         GAME_OVER_REPLAY,

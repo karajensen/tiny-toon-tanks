@@ -32,6 +32,16 @@ int Bullet::GetPhysicsID() const
     return m_physicsID;
 }
 
+void Bullet::SetPhysicsGroupID(int ID)
+{
+    m_physicsGroupID = ID;
+}
+
+int Bullet::GetPhysicsGroupID() const
+{
+    return m_physicsGroupID;
+}
+
 void Bullet::Reset()
 {
     SetIsAlive(false);
@@ -40,14 +50,20 @@ void Bullet::Reset()
     m_generateImpuse = false;
 }
 
-void Bullet::SetGenerateImpulse(bool generate)
+void Bullet::SetGenerateImpulse(bool generate, const glm::vec3& direction)
 {
     m_generateImpuse = generate;
+    m_generateImpulseDirection = direction;
 }
 
 bool Bullet::ShouldGenerateImpulse() const
 {
     return m_generateImpuse;
+}
+
+const glm::vec3& Bullet::GetGeneratedImpulseDirection() const
+{
+    return m_generateImpulseDirection;
 }
 
 void Bullet::SetIsAlive(bool alive)
@@ -81,9 +97,9 @@ const glm::vec3& Bullet::GetPosition() const
     return m_mesh.Position(m_instance);
 }
 
-void Bullet::TakeDamage()
+void Bullet::TakeDamage(int amount)
 {
-    m_health = std::max(0, m_health - 1);
+    m_health = std::max(0, m_health - amount);
 }
 
 int Bullet::Health() const

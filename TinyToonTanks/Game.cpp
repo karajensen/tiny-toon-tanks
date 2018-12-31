@@ -96,11 +96,6 @@ void Game::AddToTweaker(Tweaker& tweaker, std::function<void(void)> reset)
     m_data->enemies[m_selectedEnemy]->AddToTweaker(tweaker);
 }
 
-void Game::FlipPlayer()
-{
-    m_data->player->Flip();
-}
-
 void Game::FirePlayer()
 {
     m_data->player->Fire();

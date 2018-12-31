@@ -41,10 +41,9 @@ public:
         BACKWARDS = 4,
         ROTATE_LEFT = 8,
         ROTATE_RIGHT = 16,
-        FLIP = 32,
+        FIRE = 32,
         GUN_LEFT = 64,
-        GUN_RIGHT = 128,
-        FIRE = 256
+        GUN_RIGHT = 128
     };
 
     /**
@@ -154,11 +153,6 @@ public:
     void Fire();
 
     /**
-    * Sends a request to flip over
-    */
-    void Flip();
-
-    /**
     * Sends a request to rotate the tank
     * @param left Whether to rotate left or right
     */
@@ -249,7 +243,7 @@ public:
     /**
     * Reduces the life of the tank
     */
-    void TakeDamage();
+    void TakeDamage(int amount);
 
     /**
     * @return the health of this tank

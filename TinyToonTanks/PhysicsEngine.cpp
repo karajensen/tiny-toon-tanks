@@ -80,7 +80,7 @@ bool PhysicsEngine::GenerateCollisionEvent(int collisionIndex, CollisionEvent& c
     RigidBody* rbA = static_cast<RigidBody*>(obA->getUserPointer());
     RigidBody* rbB = static_cast<RigidBody*>(obB->getUserPointer());
 
-    //check if any of the bodies don't want events
+    // check if any of the bodies don't want events
     if(rbA->ProcessEvents && rbB->ProcessEvents)
     {
         collision.BodyA.MeshID = rbA->MeshID;

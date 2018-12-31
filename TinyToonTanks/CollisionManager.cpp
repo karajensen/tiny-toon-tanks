@@ -8,7 +8,13 @@
 #include "SceneData.h"
 #include "DataIDs.h"
 #include "SoundEngine.h"
-#include "GlmHelper.h"
+
+namespace
+{
+    const float GunPieceSpawnOffset = 2.0f;
+    const int BulletFullDamage = 2;
+    const int BulletHalfDamage = 1;
+}
 
 CollisionManager::CollisionManager(PhysicsEngine& physics,
                                    GameData& gameData,
@@ -151,6 +157,13 @@ void CollisionManager::TankCollisionLogic(const CollisionEvent* collisionEvent)
     }
 }
 
+glm::vec3 CollisionManager::GetBulletDirectionFromWall(const glm::vec3& direction, int wall)
+{
+    // v' = v - 2(v.n)n
+    const auto& normal = m_gameData.wallNormals[wall];
+    return glm::normalize(direction - (2.0f * glm::dot(normal, direction) * normal));
+}
+
 void CollisionManager::BulletCollisionLogic(const CollisionEvent* collisionEvent)
 {
     const auto meshA = collisionEvent->BodyA.MeshID;
@@ -161,20 +174,21 @@ void CollisionManager::BulletCollisionLogic(const CollisionEvent* collisionEvent
     auto bulletA = meshA == MeshID::BULLET ? m_gameData.bullets[instanceA].get() : nullptr;
     auto bulletB = meshB == MeshID::BULLET ? m_gameData.bullets[instanceB].get() : nullptr;
 
-    // Bullet-wall and bullet-bullet collision
-    if (meshA == MeshID::WALL || meshB == MeshID::WALL ||
-        (meshA == MeshID::BULLET && meshB == MeshID::BULLET))
+    // Bullet-wall collision
+    if (meshA == MeshID::WALL || meshB == MeshID::WALL)
     {
         if (bulletA)
         {
-            bulletA->TakeDamage();
-            bulletA->SetGenerateImpulse(true);
+            bulletA->TakeDamage(BulletHalfDamage);
+            bulletA->SetGenerateImpulse(true,
+                GetBulletDirectionFromWall(m_physics.GetVelocity(bulletA->GetPhysicsID()), instanceB));
         }
 
         if (bulletB)
         {
-            bulletB->TakeDamage();
-            bulletB->SetGenerateImpulse(true);
+            bulletB->TakeDamage(BulletHalfDamage);
+            bulletB->SetGenerateImpulse(true,
+                GetBulletDirectionFromWall(m_physics.GetVelocity(bulletB->GetPhysicsID()), instanceA));
         }
     }
     // Bullet-tank collision
@@ -184,54 +198,62 @@ void CollisionManager::BulletCollisionLogic(const CollisionEvent* collisionEvent
         auto* tank = (meshA == MeshID::TANK || meshA == MeshID::TANKGUN) ?
             GetTank(instanceA) : GetTank(instanceB);
 
-        if (!tank->IsAlive())
+        if (tank->IsAlive())
         {
-            return; // No need to go further
+            auto bullet = bulletA ? bulletA : bulletB;
+            const auto tankGroup = m_physics.GetGroup(tank->GetPhysicsIDs().Body);
+            const auto bulletGroup = m_physics.GetGroup(bullet->GetPhysicsID());
+            if (tankGroup == bulletGroup && !bullet->AllowFriendlyFire())
+            {
+                return;
+            }
+
+            bullet->TakeDamage(BulletFullDamage);
+            tank->TakeDamage(BulletHalfDamage);
+
+            if (tank->Health() <= 0)
+            {
+                const auto& ids = tank->GetPhysicsIDs();
+                auto world = tank->GetWorldMatrix();
+
+                m_physics.AddToWorld(ids.Body, false);
+                m_physics.AddToWorld(ids.Gun, false);
+
+                tank->SetPieceWorldMatrix(MeshID::TANKP1, world);
+                m_physics.SetMotionState(ids.P1, world);
+                m_physics.AddToWorld(ids.P1, true);
+
+                tank->SetPieceWorldMatrix(MeshID::TANKP2, world);
+                m_physics.SetMotionState(ids.P2, world);
+                m_physics.AddToWorld(ids.P2, true);
+
+                tank->SetPieceWorldMatrix(MeshID::TANKP3, world);
+                m_physics.SetMotionState(ids.P3, world);
+                m_physics.AddToWorld(ids.P3, true);
+
+                // Offset the gun slightly so it doesn't balance on the tank top
+                const auto position = glm::matrix_get_position(world);
+                const auto forward = -glm::normalize(glm::matrix_get_forward(world));
+                glm::matrix_set_position(world, position + (forward * GunPieceSpawnOffset));
+                tank->SetPieceWorldMatrix(MeshID::TANKP4, world);
+                m_physics.SetMotionState(ids.P4, world);
+                m_physics.AddToWorld(ids.P4, true);
+
+                tank->SetIsAlive(false);
+            }
+        }
+    }
+    // Everything else destroys bullet
+    else
+    {
+        if (bulletA)
+        {
+            bulletA->TakeDamage(BulletFullDamage);
         }
 
-        auto bullet = bulletA ? bulletA : bulletB;
-
-        const auto tankGroup = m_physics.GetGroup(tank->GetPhysicsIDs().Body);
-        const auto bulletGroup = m_physics.GetGroup(bullet->GetPhysicsID());
-        if (tankGroup == bulletGroup && !bullet->AllowFriendlyFire())
+        if (bulletB)
         {
-            return; // Bullet cannot currently collide with own tank
-        }
-
-        bullet->TakeDamage();
-        bullet->SetGenerateImpulse(true);
-        tank->TakeDamage();
-
-        if (tank->Health() <= 0)
-        {
-            const auto& ids = tank->GetPhysicsIDs();
-            auto world = tank->GetWorldMatrix();
-
-            m_physics.AddToWorld(ids.Body, false);
-            m_physics.AddToWorld(ids.Gun, false);
-
-            tank->SetPieceWorldMatrix(MeshID::TANKP1, world);
-            m_physics.SetMotionState(ids.P1, world);
-            m_physics.AddToWorld(ids.P1, true);
-
-            tank->SetPieceWorldMatrix(MeshID::TANKP2, world);
-            m_physics.SetMotionState(ids.P2, world);
-            m_physics.AddToWorld(ids.P2, true);
-
-            tank->SetPieceWorldMatrix(MeshID::TANKP3, world);
-            m_physics.SetMotionState(ids.P3, world);
-            m_physics.AddToWorld(ids.P3, true);
-
-            // Offset the gun slightly so it doesn't balance on the tank top
-            const auto gunPieceOffset = 2.0f;
-            const auto position = glm::matrix_get_position(world);
-            const auto forward = -glm::normalize(glm::matrix_get_forward(world));
-            glm::matrix_set_position(world, position + (forward * gunPieceOffset));
-            tank->SetPieceWorldMatrix(MeshID::TANKP4, world);
-            m_physics.SetMotionState(ids.P4, world);
-            m_physics.AddToWorld(ids.P4, true);
-
-            tank->SetIsAlive(false);
+            bulletB->TakeDamage(BulletFullDamage);
         }
     }
 

@@ -12,13 +12,13 @@
 
 namespace
 {
-    const float ForwardForce = 3000.0f;        ///< Forward force to add for movement
+    const float ForwardForce = 3100.0f;        ///< Forward force to add for movement
     const float RotationForceFar = 500.0f;     ///< Force to apply at the far corners
     const float RotationForceClose = 100.0f;   ///< Force to apply at the near corners
-    const float GunRotation = 3000.0f;         ///< Amount to apply for rotating the gun
+    const float GunRotation = 1500.0f;         ///< Amount to apply for rotating the gun
     const float LinearDamping = 0.0005f;       ///< Linear damping amount for movement
     const float RotationalDamping = 0.00002f;  ///< Rotational damping amount for rotating
-    const float GunRotationDamping = 0.5f;     ///< Rotation damping for the gun hinge
+    const float GunRotationDamping = 0.4f;     ///< Rotation damping for the gun hinge
 
     /**
     * Offsets from the tank center to apply movement forces to
@@ -48,7 +48,6 @@ void TankManager::PrePhysicsTick(float deltatime)
 {
     UpdateTankMovement(deltatime, *m_gameData.player);
     UpdateGunMovement(deltatime, *m_gameData.player);
-    FlipTank(*m_gameData.player);
 
     for (auto& enemy : m_gameData.enemies)
     {
@@ -166,25 +165,5 @@ void TankManager::UpdateGunMovement(float deltatime, Tank& tank)
     {
         tank.AddGunRotationalDamping(-GunRotationDamping * deltatime);
         m_physics.StopHinge(hinge, 1.0f, tank.GetGunRotationalDamping());
-    }
-}
-
-void TankManager::FlipTank(const Tank& tank)
-{
-    if ((tank.GetMovementRequest() & Tank::FLIP) == Tank::FLIP)
-    {
-        // Only flip if the tank is actually upside down
-        const glm::mat4& world = tank.GetWorldMatrix();
-        const glm::vec3 up(glm::matrix_get_up(world));
-        const glm::vec3 down(0.0f, -1.0f, 0.0f);
-        const float parallelThreshold = 0.75f;
-
-        if (glm::dot(up, down) >= parallelThreshold)
-        {
-            const int body = tank.GetPhysicsIDs().Body;
-            glm::mat4 flipped = world;
-            glm::matrix_set_up(flipped, -up);
-            m_physics.SetMotionState(body, flipped);
-        }
     }
 }

@@ -216,9 +216,4 @@ void Application::InitialiseInput()
     { 
         m_game->RotatePlayerGun(false);
     });
-
-    m_input->AddCallback(GLFW_KEY_SPACE, true, [this]()
-    { 
-        m_game->FlipPlayer();
-    });
 }
