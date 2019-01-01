@@ -2,8 +2,6 @@
 *.sdf
 *.suo
 *.db
-*.exe
-*.pdb
 *.ilk
 *.exp
 *.mll
@@ -25,3 +23,5 @@ TinyToonTanks/results.txt
 TinyToonTanks/UnitTests/
 TinyToonTanks/UnitTests_Release
 TinyToonTanks/UnitTests_Debug
+TinyToonTanks/TinyToonTanks.pdb
+TinyToonTanks/TinyToonTanks.exe

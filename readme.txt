@@ -1,12 +1,11 @@
 
-- Add toon text
-- Add Shadows
+- Get tank movement similar to original game
 - Add background rendering
 - Add AI movement for tanks
-- Get tank movement similar to original game
 
+- Investigate bullet physics assert
 - Add original game health UI
-- Add original game menus and gameover screen
+- Add original game menus and gameover screen0
 
 ===========================================================================
 TINY TOON TANKS

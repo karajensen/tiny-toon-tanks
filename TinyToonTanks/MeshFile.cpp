@@ -9,11 +9,9 @@
 #include "assimp/include/Importer.hpp"
 #include "assimp/include/postprocess.h"
 
-MeshFile::MeshFile(const std::string& name, 
-                   const std::string& shaderName,
-                   int shaderID) :
+MeshFile::MeshFile(const std::string& name, int shaderID) :
 
-    Mesh(name, shaderName, shaderID)
+    Mesh(name, shaderID)
 {
 }
 

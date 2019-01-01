@@ -18,12 +18,9 @@ public:
     /**
     * Constructor
     * @param name The name of the mesh
-    * @param shaderName The name of the shader to use
     * @param shaderID The ID of the shader to use
     */
-    MeshFile(const std::string& name, 
-             const std::string& shaderName, 
-             int shaderID);
+    MeshFile(const std::string& name, int shaderID);
 
     /**
     * Initialises the mesh data buffer from an OBJ file

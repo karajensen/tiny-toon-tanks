@@ -6,14 +6,12 @@
 #include "GlmHelper.h"
 
 Quad::Quad(const std::string& name)
-    : Quad(name, "unnamed", -1)
+    : Quad(name, -1)
 {
 }
 
-Quad::Quad(const std::string& name,
-           const std::string& shaderName,
-           int shaderID)
-    : Mesh(name, shaderName, shaderID)
+Quad::Quad(const std::string& name, int shaderID)
+    : Mesh(name, shaderID)
 {
     m_vertexComponentCount = 5;
 

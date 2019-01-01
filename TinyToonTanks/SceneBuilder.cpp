@@ -128,8 +128,7 @@ bool SceneBuilder::InitialiseQuads(SceneData& data)
 
     // Initialise the toon text
     const int toonTextCount = 10;
-    auto toonTextQuad = std::make_unique<ToonText>("toontext",
-        data.shaders[ShaderID::QUAD]->Name(), ShaderID::QUAD);
+    auto toonTextQuad = std::make_unique<ToonText>("toontext", ShaderID::QUAD);
     toonTextQuad->BackfaceCull(false);
 
     success &= toonTextQuad->Initialise(toonTextCount);
@@ -149,11 +148,16 @@ bool SceneBuilder::InitialiseMeshes(SceneData& data)
     const int NO_TEXTURE = -1;
     data.meshes.resize(MeshID::MAX);
 
-    auto Initialise = [&data, NO_TEXTURE](std::string name, int meshID, int shaderID, int textureID, int instances) -> bool
+    auto Initialise = [&data, NO_TEXTURE](const std::string& name, 
+                                          int meshID, 
+                                          int shaderID, 
+                                          int textureID, 
+                                          int instances, 
+                                          bool shadows) -> bool
     {
-        data.meshes[meshID] = std::make_unique<MeshFile>(name,
-            data.shaders[shaderID]->Name(), shaderID);
-        
+        data.meshes[meshID] = std::make_unique<MeshFile>(name, shaderID);
+        data.meshes[meshID]->SetRenderShadows(shadows);
+
         if (data.meshes[meshID]->InitialiseFromFile(
             ASSETS_PATH + name + ".obj", true, true, instances))
         {
@@ -169,16 +173,16 @@ bool SceneBuilder::InitialiseMeshes(SceneData& data)
         return false;
     };
 
-    success &= Initialise("bullet", MeshID::BULLET, ShaderID::TOON, TextureID::BULLET, Instance::BULLETS);
-    success &= Initialise("tank", MeshID::TANK, ShaderID::TOON, TextureID::TANK_NPC_BODY, Instance::TANKS);
-    success &= Initialise("tankgun", MeshID::TANKGUN, ShaderID::TOON, TextureID::TANK_NPC_GUN, Instance::TANKS);
-    success &= Initialise("ground", MeshID::GROUND, ShaderID::TOON, TextureID::GROUND, Instance::GROUND);
-    success &= Initialise("wall", MeshID::WALL, ShaderID::TOON, TextureID::WALL, Instance::WALLS);
-    success &= Initialise("wallbox", MeshID::WALLBOX, ShaderID::TOON, TextureID::BOX, Instance::WALLS);
-    success &= Initialise("tankp1", MeshID::TANKP1, ShaderID::TOON, TextureID::TANK_NPC_BODY, Instance::TANKS);
-    success &= Initialise("tankp2", MeshID::TANKP2, ShaderID::TOON, TextureID::TANK_NPC_BODY, Instance::TANKS);
-    success &= Initialise("tankp3", MeshID::TANKP3, ShaderID::TOON, TextureID::TANK_NPC_BODY, Instance::TANKS);
-    success &= Initialise("tankp4", MeshID::TANKP4, ShaderID::TOON, TextureID::TANK_NPC_BODY, Instance::TANKS);
+    success &= Initialise("bullet", MeshID::BULLET, ShaderID::TOON, TextureID::BULLET, Instance::BULLETS, true);
+    success &= Initialise("tank", MeshID::TANK, ShaderID::TOON, TextureID::TANK_NPC_BODY, Instance::TANKS, true);
+    success &= Initialise("tankgun", MeshID::TANKGUN, ShaderID::TOON, TextureID::TANK_NPC_GUN, Instance::TANKS, true);
+    success &= Initialise("ground", MeshID::GROUND, ShaderID::TOON, TextureID::GROUND, Instance::GROUND, false);
+    success &= Initialise("wall", MeshID::WALL, ShaderID::TOON, TextureID::WALL, Instance::WALLS, false);
+    success &= Initialise("wallbox", MeshID::WALLBOX, ShaderID::TOON, TextureID::BOX, Instance::WALLS, false);
+    success &= Initialise("tankp1", MeshID::TANKP1, ShaderID::TOON, TextureID::TANK_NPC_BODY, Instance::TANKS, true);
+    success &= Initialise("tankp2", MeshID::TANKP2, ShaderID::TOON, TextureID::TANK_NPC_BODY, Instance::TANKS, true);
+    success &= Initialise("tankp3", MeshID::TANKP3, ShaderID::TOON, TextureID::TANK_NPC_BODY, Instance::TANKS, true);
+    success &= Initialise("tankp4", MeshID::TANKP4, ShaderID::TOON, TextureID::TANK_NPC_GUN, Instance::TANKS, true);
 
     // Player has different texture to enemies
     data.meshes[MeshID::TANK]->SetTexture(TextureID::TANK_BODY, Instance::PLAYER);
@@ -186,7 +190,7 @@ bool SceneBuilder::InitialiseMeshes(SceneData& data)
     data.meshes[MeshID::TANKP1]->SetTexture(TextureID::TANK_BODY, Instance::PLAYER);
     data.meshes[MeshID::TANKP2]->SetTexture(TextureID::TANK_BODY, Instance::PLAYER);
     data.meshes[MeshID::TANKP3]->SetTexture(TextureID::TANK_BODY, Instance::PLAYER);
-    data.meshes[MeshID::TANKP4]->SetTexture(TextureID::TANK_BODY, Instance::PLAYER);
+    data.meshes[MeshID::TANKP4]->SetTexture(TextureID::TANK_GUN, Instance::PLAYER);
 
     return success;
 }
@@ -202,7 +206,7 @@ bool SceneBuilder::InitialiseHulls(SceneData& data, PhysicsEngine& physics)
                                         int instances) -> bool
     {
         auto& hull = data.hulls[hullID];
-        hull = std::make_unique<MeshFile>(name, data.shaders[shaderID]->Name(), shaderID);
+        hull = std::make_unique<MeshFile>(name, shaderID);
 
         if (hull->InitialiseFromFile(ASSETS_PATH + name + ".obj", false, false, instances))
         {

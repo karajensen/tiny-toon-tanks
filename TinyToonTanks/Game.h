@@ -48,8 +48,9 @@ public:
 
     /**
     * Ticks the game once the physics engine has updated
+    * @param deltatime The time passed between ticks
     */
-    void PostPhysicsTick();
+    void PostPhysicsTick(float deltatime);
 
     /**
     * Initialises the game

@@ -9,6 +9,7 @@
 #include "Quad.h"
 #include "SceneData.h"
 #include "Rendertarget.h"
+#include "GlmHelper.h"
 
 namespace
 {
@@ -130,7 +131,8 @@ void OpenGL::RenderScene()
 void OpenGL::RenderPostProcessing()
 {
     EnableBackfaceCull(false);
-    EnableAlphaBlending(false);   
+    EnableAlphaBlending(false);
+    EnableDepthWrite(true);
 
     SetSelectedShader(ShaderID::POST);
     auto& shader = *m_scene.shaders[m_selectedShader];
@@ -154,28 +156,42 @@ void OpenGL::RenderPostProcessing()
 
 void OpenGL::RenderMeshes()
 {
-    auto renderInstance = [this](const glm::mat4& world, int texture)
-    {
-        UpdateShader(world, texture); 
-    };
-
     for (const auto& mesh : m_scene.meshes)
     {
-        if (mesh->IsVisible() && UpdateShader(*mesh, true, false))
+        if (mesh->IsVisible() && UpdateShader(*mesh, true, false, true))
         {
             mesh->PreRender();
             EnableSelectedShader();
-            mesh->RenderTextured(renderInstance);
+            mesh->RenderTextured([this](const glm::mat4& world, int texture)
+            {
+                UpdateShader(world, texture);
+            });
+        }
+    }
+
+    for (const auto& mesh : m_scene.meshes)
+    {
+        if (mesh->IsVisible() && mesh->RenderShadows() && UpdateShadowShader())
+        {
+            mesh->PreRender();
+            EnableSelectedShader();
+            mesh->Render([this](const glm::mat4& world)
+            {
+                UpdateShadowShader(world);
+            });
         }
     }
 
     for (const auto& quad : m_scene.quads)
     {
-        if (quad->IsVisible() && UpdateShader(*quad, false, true))
+        if (quad->IsVisible() && UpdateShader(*quad, false, true, false))
         {
             quad->PreRender();
             EnableSelectedShader();
-            quad->RenderTextured(renderInstance);
+            quad->RenderTextured([this](const glm::mat4& world, int texture)
+            {
+                UpdateShader(world, texture);
+            });
         }
     }
 }
@@ -192,12 +208,32 @@ void OpenGL::UpdateShader(const glm::mat4& world, int texture)
     SendTexture("DiffuseSampler", texture);
 }
 
+void OpenGL::UpdateShadowShader(const glm::mat4& world)
+{
+    UpdateShader(world);
+
+    const auto position = glm::matrix_get_position(world);
+    const auto worldTranspose = glm::transpose(glm::mat3(world));
+
+    const float shadowOffset = 0.8f;
+    auto pointOnPlane = m_scene.meshes[MeshID::GROUND]->Position();
+    pointOnPlane.y += shadowOffset;
+
+    // change point on plane and normal to mesh's local frame
+    const auto plane = worldTranspose * (pointOnPlane - position);
+    const auto normal = worldTranspose * glm::vec3(0.0f, 1.0f, 0.0f);
+    
+    auto& shader = *m_scene.shaders[ShaderID::SHADOW];
+    shader.SendUniform("planePosition", plane);
+    shader.SendUniform("planeNormal", normal);
+}
+
 void OpenGL::UpdateShader(const glm::mat4& world)
 {
     m_scene.shaders[m_selectedShader]->SendUniform("world", world);
 }
 
-bool OpenGL::UpdateShader(const Mesh& mesh, bool sendLights, bool alphaBlending)
+bool OpenGL::UpdateShader(const Mesh& mesh, bool sendLights, bool alphaBlending, bool depthWrite)
 {
     const int index = mesh.ShaderID();
     if (index != NO_INDEX)
@@ -217,9 +253,27 @@ bool OpenGL::UpdateShader(const Mesh& mesh, bool sendLights, bool alphaBlending)
 
         EnableBackfaceCull(mesh.BackfaceCull());
         EnableAlphaBlending(alphaBlending);
+        EnableDepthWrite(depthWrite);
         return true;
     }
     return false;
+}
+
+bool OpenGL::UpdateShadowShader()
+{
+    if (m_selectedShader != ShaderID::SHADOW)
+    {
+        auto& shader = *m_scene.shaders[ShaderID::SHADOW];
+
+        SetSelectedShader(ShaderID::SHADOW);
+
+        shader.SendUniform("viewProjection", m_camera.ViewProjection());
+
+        EnableBackfaceCull(false);
+        EnableAlphaBlending(false);
+        EnableDepthWrite(true);
+    }
+    return true;
 }
 
 void OpenGL::SendLights()

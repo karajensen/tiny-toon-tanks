@@ -8,11 +8,8 @@
 #include "Conversions.h"
 #include <algorithm>
 
-Mesh::Mesh(const std::string& name, 
-                   const std::string& shaderName,
-                   int shaderID) :
+Mesh::Mesh(const std::string& name, int shaderID) :
     m_name(name),
-    m_shaderName(shaderName),
     m_shaderIndex(shaderID)
 { 
 }
@@ -31,7 +28,6 @@ Mesh::~Mesh()
 void Mesh::AddToTweaker(Tweaker& tweaker)
 {
     tweaker.AddStrEntry("Name", m_name);
-    tweaker.AddStrEntry("Shader", m_shaderName);
     tweaker.AddEntry("Backface Cull", &m_backfacecull, TW_TYPE_BOOLCPP);
     tweaker.AddFltEntry("Radius", &m_radius, 0.1f, 0.1f, FLT_MAX);
 }
@@ -103,7 +99,7 @@ void Mesh::RenderTextured(RenderTexturedInstance renderInstance) const
 {
     for (const Instance& instance : m_instances)
     {
-        //if (instance.render)
+        if (instance.render)
         {
             renderInstance(instance.world, instance.texture);
             Render();
@@ -274,6 +270,12 @@ void Mesh::Rotation(float x, float y, float z, int index)
     m_instances[index].requiresUpdate = true;
 }
 
+void Mesh::Scale(const glm::vec3& scale, int index)
+{
+    m_instances[index].scale= scale;
+    m_instances[index].requiresUpdate = true;
+}
+
 int Mesh::Instances() const
 {
     return static_cast<int>(m_instances.size());
@@ -298,4 +300,14 @@ bool Mesh::IsVisible(int index) const
 const glm::mat4& Mesh::GetWorld(int index)
 {
     return m_instances[index].world;
+}
+
+void Mesh::SetRenderShadows(bool render)
+{
+    m_renderShadows = render;
+}
+
+bool Mesh::RenderShadows() const
+{
+    return m_renderShadows;
 }

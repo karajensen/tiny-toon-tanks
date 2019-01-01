@@ -23,12 +23,9 @@ public:
     /**
     * Constructor
     * @param name The name of the quad
-    * @param shaderName The name of the shader to use
     * @param shaderID The ID of the shader to use
     */
-    Quad(const std::string& name,
-         const std::string& shaderName, 
-         int shaderID);
+    Quad(const std::string& name, int shaderID);
 
 private:
 

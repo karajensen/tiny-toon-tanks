@@ -43,11 +43,8 @@ public:
     * Constructor
     * @param name The name of the data
     * @param shader The ID of the shader to use
-    * @param shaderName The name of the shader to use
     */
-    Mesh(const std::string& name, 
-             const std::string& shaderName,
-             int shaderID);
+    Mesh(const std::string& name, int shaderID);
 
     /**
     * Destructor
@@ -161,6 +158,11 @@ public:
     const glm::vec3& Scale(int index = 0) const;
 
     /**
+    * Sets the scale of the mesh
+    */
+    void Scale(const glm::vec3& scale, int index = 0);
+
+    /**
     * Sets whether the mesh should render
     */
     void SetShouldRender(bool render, int index = 0);
@@ -202,6 +204,16 @@ public:
     */
     void UpdateTransforms();
 
+    /**
+    * Whether to render a shadow of this mesh
+    */
+    void SetRenderShadows(bool render);
+
+    /**
+    * Whether to render a shadow of this mesh
+    */
+    bool RenderShadows() const;
+
 protected:
 
     int m_vertexComponentCount = 0;         ///< Number of components that make up a vertex
@@ -229,7 +241,7 @@ private:
     unsigned int m_vboID = 0;             ///< Unique ID for the Vertex Buffer Object (VBO)   
     unsigned int m_iboID = 0;             ///< Unique ID for the Index Buffer Object (IBO)
     bool m_initialised = false;           ///< Whether the vertex buffer object is initialised or not
-    const std::string m_shaderName;       ///< Name of the shader to use
     float m_radius = 0.0f;                ///< The radius of the sphere surrounding the mesh
     std::vector<Instance> m_instances;    ///< Instances of this mesh
+    bool m_renderShadows = false;         ///< Whether to render a shadow of this mesh
 };

@@ -46,7 +46,7 @@ void Application::Run()
 
         m_timer->StartSection(Timer::PHYSICS);
         m_physics->Tick(0.01f);
-        m_game->PostPhysicsTick();
+        m_game->PostPhysicsTick(deltaTime);
         m_timer->StopSection(Timer::PHYSICS);
 
         m_timer->StartSection(Timer::RENDERING);

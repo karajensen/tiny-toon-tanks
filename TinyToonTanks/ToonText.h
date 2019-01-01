@@ -18,12 +18,10 @@ public:
     /**
     * Constructor
     * @param name The name of the quad
-    * @param shaderName The name of the shader to use
     * @param shaderID The ID of the shader to use
     */
-    ToonText(const std::string& name,
-             const std::string& shaderName, 
-             int shaderID);
+    ToonText(const std::string& name, int shaderID);
+
     /**
     * Displays an instance of the toon text at the given position
     */
@@ -32,5 +30,5 @@ public:
     /**
     * Ticks all instances of the toon text and faces them towards the camera
     */
-    void Tick(const Camera& camera);
+    void Tick(const Camera& camera, float deltatime);
 };

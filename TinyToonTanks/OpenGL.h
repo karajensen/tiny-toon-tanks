@@ -94,7 +94,12 @@ private:
     * @param mesh The mesh currently rendering
     * @return whether the mesh can now be rendered
     */
-    bool UpdateShader(const Mesh& mesh, bool sendLights, bool alphaBlending);
+    bool UpdateShader(const Mesh& mesh, bool sendLights, bool alphaBlending, bool depthWrite);
+
+    /**
+    * Updates and switches to the shadow shader the mesh requres
+    */
+    bool UpdateShadowShader();
 
     /**
     * Updates the shader for a mesh per instance
@@ -108,6 +113,12 @@ private:
     * @param world The world matrix for the mesh
     */
     void UpdateShader(const glm::mat4& world);
+
+    /**
+    * Updates the shader for a mesh per instance
+    * @param world The world matrix for the mesh
+    */
+    void UpdateShadowShader(const glm::mat4& world);
 
     /**
     * Sets whether alpha blending is enabled or not

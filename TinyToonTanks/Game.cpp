@@ -55,7 +55,7 @@ void Game::PrePhysicsTick(float deltatime)
     } 
 }
 
-void Game::PostPhysicsTick()
+void Game::PostPhysicsTick(float deltatime)
 {
     m_tankManager->PostPhysicsTick();
     m_bulletManager->PostPhysicsTick();
@@ -64,7 +64,7 @@ void Game::PostPhysicsTick()
     m_collisionManager->CollisionResolution();
 
     // Do after collision resolution as it will enable/disable instances
-    m_data->toonText->Tick(m_camera);
+    m_data->toonText->Tick(m_camera, deltatime);
 }
 
 bool Game::Initialise(SceneData& data)
