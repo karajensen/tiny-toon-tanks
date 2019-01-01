@@ -62,6 +62,9 @@ void Game::PostPhysicsTick()
 
     m_collisionManager->CollisionDetection();
     m_collisionManager->CollisionResolution();
+
+    // Do after collision resolution as it will enable/disable instances
+    m_data->toonText->Tick(m_camera);
 }
 
 bool Game::Initialise(SceneData& data)

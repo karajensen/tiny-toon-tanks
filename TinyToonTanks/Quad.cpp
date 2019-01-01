@@ -1,11 +1,19 @@
 ////////////////////////////////////////////////////////////////////////////////////////
-// Kara Jensen - mail@karajensen.com - quad.cpp
+// Kara Jensen - mail@karajensen.com - Quad.cpp
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#include "quad.h"
+#include "Quad.h"
+#include "GlmHelper.h"
 
-Quad::Quad(const std::string& name, int shader) :
-    Mesh(name, "unnamed", shader)
+Quad::Quad(const std::string& name)
+    : Quad(name, "unnamed", -1)
+{
+}
+
+Quad::Quad(const std::string& name,
+           const std::string& shaderName,
+           int shaderID)
+    : Mesh(name, shaderName, shaderID)
 {
     m_vertexComponentCount = 5;
 
@@ -40,7 +48,7 @@ Quad::Quad(const std::string& name, int shader) :
     m_indices.emplace_back(0);
     m_indices.emplace_back(3);
     m_indices.emplace_back(1);
-              
+
     m_indices.emplace_back(1);
     m_indices.emplace_back(3);
     m_indices.emplace_back(2);

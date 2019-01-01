@@ -35,16 +35,16 @@
     <None Include="resources\toon_glsl_vert.fx">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="resources\sprite_glsl_vert.fx">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="resources\sprite_glsl_frag.fx">
-      <Filter>Shaders</Filter>
-    </None>
     <None Include="resources\post_glsl_frag.fx">
       <Filter>Shaders</Filter>
     </None>
     <None Include="resources\post_glsl_vert.fx">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="resources\quad_glsl_frag.fx">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="resources\quad_glsl_vert.fx">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
@@ -100,9 +100,6 @@
     <ClCompile Include="SceneBuilder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Sprite.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Postprocessing.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -143,6 +140,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TankManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ToonText.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -213,9 +213,6 @@
     <ClInclude Include="SceneBuilder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Sprite.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="SceneData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -268,6 +265,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TankManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ToonText.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

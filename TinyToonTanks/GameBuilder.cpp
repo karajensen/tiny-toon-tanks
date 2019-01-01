@@ -77,7 +77,8 @@ bool GameBuilder::InitialiseWorld(GameData& gamedata,
             0.0f, environmentGroup, MeshID::WALL, i, true);
     }
 
-    return true;
+    gamedata.toonText = dynamic_cast<ToonText*>(scenedata.quads[QuadID::TOONTEXT].get());
+    return gamedata.toonText != nullptr;
 }
 
 bool GameBuilder::InitialiseTanks(GameData& gamedata,

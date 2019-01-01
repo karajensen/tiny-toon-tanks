@@ -7,6 +7,7 @@
 #include "Shader.h"
 #include "PhysicsEngine.h"
 #include "Common.h"
+#include "ToonText.h"
 
 namespace
 {
@@ -21,11 +22,13 @@ SceneBuilder::~SceneBuilder() = default;
 
 bool SceneBuilder::Initialise(SceneData& data, PhysicsEngine& physics)
 {
+    data.post = std::make_unique<PostProcessing>();
     return InitialiseLighting(data) &&
            InitialiseTextures(data) &&
            InitialiseShaderConstants(data) &&
            InitialiseShaders(data) &&
            InitialiseMeshes(data) &&
+           InitialiseQuads(data) &&
            InitialiseHulls(data, physics);
 }
 
@@ -69,7 +72,7 @@ bool SceneBuilder::InitialiseShaders(SceneData& data)
     success &= Initialise("proxy", ShaderID::PROXY);
     success &= Initialise("shadow", ShaderID::SHADOW);
     success &= Initialise("toon", ShaderID::TOON);
-    success &= Initialise("sprite", ShaderID::SPRITE);
+    success &= Initialise("quad", ShaderID::QUAD);
     success &= Initialise("post", ShaderID::POST);
 
     return success;
@@ -115,6 +118,29 @@ bool SceneBuilder::InitialiseTextures(SceneData& data)
     success &= Initialise("bullet.png", TextureID::BULLET, Texture::NEAREST);
 
     return true;
+}
+
+bool SceneBuilder::InitialiseQuads(SceneData& data)
+{
+    bool success = true;
+
+    data.quads.resize(QuadID::MAX);
+
+    // Initialise the toon text
+    const int toonTextCount = 10;
+    auto toonTextQuad = std::make_unique<ToonText>("toontext",
+        data.shaders[ShaderID::QUAD]->Name(), ShaderID::QUAD);
+    toonTextQuad->BackfaceCull(false);
+
+    success &= toonTextQuad->Initialise(toonTextCount);
+    for (int i = 0; i < toonTextCount; ++i)
+    {
+        toonTextQuad->SetTexture(TextureID::TOON_TEXT, i);
+        toonTextQuad->Visible(false, i);
+    }
+    data.quads[QuadID::TOONTEXT] = std::move(toonTextQuad);
+
+    return success;
 }
 
 bool SceneBuilder::InitialiseMeshes(SceneData& data)

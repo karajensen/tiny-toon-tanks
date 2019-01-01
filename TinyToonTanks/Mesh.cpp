@@ -103,7 +103,7 @@ void Mesh::RenderTextured(RenderTexturedInstance renderInstance) const
 {
     for (const Instance& instance : m_instances)
     {
-        if (instance.render)
+        //if (instance.render)
         {
             renderInstance(instance.world, instance.texture);
             Render();

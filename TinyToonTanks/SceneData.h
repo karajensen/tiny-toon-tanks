@@ -13,26 +13,19 @@
 #include "Light.h"
 #include "MeshFile.h"
 #include "Texture.h"
+#include "Quad.h"
 
 /**
 * Internal data for the scene
 */
 struct SceneData
 {
-    SceneData() :
-        post(std::make_unique<PostProcessing>())
-    {
-    }
-
-    ~SceneData()
-    {
-    }
-
     std::unique_ptr<PostProcessing> post;
     std::vector<std::unique_ptr<Shader>> shaders;
     std::vector<std::unique_ptr<Light>> lights;
     std::vector<std::unique_ptr<MeshFile>> meshes;
     std::vector<std::unique_ptr<MeshFile>> hulls;
     std::vector<std::unique_ptr<Texture>> textures;
+    std::vector<std::unique_ptr<Quad>> quads;
     std::vector<int> shapes;
 };

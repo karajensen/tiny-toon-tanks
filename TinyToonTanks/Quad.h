@@ -1,10 +1,10 @@
 ////////////////////////////////////////////////////////////////////////////////////////
-// Kara Jensen - mail@karajensen.com - quad.h
+// Kara Jensen - mail@karajensen.com - Quad.h
 ////////////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-#include "mesh.h"
+#include "Mesh.h"
 
 /**
 * Four-vertex quad
@@ -18,7 +18,17 @@ public:
     * @param name The name of the quad
     * @param shader The ID of the shader to use
     */
-    Quad(const std::string& name, int shader = -1);
+    Quad(const std::string& name);
+
+    /**
+    * Constructor
+    * @param name The name of the quad
+    * @param shaderName The name of the shader to use
+    * @param shaderID The ID of the shader to use
+    */
+    Quad(const std::string& name,
+         const std::string& shaderName, 
+         int shaderID);
 
 private:
 

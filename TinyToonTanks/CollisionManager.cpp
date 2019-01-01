@@ -265,6 +265,7 @@ void CollisionManager::BulletCollisionLogic(const CollisionEvent* collisionEvent
         bulletA->SetIsAlive(false);
         m_physics.AddToWorld(bulletA->GetPhysicsID(), false);
         m_physics.ResetVelocityAndForce(bulletA->GetPhysicsID());
+        m_gameData.toonText->Show(bulletA->GetPosition());
     }
 
     if (bulletB && bulletB->Health() <= 0)
@@ -273,6 +274,7 @@ void CollisionManager::BulletCollisionLogic(const CollisionEvent* collisionEvent
         bulletB->SetIsAlive(false);
         m_physics.AddToWorld(bulletB->GetPhysicsID(), false);
         m_physics.ResetVelocityAndForce(bulletB->GetPhysicsID());
+        m_gameData.toonText->Show(bulletB->GetPosition());
     }
 
     if (bulletDestroyed)

@@ -26,6 +26,18 @@ namespace MeshID
 }
 
 /**
+* Avaliable quads in the game
+*/
+namespace QuadID
+{
+    enum ID
+    {
+        TOONTEXT,
+        MAX
+    };
+}
+
+/**
 * Avaliables convex hull meshes in the game
 */
 namespace HullID
@@ -56,7 +68,7 @@ namespace ShaderID
         NORMAL,
         PROXY,
         SHADOW,
-        SPRITE,
+        QUAD,
         POST,
         MAX
     };

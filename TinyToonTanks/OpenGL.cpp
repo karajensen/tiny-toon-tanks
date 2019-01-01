@@ -82,6 +82,8 @@ bool OpenGL::Initialise()
     glDisablei(GL_BLEND, 0);
     glEnable(GL_CULL_FACE);
     glDepthMask(GL_TRUE);
+    glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+    glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
 
     m_backBuffer = std::make_unique<RenderTarget>("BackBuffer");
     m_sceneTarget = std::make_unique<RenderTarget>("Scene", SCENE_TEXTURES, true);
@@ -128,7 +130,7 @@ void OpenGL::RenderScene()
 void OpenGL::RenderPostProcessing()
 {
     EnableBackfaceCull(false);
-    EnableAlphaBlending(false, false);   
+    EnableAlphaBlending(false);   
 
     SetSelectedShader(ShaderID::POST);
     auto& shader = *m_scene.shaders[m_selectedShader];
@@ -159,11 +161,21 @@ void OpenGL::RenderMeshes()
 
     for (const auto& mesh : m_scene.meshes)
     {
-        if (mesh->IsVisible() && UpdateShader(*mesh))
+        if (mesh->IsVisible() && UpdateShader(*mesh, true, false))
         {
             mesh->PreRender();
             EnableSelectedShader();
             mesh->RenderTextured(renderInstance);
+        }
+    }
+
+    for (const auto& quad : m_scene.quads)
+    {
+        if (quad->IsVisible() && UpdateShader(*quad, false, true))
+        {
+            quad->PreRender();
+            EnableSelectedShader();
+            quad->RenderTextured(renderInstance);
         }
     }
 }
@@ -185,7 +197,7 @@ void OpenGL::UpdateShader(const glm::mat4& world)
     m_scene.shaders[m_selectedShader]->SendUniform("world", world);
 }
 
-bool OpenGL::UpdateShader(const Mesh& mesh)
+bool OpenGL::UpdateShader(const Mesh& mesh, bool sendLights, bool alphaBlending)
 {
     const int index = mesh.ShaderID();
     if (index != NO_INDEX)
@@ -194,13 +206,17 @@ bool OpenGL::UpdateShader(const Mesh& mesh)
         if(index != m_selectedShader)
         {
             SetSelectedShader(index);
-            SendLights();
+
+            if (sendLights)
+            {
+                SendLights();
+            }
 
             shader.SendUniform("viewProjection", m_camera.ViewProjection());
         }
 
         EnableBackfaceCull(mesh.BackfaceCull());
-        EnableAlphaBlending(false, false);
+        EnableAlphaBlending(alphaBlending);
         return true;
     }
     return false;
@@ -228,27 +244,13 @@ void OpenGL::SendTexture(std::string sampler, int ID)
     }
 }
 
-void OpenGL::EnableAlphaBlending(bool enable, bool multiply)
+void OpenGL::EnableAlphaBlending(bool enable)
 {
     if (enable != m_isAlphaBlend)
     {
         m_isAlphaBlend = enable;
         enable ? glEnablei(GL_BLEND, 0) : glDisablei(GL_BLEND, 0);
         enable ? glEnablei(GL_BLEND, 1) : glDisablei(GL_BLEND, 1);
-    }
-    if (multiply != m_isBlendMultiply)
-    {
-        m_isBlendMultiply = multiply;
-        if (multiply)
-        {
-            glBlendFuncSeparate(GL_DST_COLOR, GL_ZERO, GL_DST_ALPHA, GL_ZERO);
-            glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
-        }
-        else
-        {
-            glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
-            glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
-        }
     }
 }
 

@@ -94,7 +94,7 @@ private:
     * @param mesh The mesh currently rendering
     * @return whether the mesh can now be rendered
     */
-    bool UpdateShader(const Mesh& mesh);
+    bool UpdateShader(const Mesh& mesh, bool sendLights, bool alphaBlending);
 
     /**
     * Updates the shader for a mesh per instance
@@ -112,9 +112,8 @@ private:
     /**
     * Sets whether alpha blending is enabled or not
     * @param enable whether blending is enabled
-    * @param whether to multiply the blend colours
     */
-    void EnableAlphaBlending(bool enable, bool multiply);
+    void EnableAlphaBlending(bool enable);
 
     /**
     * Sends light information to the selected shader
@@ -154,7 +153,6 @@ private:
     const SceneData& m_scene;        ///< The data to render
     bool m_isBackfaceCull = true;    ///< Whether the culling rasterize state is active
     bool m_isAlphaBlend = false;     ///< Whether alpha blending is currently active
-    bool m_isBlendMultiply = false;  ///< Whether to multiply the blend colours
     bool m_isDepthWrite = true;      ///< Whether writing to the depth buffer is active
     int m_selectedShader = -1;       ///< Currently active shader for rendering
 
