@@ -267,7 +267,6 @@ bool GameBuilder::InitialiseBullets(GameData& gamedata,
         const int ID = physics.LoadRigidBody(glm::mat4(), shape, 
             bulletMass, groupID, MeshID::BULLET, i, true);
         
-        gamedata.bullets[i]->SetPhysicsGroupID(groupID);
         gamedata.bullets[i]->SetIsAlive(false);
         gamedata.bullets[i]->SetPhysicsID(ID);
         physics.AddToWorld(ID, false);

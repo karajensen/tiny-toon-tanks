@@ -10,9 +10,9 @@
 
 namespace
 {
-    const int InitialBulletHealth = 2; ///< Amount of initial health
-    const int ImpulseCounterMax = 2;   ///< Maximum queries before impulse is needed
-    const int DrawCounterMax = 3;      ///< Maximum queries before bullet can be drawn
+    const int INITIAL_BULLET_HEALTH = 2; ///< Amount of initial health
+    const int IMPULSE_COUNTER_MAX = 2;   ///< Maximum queries before impulse is needed
+    const int DRAW_COUNTER_MAX = 3;      ///< Maximum queries before bullet can be drawn
 }
 
 Bullet::Bullet(Mesh& mesh, int instance) :
@@ -32,21 +32,20 @@ int Bullet::GetPhysicsID() const
     return m_physicsID;
 }
 
-void Bullet::SetPhysicsGroupID(int ID)
+void Bullet::SetOwnerID(int ID)
 {
-    m_physicsGroupID = ID;
+    m_ownerID = ID;
 }
 
-int Bullet::GetPhysicsGroupID() const
+int Bullet::GetOwnerID() const
 {
-    return m_physicsGroupID;
+    return m_ownerID;
 }
 
 void Bullet::Reset()
 {
     SetIsAlive(false);
-    m_health = InitialBulletHealth;
-    m_friendlyFire = false;
+    m_health = INITIAL_BULLET_HEALTH;
     m_generateImpuse = false;
 }
 
@@ -80,16 +79,6 @@ bool Bullet::IsAlive() const
 void Bullet::SetWorld(const glm::mat4& world)
 {
     m_mesh.SetWorld(world, m_instance);
-}
-
-void Bullet::SetAllowFriendlyFire(bool allow)
-{
-    m_friendlyFire = allow;
-}
-
-bool Bullet::AllowFriendlyFire() const
-{
-    return m_friendlyFire;
 }
 
 const glm::vec3& Bullet::GetPosition() const

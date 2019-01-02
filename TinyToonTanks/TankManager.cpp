@@ -12,13 +12,13 @@
 
 namespace
 {
-    const float ForwardForce = 3100.0f;        ///< Forward force to add for movement
-    const float RotationForceFar = 500.0f;     ///< Force to apply at the far corners
-    const float RotationForceClose = 100.0f;   ///< Force to apply at the near corners
-    const float GunRotation = 1500.0f;         ///< Amount to apply for rotating the gun
-    const float LinearDamping = 0.0005f;       ///< Linear damping amount for movement
-    const float RotationalDamping = 0.00002f;  ///< Rotational damping amount for rotating
-    const float GunRotationDamping = 0.4f;     ///< Rotation damping for the gun hinge
+    const float TANK_GUN_DAMPING = 0.001f;
+    const float TANK_GUN_ROT_AMOUNT = 800.0f;
+    const float TANK_FORCE_DAMPING = 0.001f;
+    const float TANK_ROT_DAMPING = 0.000015f;
+    const float TANK_FORCE_AMOUNT = 20000.0f;
+    const float TANK_AI_MAX_COUNTER = 3000.0f;
+    const float TANK_TANK_AI_THRESHOLD = 50.0f;
 
     /**
     * Offsets from the tank center to apply movement forces to
@@ -44,15 +44,15 @@ TankManager::TankManager(PhysicsEngine& physics,
 
 TankManager::~TankManager() = default;
 
-void TankManager::PrePhysicsTick(float deltatime)
+void TankManager::PrePhysicsTick(float physicsDeltaTime)
 {
-    UpdateTankMovement(deltatime, *m_gameData.player);
-    UpdateGunMovement(deltatime, *m_gameData.player);
+    UpdateTankMovement(physicsDeltaTime, *m_gameData.player);
+    UpdateGunMovement(physicsDeltaTime, *m_gameData.player);
 
     for (auto& enemy : m_gameData.enemies)
     {
-        UpdateTankMovement(deltatime, *enemy);
-        UpdateGunMovement(deltatime, *enemy);
+        UpdateTankMovement(physicsDeltaTime, *enemy);
+        UpdateGunMovement(physicsDeltaTime, *enemy);
     } 
 }
 
@@ -95,75 +95,119 @@ void TankManager::UpdateTankPositions(const Tank& tank)
     }
 }
 
-void TankManager::UpdateTankMovement(float deltatime, Tank& tank)
+void TankManager::UpdateTankMovement(float physicsDeltaTime, Tank& tank)
 {
-    const int rb = tank.GetPhysicsIDs().Body;
+    const auto ID = tank.GetPhysicsIDs().Body;
     const unsigned int request = tank.GetMovementRequest();
-    const bool forwards = (request & Tank::FORWARDS) == Tank::FORWARDS;
-    const bool backwards = (request & Tank::BACKWARDS) == Tank::BACKWARDS;
-    const bool rotateLeft = (request & Tank::ROTATE_LEFT) == Tank::ROTATE_LEFT;
-    const bool rotateRight = (request & Tank::ROTATE_RIGHT) == Tank::ROTATE_RIGHT;
+    const bool moveBack = (request & Tank::BACKWARDS) == Tank::BACKWARDS;
+    const bool moveForward = (request & Tank::FORWARDS) == Tank::FORWARDS;
+    const bool moveRight = (request & Tank::ROTATE_RIGHT) == Tank::ROTATE_RIGHT;
+    const bool moveLeft = (request & Tank::ROTATE_LEFT) == Tank::ROTATE_LEFT;
 
-    if (forwards || backwards)
+    const auto& world = tank.GetWorldMatrix();
+    const auto basis = glm::mat3(world);
+    auto forward = glm::matrix_get_forward(world);
+    auto right = glm::matrix_get_right(world);
+    forward *= TANK_FORCE_AMOUNT * physicsDeltaTime;
+
+    const float turnAmountLarge = (TANK_FORCE_AMOUNT * physicsDeltaTime) / 4.0f;
+    const float turnAmountSmall = (TANK_FORCE_AMOUNT * physicsDeltaTime) / 8.0f;
+    auto rightLarge = right * turnAmountLarge;
+    auto rightSmall = right * turnAmountSmall;
+
+    bool addedlinearforce = false;
+    bool addedrotforce = false;
+
+    if (moveBack)
     {
-        const glm::mat4& world = tank.GetWorldMatrix();
-        const glm::mat3 basis(world);
-        const glm::vec3 forward(glm::matrix_get_forward(world));
-        const float direction = forwards ? -1.0f : 1.0f;
-        const glm::vec3 force = forward * ForwardForce * direction;
-
-        m_physics.AddForce(force, basis * (forwards ? FrontBotLeft : BackBotLeft), rb);
-        m_physics.AddForce(force, basis * (forwards ? FrontBotRight : BackBotRight), rb);
-        m_physics.AddForce(force, basis * (forwards ? FrontTopLeft : BackTopLeft), rb);
-        m_physics.AddForce(force, basis * (forwards ? FrontTopRight : BackTopRight), rb);
         tank.SetLinearDamping(1.0f);
+        addedlinearforce = true;
+        m_physics.AddForce(forward, basis * BackBotLeft, ID);
+        m_physics.AddForce(forward, basis * BackBotRight, ID);
+        m_physics.AddForce(forward, basis * BackTopLeft, ID);
+        m_physics.AddForce(forward, basis * BackTopRight, ID);
     }
-    else
+    if (moveForward)
     {
-        tank.AddLinearDamping(-deltatime * LinearDamping);
-        m_physics.AddLinearDamping(rb, tank.GetLinearDamping());
+        tank.SetLinearDamping(1.0f);
+        addedlinearforce = true;
+        m_physics.AddForce(-forward, basis * FrontBotLeft, ID);
+        m_physics.AddForce(-forward, basis * FrontBotRight, ID);
+        m_physics.AddForce(-forward, basis * FrontTopLeft, ID);
+        m_physics.AddForce(-forward, basis * FrontTopRight, ID);
     }
-
-    if (rotateLeft || rotateRight)
+    if (moveRight)
     {
-        const glm::mat4& world = tank.GetWorldMatrix();
-        const glm::mat3 basis(world);
-        const glm::vec3 right(glm::matrix_get_right(world));
-        const float direction = rotateRight ? 1.0f : -1.0f;
-        const glm::vec3 forceClose = right * RotationForceClose * direction;
-        const glm::vec3 forceFar = right * RotationForceFar * direction;
-
-        m_physics.AddForce(rotateRight ? forceFar : forceClose, basis * FrontBotLeft, rb);
-        m_physics.AddForce(rotateRight ? forceClose : forceFar, basis * FrontBotRight, rb);
-        m_physics.AddForce(rotateRight ? forceFar : forceClose, basis * FrontTopLeft, rb);
-        m_physics.AddForce(rotateRight ? forceClose : forceFar, basis * FrontTopRight, rb);
         tank.SetRotationalDamping(1.0f);
+        addedrotforce = true;
+        m_physics.AddForce(rightLarge, basis * FrontBotLeft, ID);
+        m_physics.AddForce(rightSmall, basis * FrontBotRight, ID);
+        m_physics.AddForce(rightLarge, basis * FrontTopLeft, ID);
+        m_physics.AddForce(rightSmall, basis * FrontTopRight, ID);
     }
-    else
+    if (moveLeft)
     {
-        tank.AddRotationalDamping(-deltatime * RotationalDamping);
-        m_physics.AddRotationalDamping(rb, tank.GetRotationalDamping());
+        tank.SetRotationalDamping(1.0f);
+        addedrotforce = true;
+        m_physics.AddForce(-rightSmall, basis * FrontBotLeft, ID);
+        m_physics.AddForce(-rightLarge, basis * FrontBotRight, ID);
+        m_physics.AddForce(-rightSmall, basis * FrontTopLeft, ID);
+        m_physics.AddForce(-rightLarge, basis * FrontTopRight, ID);
+    }
+
+    // If no movement, dampen current movement
+    if (!addedrotforce)
+    {
+        float damping = tank.GetRotationalDamping() - (TANK_ROT_DAMPING * physicsDeltaTime);
+        if (damping <= 0.0f)
+        {
+            damping = 0.0f;
+        }
+        tank.SetRotationalDamping(damping);
+        m_physics.AddRotationalDamping(ID, damping);
+    }
+
+    if (!addedlinearforce && !tank.IsDropping())
+    {
+        float damping = tank.GetLinearDamping() - (TANK_FORCE_DAMPING * physicsDeltaTime);
+        if (damping <= 0.0f)
+        {
+            damping = 0.0f;
+        }
+        tank.SetLinearDamping(damping);
+        m_physics.AddLinearDamping(ID, damping);
     }
 }
 
-void TankManager::UpdateGunMovement(float deltatime, Tank& tank)
+void TankManager::UpdateGunMovement(float physicsDeltaTime, Tank& tank)
 {
     const unsigned int request = tank.GetMovementRequest();
-    const int hinge = tank.GetPhysicsIDs().Hinge;
     const bool rotateLeft = (request & Tank::GUN_LEFT) == Tank::GUN_LEFT;
     const bool rotateRight = (request & Tank::GUN_RIGHT) == Tank::GUN_RIGHT;
 
-    if(rotateLeft || rotateRight)
+    const int hinge = tank.GetPhysicsIDs().Hinge;
+    float lastTarget = RadToDeg(m_physics.GetHingeRotation(hinge));
+
+    if (rotateRight)
     {
-        const float rotation = RadToDeg(m_physics.GetHingeRotation(hinge))
-            + ((rotateLeft ? GunRotation : -GunRotation) * deltatime);
-       
-        m_physics.RotateHinge(hinge, DegToRad(rotation), 1.0f);
         tank.SetGunRotationalDamping(1.0f);
+        lastTarget += TANK_GUN_ROT_AMOUNT * physicsDeltaTime;
+        m_physics.RotateHinge(hinge, DegToRad(lastTarget), 1.0f);
+    }
+    else if (rotateLeft)
+    {
+        tank.SetGunRotationalDamping(1.0f);
+        lastTarget -= TANK_GUN_ROT_AMOUNT * physicsDeltaTime;
+        m_physics.RotateHinge(hinge, DegToRad(lastTarget), 1.0f);
     }
     else
     {
-        tank.AddGunRotationalDamping(-GunRotationDamping * deltatime);
-        m_physics.StopHinge(hinge, 1.0f, tank.GetGunRotationalDamping());
+        float damping = tank.GetGunRotationalDamping() - (TANK_GUN_DAMPING * physicsDeltaTime);
+        if (damping <= 0.0f)
+        {
+            damping = 0.0f;
+        }
+        tank.SetGunRotationalDamping(damping);
+        m_physics.StopHinge(hinge, 1.0f, damping);
     }
 }

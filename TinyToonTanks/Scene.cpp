@@ -14,7 +14,7 @@ Scene::Scene() :
 
 Scene::~Scene() = default;
 
-void Scene::Tick(float deltatime)
+void Scene::Tick()
 {
     for (auto& mesh : m_data->meshes)
     {

@@ -22,15 +22,15 @@ Game::Game(Camera& camera, PhysicsEngine& physicsEngine) :
 
 Game::~Game() = default;
 
-void Game::PrePhysicsTick(float deltatime)
+void Game::PrePhysicsTick(float deltaTime, float physicsDeltaTime)
 {
-    m_data->player->Update(deltatime);
+    m_data->player->Update(deltaTime);
     for (auto& enemy : m_data->enemies)
     {
-        enemy->Update(deltatime);
+        enemy->Update(deltaTime);
     } 
 
-    m_tankManager->PrePhysicsTick(deltatime);
+    m_tankManager->PrePhysicsTick(physicsDeltaTime);
     m_bulletManager->PrePhysicsTick();
 
     // Fix the camera to the player
@@ -55,7 +55,7 @@ void Game::PrePhysicsTick(float deltatime)
     } 
 }
 
-void Game::PostPhysicsTick(float deltatime)
+void Game::PostPhysicsTick(float deltaTime)
 {
     m_tankManager->PostPhysicsTick();
     m_bulletManager->PostPhysicsTick();
@@ -64,7 +64,7 @@ void Game::PostPhysicsTick(float deltatime)
     m_collisionManager->CollisionResolution();
 
     // Do after collision resolution as it will enable/disable instances
-    m_data->toonText->Tick(m_camera, deltatime);
+    m_data->toonText->Tick(m_camera, deltaTime);
 }
 
 bool Game::Initialise(SceneData& data)

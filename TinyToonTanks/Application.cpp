@@ -33,27 +33,26 @@ void Application::Run()
     while(m_engine->IsRunning())
     {
         m_timer->UpdateTimer();
-        const float deltaTime = m_timer->GetDeltaTime();
 
-        m_timer->StartSection(Timer::SCENE);
+        const float deltaTime = m_timer->GetDeltaTime();
+        const float physicsDeltaTime = ConvertRange(std::min(std::max(
+            deltaTime, 0.2f), 20.0f), 0.2f, 20.0f, 0.02f, 0.4f);
+        const float physicsTimeStep = std::max(
+            std::min(physicsDeltaTime * 0.075f, 0.01f), 0.001f);
+
         m_sound->Update();
         m_input->Update();       
         m_gui->Update(*m_input);
-        m_scene->Tick(deltaTime);
-        m_game->PrePhysicsTick(deltaTime);
+        m_scene->Tick();
+        m_game->PrePhysicsTick(deltaTime, physicsDeltaTime);
         m_camera->Update(*m_input, deltaTime);
-        m_timer->StopSection(Timer::SCENE);
 
-        m_timer->StartSection(Timer::PHYSICS);
-        m_physics->Tick(0.01f);
+        m_physics->Tick(physicsTimeStep);
         m_game->PostPhysicsTick(deltaTime);
-        m_timer->StopSection(Timer::PHYSICS);
 
-        m_timer->StartSection(Timer::RENDERING);
         m_engine->RenderScene();
         m_gui->Render();
         m_engine->EndRender();
-        m_timer->StopSection(Timer::RENDERING);
     }
 }
 

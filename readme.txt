@@ -1,9 +1,7 @@
 
-- Get tank movement similar to original game
 - Add background rendering
 - Add AI movement for tanks
 
-- Investigate bullet physics assert
 - Add original game health UI
 - Add original game menus and gameover screen0
 

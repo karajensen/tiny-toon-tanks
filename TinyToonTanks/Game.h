@@ -42,15 +42,13 @@ public:
 
     /**
     * Ticks the game before the physics engine has updated
-    * @param deltatime The time passed between ticks
     */
-    void PrePhysicsTick(float deltatime);
+    void PrePhysicsTick(float deltaTime, float physicsDeltaTime);
 
     /**
     * Ticks the game once the physics engine has updated
-    * @param deltatime The time passed between ticks
     */
-    void PostPhysicsTick(float deltatime);
+    void PostPhysicsTick(float deltaTime);
 
     /**
     * Initialises the game

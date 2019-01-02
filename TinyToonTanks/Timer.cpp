@@ -3,37 +3,35 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 
 #include "timer.h"
-#include "glfw/glfw3.h"
-#include "common.h"
 #include "tweaker.h"
+#include <Windows.h>
+
+LARGE_INTEGER START = {};
+LARGE_INTEGER CURRENT = {};
+LARGE_INTEGER FREQUENCY = {};
 
 Timer::Timer()
 {
-    m_sectionStart.assign(0.0f);
-    m_sectionTime.assign(0.0f);
+    QueryPerformanceFrequency(&FREQUENCY);
+    QueryPerformanceCounter(&START);
 }
 
 void Timer::AddToTweaker(Tweaker& tweaker)
 {
     tweaker.SetGroup("Timer");
     tweaker.AddEntry("Frames Per Second", &m_fps, TW_TYPE_INT32, true);
-
-    const int precision = 8;
-    tweaker.AddFltEntry("Total Time", &m_deltaTime, precision);
-    tweaker.AddFltEntry("Total Rendering", &m_sectionTime[RENDERING], precision);
-    tweaker.AddFltEntry("Update Scene", &m_sectionTime[SCENE], precision);
-    tweaker.AddFltEntry("Bullet Physics", &m_sectionTime[PHYSICS], precision);
+    tweaker.AddEntry("Delta Time", &m_deltaTime, TW_TYPE_FLOAT, true);
 }
 
 void Timer::UpdateTimer()
 {
-    const float currentTime = static_cast<float>(glfwGetTime());
-    m_deltaTime = currentTime - m_previousTime;
-    m_previousTime = currentTime;
-    m_totalTime += m_deltaTime;
+    m_previousElapsedMilliseconds = m_elapsedMilliseconds;
+    QueryPerformanceCounter(&CURRENT);
+    m_elapsedMilliseconds = (CURRENT.QuadPart - START.QuadPart) * 1000.0 / FREQUENCY.QuadPart;
+    m_deltaTime = static_cast<float>(m_elapsedMilliseconds - m_previousElapsedMilliseconds);
     m_deltaTimeCounter += m_deltaTime;
 
-    if (m_deltaTimeCounter >= 1.0) //one second has passed
+    if (m_deltaTimeCounter >= 1000.0) //one second has passed
     {
         m_deltaTimeCounter = 0.0;
         m_fps = m_fpsCounter;
@@ -43,21 +41,6 @@ void Timer::UpdateTimer()
     {
         ++m_fpsCounter; 
     }
-}
-
-void Timer::StartSection(TimedSection section)
-{
-    m_sectionStart[section] = static_cast<float>(glfwGetTime());
-}
-
-void Timer::StopSection(TimedSection section)
-{
-    m_sectionTime[section] = static_cast<float>(glfwGetTime()) - m_sectionStart[section];
-}
-
-float Timer::GetTotalTime() const
-{
-    return m_totalTime;
 }
 
 float Timer::GetDeltaTime() const 

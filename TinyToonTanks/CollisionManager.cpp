@@ -11,9 +11,9 @@
 
 namespace
 {
-    const float GunPieceSpawnOffset = 2.0f;
-    const int BulletFullDamage = 2;
-    const int BulletHalfDamage = 1;
+    const float GUN_PIECE_SPAWN_OFFSET = 2.0f;
+    const int BULLET_FULL_DAMAGE = 2;
+    const int BULLET_HALF_DAMAGE = 1;
 }
 
 CollisionManager::CollisionManager(PhysicsEngine& physics,
@@ -179,14 +179,14 @@ void CollisionManager::BulletCollisionLogic(const CollisionEvent* collisionEvent
     {
         if (bulletA)
         {
-            bulletA->TakeDamage(BulletHalfDamage);
+            bulletA->TakeDamage(BULLET_HALF_DAMAGE);
             bulletA->SetGenerateImpulse(true,
                 GetBulletDirectionFromWall(m_physics.GetVelocity(bulletA->GetPhysicsID()), instanceB));
         }
 
         if (bulletB)
         {
-            bulletB->TakeDamage(BulletHalfDamage);
+            bulletB->TakeDamage(BULLET_HALF_DAMAGE);
             bulletB->SetGenerateImpulse(true,
                 GetBulletDirectionFromWall(m_physics.GetVelocity(bulletB->GetPhysicsID()), instanceA));
         }
@@ -201,15 +201,13 @@ void CollisionManager::BulletCollisionLogic(const CollisionEvent* collisionEvent
         if (tank->IsAlive())
         {
             auto bullet = bulletA ? bulletA : bulletB;
-            const auto tankGroup = m_physics.GetGroup(tank->GetPhysicsIDs().Body);
-            const auto bulletGroup = m_physics.GetGroup(bullet->GetPhysicsID());
-            if (tankGroup == bulletGroup && !bullet->AllowFriendlyFire())
+            if (tank->GetPhysicsIDs().Body == bullet->GetOwnerID())
             {
-                return;
+                return; // No friendly fire
             }
 
-            bullet->TakeDamage(BulletFullDamage);
-            tank->TakeDamage(BulletHalfDamage);
+            bullet->TakeDamage(BULLET_FULL_DAMAGE);
+            tank->TakeDamage(BULLET_HALF_DAMAGE);
 
             if (tank->Health() <= 0)
             {
@@ -234,7 +232,7 @@ void CollisionManager::BulletCollisionLogic(const CollisionEvent* collisionEvent
                 // Offset the gun slightly so it doesn't balance on the tank top
                 const auto position = glm::matrix_get_position(world);
                 const auto forward = -glm::normalize(glm::matrix_get_forward(world));
-                glm::matrix_set_position(world, position + (forward * GunPieceSpawnOffset));
+                glm::matrix_set_position(world, position + (forward * GUN_PIECE_SPAWN_OFFSET));
                 tank->SetPieceWorldMatrix(MeshID::TANKP4, world);
                 m_physics.SetMotionState(ids.P4, world);
                 m_physics.AddToWorld(ids.P4, true);
@@ -248,12 +246,12 @@ void CollisionManager::BulletCollisionLogic(const CollisionEvent* collisionEvent
     {
         if (bulletA)
         {
-            bulletA->TakeDamage(BulletFullDamage);
+            bulletA->TakeDamage(BULLET_FULL_DAMAGE);
         }
 
         if (bulletB)
         {
-            bulletB->TakeDamage(BulletFullDamage);
+            bulletB->TakeDamage(BULLET_FULL_DAMAGE);
         }
     }
 

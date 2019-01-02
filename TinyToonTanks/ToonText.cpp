@@ -31,7 +31,7 @@ void ToonText::Tick(const Camera& camera, float deltatime)
     const auto& cameraPosition = camera.Position();
     const auto& cameraUp = camera.Up();
 
-    const float maxTimeScaling = 0.2f;
+    const float maxTimeScaling = 200.0f;
     const float minScale = 2.0f;
     const float maxScaleIncrease = 4.0f;
     const float maxScale = minScale + maxScaleIncrease;

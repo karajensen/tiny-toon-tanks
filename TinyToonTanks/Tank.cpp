@@ -9,8 +9,8 @@
 
 namespace
 {
-    const float FireGunDelay = 0.5f;   ///< Seconds to delay before allowing firing again
-    const int InitialTankHealth = 2;   ///< Amount of initial tank health
+    const float FIRE_GUN_DELAY = 500.0f;  ///< Ms to delay before allowing firing again
+    const int INITIAL_TANK_HEALTH = 2;    ///< Amount of initial tank health
 }
 
 Tank::Tank(MeshGroup& tankmesh, int instance) :
@@ -32,7 +32,7 @@ void Tank::Reset()
     m_gunDamping = 2.0f;
     m_fireGunTime = 0.0f;
     m_isDropping = true;
-    m_health = InitialTankHealth;
+    m_health = INITIAL_TANK_HEALTH;
 }
 
 void Tank::SetDropping(bool dropping)
@@ -118,7 +118,7 @@ void Tank::Fire()
     if (m_alive && m_fireGunTime == 0.0f)
     {
         m_movement |= FIRE;
-        m_fireGunTime = FireGunDelay;
+        m_fireGunTime = FIRE_GUN_DELAY;
     }
 }
 

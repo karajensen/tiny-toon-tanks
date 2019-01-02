@@ -33,14 +33,14 @@ public:
     int GetPhysicsID() const;
 
     /**
-    * Sets the physics group ID
+    * Sets the physics body ID that shot the bullet
     */
-    void SetPhysicsGroupID(int ID);
+    void SetOwnerID(int ID);
 
     /**
-    * @return the ID of the physics group
+    * @return the ID of the physics body that shot the bullet
     */
-    int GetPhysicsGroupID() const;
+    int GetOwnerID() const;
 
     /**
     * @return whether this bullet is alive in the world
@@ -61,16 +61,6 @@ public:
     * Sets the world matrix of the bullet
     */
     void SetWorld(const glm::mat4& world);
-
-    /**
-    * Whether this bullet can contribute to self scoring
-    */
-    void SetAllowFriendlyFire(bool allow);
-
-    /**
-    * @return Whether this bullet can contribute to self scoring
-    */
-    bool AllowFriendlyFire() const;
 
     /**
     * @return the position of the bullet
@@ -126,8 +116,7 @@ private:
     bool m_alive = false;                 ///< Whether this bullet is considered alive in the world
     int m_instance = 0;                   ///< Which instance this bullet should update
     int m_physicsID = 0;                  ///< The physics body ID
-    int m_physicsGroupID = 0;             ///< The physics group the bullet belongs to
+    int m_ownerID = 0;                    ///< Physics body ID of the owner of the bullet
     int m_health = 0;                     ///< The health of the bullet before it is considered dead
-    bool m_friendlyFire = false;          ///< Whether this bullet can contribute to self scoring
     bool m_generateImpuse = false;        ///< Whether to generate a quick impulse or continuous movement
 };

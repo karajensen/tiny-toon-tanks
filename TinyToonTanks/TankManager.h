@@ -33,9 +33,8 @@ public:
 
     /**
     * Ticks the updater before physics have updated
-    * @param deltatime The time between ticks in seconds
     */
-    void PrePhysicsTick(float deltatime);
+    void PrePhysicsTick(float physicsDeltaTime);
 
     /**
     * Ticks the updater after physics have updated
@@ -58,17 +57,13 @@ private:
 
     /**
     * Manipulates the tank from its movement requests
-    * @param deltatime The time between ticks in seconds
-    * @param tank The tank to update
     */
-    void UpdateTankMovement(float deltatime, Tank& tank);
+    void UpdateTankMovement(float physicsDeltaTime, Tank& tank);
 
     /**
     * Manipulates the gun from its movement requests
-    * @param deltatime The time between ticks in seconds
-    * @param tank The tank to update
     */
-    void UpdateGunMovement(float deltatime, Tank& tank);
+    void UpdateGunMovement(float physicsDeltaTime, Tank& tank);
 
     PhysicsEngine& m_physics;   ///< The physics world to update from
     GameData& m_gameData;       ///< Objects from the game to update

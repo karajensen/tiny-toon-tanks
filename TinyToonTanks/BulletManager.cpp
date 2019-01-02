@@ -11,13 +11,12 @@
 
 namespace
 {
-    const float HeightOffset = 2.11f;              ///< Height offset from the gun to fire at
-    const float ForwardOffset = -5.0f;             ///< Forward offset from the gun to fire at
-    const float RecoilImpulse = 1000.0f;           ///< Amount of impulse the tank receives from firing
-    const float BulletImpulse = 1.0f;              ///< Amount of impulse the bullet recieves
-    const float BulletGravity = 0.0f;              ///< Artificial gravity on the bullets
-    const float BulletFriendlyFireDistance = 2.5f; ///< Distance before allowing a bullet to self-score
-    const int BulletWorldMaxDistance = 100;        ///< Maximum distance the bullet can travel before killed
+    const float HEIGHT_OFFSET = 2.11f;                   ///< Height offset from the gun to fire at
+    const float FORWARD_OFFSET = -5.0f;                  ///< Forward offset from the gun to fire at
+    const float BULLET_FRIENDLY_FIRE_DISTANCE = 2.5f;    ///< Distance before allowing a bullet to self-score
+    const int BULLET_WORLD_MAX_DISTANCE = 100;           ///< Maximum distance the bullet can travel before killed
+    const float RECOIL_IMPULSE = 1000.0f;                ///< Amount of impulse the tank receives from firing
+    const float BULLET_IMPULSE = 2.0f;                  ///< Amount of impulse the bullet recieves
 }
 
 BulletManager::BulletManager(PhysicsEngine& physics,
@@ -65,18 +64,6 @@ void BulletManager::UpdateButtonPosition(Bullet& bullet)
     const int ID = bullet.GetPhysicsID();
 
     bullet.SetWorld(m_physics.GetTransform(ID));
-
-    if (!bullet.AllowFriendlyFire())
-    {
-        const auto& firePosition = bullet.GetFiredPosition();
-        const auto& bulletPosition = bullet.GetPosition();
-        const float distance = glm::length(firePosition - bulletPosition);
-        if (distance  >= BulletFriendlyFireDistance)
-        {
-            bullet.SetAllowFriendlyFire(true);
-            m_physics.SetGroup(ID, bullet.GetPhysicsGroupID());
-        }
-    }
 }
 
 void BulletManager::MoveBullet(Bullet& bullet)
@@ -85,12 +72,12 @@ void BulletManager::MoveBullet(Bullet& bullet)
     
     m_physics.SetInternalDamping(ID, 0.0f, 0.0f);
     m_physics.SetFriction(ID, 0);
-    m_physics.SetGravity(ID, BulletGravity);
+    m_physics.SetGravity(ID, 0.0f);
 
     const auto distance = glm::length(bullet.GetPosition()); // Length from center to bullet
     glm::vec3 velocity = m_physics.GetVelocity(ID);
 
-    if (distance >= BulletWorldMaxDistance || glm::vec3_is_zero(velocity))
+    if (distance >= BULLET_WORLD_MAX_DISTANCE || glm::vec3_is_zero(velocity))
     {
         bullet.SetIsAlive(false);
         m_physics.AddToWorld(ID, false);
@@ -108,7 +95,7 @@ void BulletManager::MoveBullet(Bullet& bullet)
     
     // Generate continous force
     m_physics.AddForce(glm::normalize(velocity) *
-        BulletImpulse, glm::vec3(0, 0, 0), ID);
+        BULLET_IMPULSE, glm::vec3(0, 0, 0), ID);
 }
 
 void BulletManager::FireBullet(const Tank& tank)
@@ -128,7 +115,7 @@ void BulletManager::FireBullet(const Tank& tank)
                 const glm::vec3 up = glm::matrix_get_up(world);
                 const glm::vec3 forward = glm::matrix_get_forward(world);
                 const glm::vec3 position = glm::matrix_get_position(world)
-                    + (up * HeightOffset) + (forward * ForwardOffset);
+                    + (up * HEIGHT_OFFSET) + (forward * FORWARD_OFFSET);
                 glm::matrix_set_position(world, position);
 
                 bullet->SetFiredPosition(position);
@@ -137,14 +124,14 @@ void BulletManager::FireBullet(const Tank& tank)
                 const int bulletID = bullet->GetPhysicsID();
                 const int tankID = tank.GetPhysicsIDs().Body;
                 m_physics.SetFriction(bulletID, 0);
-                m_physics.SetGravity(bulletID, BulletGravity);
+                m_physics.SetGravity(bulletID, 0.0f);
                 m_physics.SetMotionState(bulletID, world);
                 m_physics.AddToWorld(bulletID, true);
-                m_physics.SetGroup(bulletID, m_physics.GetGroup(tankID));
                 m_physics.ResetVelocityAndForce(bulletID);
-                m_physics.AddImpulse(forward * RecoilImpulse, glm::vec3(0, 0, 0), tankID);
-                m_physics.AddImpulse(-forward * BulletImpulse, glm::vec3(0, 0, 0), bulletID);
+                m_physics.AddImpulse(forward * RECOIL_IMPULSE, glm::vec3(0, 0, 0), tankID);
+                m_physics.AddImpulse(-forward * BULLET_IMPULSE, glm::vec3(0, 0, 0), bulletID);
 
+                bullet->SetOwnerID(tankID);
                 return;
             }
         }

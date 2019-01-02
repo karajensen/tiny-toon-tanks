@@ -34,9 +34,8 @@ public:
 
     /**
     * Ticks the scene
-    * @param deltatime The time passed between ticks
     */
-    void Tick(float deltatime);
+    void Tick();
 
     /**
     * Initialises the scene
