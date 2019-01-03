@@ -10,7 +10,7 @@
 namespace
 {
     const float FIRE_GUN_DELAY = 500.0f;  ///< Ms to delay before allowing firing again
-    const int INITIAL_TANK_HEALTH = 2;    ///< Amount of initial tank health
+    const int INITIAL_TANK_HEALTH = 2;     ///< Amount of initial tank health
 }
 
 Tank::Tank(MeshGroup& tankmesh, int instance) :
@@ -27,6 +27,7 @@ void Tank::Reset()
 {
     SetIsAlive(true);
     m_movement = NO_MOVEMENT;      
+    m_previousMovement = NO_MOVEMENT;
     m_linearDamping = 1.0f; 
     m_rotationalDamping = 1.0f; 
     m_gunDamping = 2.0f;
@@ -47,7 +48,10 @@ bool Tank::IsDropping() const
 
 void Tank::Update(float deltatime)
 {
-    m_fireGunTime = std::max(0.0f, m_fireGunTime - deltatime);
+    if (m_fireGunTime > 0.0f)
+    {
+        m_fireGunTime -= deltatime;
+    }
 }
 
 int Tank::GetInstance() const
@@ -66,12 +70,12 @@ void Tank::AddToTweaker(Tweaker& tweaker)
 void Tank::SetIsAlive(bool alive)
 {
     m_alive = alive;
-    m_tankmesh.Body.Visible(m_alive, m_instance);
-    m_tankmesh.Gun.Visible(m_alive, m_instance);
-    m_tankmesh.P1.Visible(!m_alive, m_instance);
-    m_tankmesh.P2.Visible(!m_alive, m_instance);
-    m_tankmesh.P3.Visible(!m_alive, m_instance);
-    m_tankmesh.P4.Visible(!m_alive, m_instance);
+    m_tankmesh.Body.SetVisible(m_alive, m_instance);
+    m_tankmesh.Gun.SetVisible(m_alive, m_instance);
+    m_tankmesh.P1.SetVisible(!m_alive, m_instance);
+    m_tankmesh.P2.SetVisible(!m_alive, m_instance);
+    m_tankmesh.P3.SetVisible(!m_alive, m_instance);
+    m_tankmesh.P4.SetVisible(!m_alive, m_instance);
 }
 
 void Tank::SetPieceWorldMatrix(MeshID::ID id, const glm::mat4& matrix)
@@ -115,7 +119,7 @@ bool Tank::IsAlive() const
 
 void Tank::Fire()
 {
-    if (m_alive && m_fireGunTime == 0.0f)
+    if (m_alive && m_fireGunTime <= 0.0f)
     {
         m_movement |= FIRE;
         m_fireGunTime = FIRE_GUN_DELAY;
@@ -151,8 +155,14 @@ unsigned int Tank::GetMovementRequest() const
     return m_movement;
 }
 
+unsigned int Tank::GetPreviousMovementRequest() const
+{
+    return m_previousMovement;
+}
+
 void Tank::ResetMovementRequest()
 {
+    m_previousMovement = m_movement;
     m_movement = NO_MOVEMENT;
 }
 

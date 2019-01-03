@@ -49,6 +49,7 @@ void TankManager::PrePhysicsTick(float physicsDeltaTime)
     UpdateTankMovement(physicsDeltaTime, *m_gameData.player);
     UpdateGunMovement(physicsDeltaTime, *m_gameData.player);
 
+    const auto& playerWorld = m_gameData.player->GetWorldMatrix();
     for (auto& enemy : m_gameData.enemies)
     {
         UpdateTankMovement(physicsDeltaTime, *enemy);

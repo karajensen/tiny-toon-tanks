@@ -99,7 +99,7 @@ public:
     * Updates the tank
     * @param deltatime The time passed between ticks in seconds
     */
-    void Update(float deltatime);
+    virtual void Update(float deltatime);
 
     /**
     * @return the position of the tank
@@ -174,6 +174,11 @@ public:
     * @return the type of movement requests
     */
     unsigned int GetMovementRequest() const;
+
+    /**
+    * @return the type of movement requests
+    */
+    unsigned int GetPreviousMovementRequest() const;
 
     /**
     * Resets all movement requests
@@ -258,15 +263,16 @@ protected:
     Tank(const Tank&) = delete;
     Tank& operator=(const Tank&) = delete;
 
-    PhysicsIDs m_physicsIDs;                ///< IDs for the physics elements
-    MeshGroup& m_tankmesh;                  ///< Holds each piece of the tank
-    int m_instance = 0;                     ///< Which instance this tank is to access the mesh parts
-    bool m_alive = true;                    ///< Whether this tank is alive
-    unsigned int m_movement = NO_MOVEMENT;  ///< Requests for movement
-    float m_linearDamping = 1.0f;           ///< Damping value for linear movement
-    float m_rotationalDamping = 1.0f;       ///< Damping value for rotational movement
-    float m_gunDamping = 1.0f;              ///< Damping value for the gun rotation
-    float m_fireGunTime = 0.0f;             ///< Time passed since a fire gun request
-    bool m_isDropping = true;               ///< Whether the tank is dropping to the ground when first spawned
-    int m_health = 0;                       ///< The health of this tank
+    PhysicsIDs m_physicsIDs;                       ///< IDs for the physics elements
+    MeshGroup& m_tankmesh;                         ///< Holds each piece of the tank
+    int m_instance = 0;                            ///< Which instance this tank is to access the mesh parts
+    bool m_alive = true;                           ///< Whether this tank is alive
+    unsigned int m_movement = NO_MOVEMENT;         ///< Requests for movement
+    unsigned int m_previousMovement = NO_MOVEMENT; ///< Previous request for movement
+    float m_linearDamping = 1.0f;                  ///< Damping value for linear movement
+    float m_rotationalDamping = 1.0f;              ///< Damping value for rotational movement
+    float m_gunDamping = 1.0f;                     ///< Damping value for the gun rotation
+    float m_fireGunTime = 0.0f;                    ///< Time passed since a fire gun request
+    bool m_isDropping = true;                      ///< Whether the tank is dropping to the ground when first spawned
+    int m_health = 0;                              ///< The health of this tank
 };

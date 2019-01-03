@@ -5,6 +5,7 @@
 #pragma once
 
 #include "Tank.h"
+#include "glm/matrix.hpp"
 
 /**
 * Enemy AI controlled tank
@@ -26,6 +27,11 @@ public:
     */
     virtual void AddToTweaker(Tweaker& tweaker) override;
 
+    /**
+    * Updates the tank
+    */
+    virtual void Update(float deltatime) override;
+
 private:
 
     /**
@@ -33,4 +39,11 @@ private:
     */
     Enemy(const Enemy&) = delete;
     Enemy& operator=(const Enemy&) = delete;
+
+    /**
+    * Creates movement for the AI to use
+    */
+    void CreateAIMovement();
+
+    float m_aiTimePassed = 0.0f; ///< Time passed to generate next ai mov
 };

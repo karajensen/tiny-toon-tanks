@@ -41,10 +41,16 @@
     <None Include="resources\post_glsl_vert.fx">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="resources\quad_glsl_frag.fx">
+    <None Include="resources\texture_glsl_vert.fx">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="resources\quad_glsl_vert.fx">
+    <None Include="resources\texture_glsl_frag.fx">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="resources\gradient_glsl_frag.fx">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="resources\gradient_glsl_vert.fx">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

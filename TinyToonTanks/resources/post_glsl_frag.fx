@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////////////
-// Kara Jensen - mail@karajensen.com - post_effects_glsl_frag.fx
+// Kara Jensen - mail@karajensen.com - post_glsl_frag.fx
 ////////////////////////////////////////////////////////////////////////////////////////
 
 #version 150
@@ -44,7 +44,7 @@ void main(void)
     uvs = ivec2((ex_UVs.x - offset) * window.x, (ex_UVs.y + offset) * window.y);
     vec4 n4 = texelFetch(NormalSampler, uvs, 0);
 
-    //determine the estimated difference between the pixel normal and surrounding
+    // Determine the estimated difference between the pixel normal and surrounding
     vec4 diagonal1 = abs(n1 - n2);
     vec4 diagonal2 = abs(n3 - n4);
     vec4 diagonalDelta = diagonal1 + diagonal2;

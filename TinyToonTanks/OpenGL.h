@@ -62,11 +62,6 @@ public:
     void EndRender();
 
     /**
-    * Toggles whether wireframe is active
-    */
-    void ToggleWireframe();
-
-    /**
     * @return the application window
     */
     GLFWwindow& GetWindow() const;
@@ -91,10 +86,8 @@ private:
 
     /**
     * Updates and switches to main shader the mesh requires
-    * @param mesh The mesh currently rendering
-    * @return whether the mesh can now be rendered
     */
-    bool UpdateShader(const Mesh& mesh, bool sendLights, bool alphaBlending, bool depthWrite);
+    bool UpdateShader(const Mesh& mesh);
 
     /**
     * Updates and switches to the shadow shader the mesh requres
@@ -103,26 +96,21 @@ private:
 
     /**
     * Updates the shader for a mesh per instance
-    * @param world The world matrix for the mesh
-    * @param texture The texture to render for the instance
     */
     void UpdateShader(const glm::mat4& world, int texture);
 
     /**
     * Updates the shader for a mesh per instance
-    * @param world The world matrix for the mesh
     */
     void UpdateShader(const glm::mat4& world);
 
     /**
     * Updates the shader for a mesh per instance
-    * @param world The world matrix for the mesh
     */
     void UpdateShadowShader(const glm::mat4& world);
 
     /**
     * Sets whether alpha blending is enabled or not
-    * @param enable whether blending is enabled
     */
     void EnableAlphaBlending(bool enable);
 

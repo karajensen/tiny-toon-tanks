@@ -29,7 +29,7 @@ bool GameBuilder::InitialiseWorld(GameData& gamedata,
                                   PhysicsEngine& physics,
                                   CollisionManager& collisionManager)
 {
-    const float groundHeight = -60.0f;
+    const float groundHeight = -30.0f;
     const float floorHeight = groundHeight + 2.282f;
     const float wallDistance = 44.147f;
     const glm::vec3 wallBox(44.993f, groundHeight + 2.712f, 44.371f);
@@ -77,7 +77,7 @@ bool GameBuilder::InitialiseWorld(GameData& gamedata,
             0.0f, environmentGroup, MeshID::WALL, i, true);
     }
 
-    gamedata.toonText = dynamic_cast<ToonText*>(scenedata.quads[QuadID::TOONTEXT].get());
+    gamedata.toonText = dynamic_cast<ToonText*>(scenedata.effects[EffectID::TOONTEXT].get());
     return gamedata.toonText != nullptr;
 }
 
@@ -140,10 +140,10 @@ bool GameBuilder::InitialiseTanks(GameData& gamedata,
             tankBody.Position(x, y, z, index);
             tankGun.Position(x, y, z, index);
 
-            tankp1.Visible(false, index);
-            tankp2.Visible(false, index);
-            tankp3.Visible(false, index);
-            tankp4.Visible(false, index);
+            tankp1.SetVisible(false, index);
+            tankp2.SetVisible(false, index);
+            tankp3.SetVisible(false, index);
+            tankp4.SetVisible(false, index);
 
             --index;
         }

@@ -129,7 +129,7 @@ public:
     /**
     * Sets Whether back facing polygons are culled
     */
-    void BackfaceCull(bool value);
+    void SetBackfaceCull(bool value);
 
     /**
     * Sets the ID of the texture to use for the overall mesh
@@ -187,17 +187,17 @@ public:
     /**
     * Sets whether this mesh is visible
     */
-    void Visible(bool isVisible, int index = 0);
+    void SetVisible(bool isVisible, int index = 0);
 
     /**
     * @return whether any instance is visible
     */
-    bool IsVisible() const;
+    bool AnyInstanceVisible() const;
 
     /**
     * @return whether the instance is visible
     */
-    bool IsVisible(int index) const;
+    bool Visible(int index) const;
 
     /**
     * Updates all instance transforms if required
@@ -213,6 +213,36 @@ public:
     * Whether to render a shadow of this mesh
     */
     bool RenderShadows() const;
+
+    /**
+    * Whether to render this mesh with lighting
+    */
+    void SetRenderWithLights(bool render);
+
+    /**
+    * Whether to render this mesh with lighting
+    */
+    bool RenderWithLights() const;
+
+    /**
+    * Whether to render this mesh with alpha blending
+    */
+    void SetAlphaBlending(bool blending);
+
+    /**
+    * @return Whether to render this mesh with alpha blending
+    */
+    bool AlphaBlending() const;
+
+    /**
+    * Whether to write to the depth buffer
+    */
+    void SetDepthWrite(bool depthWrite);
+
+    /**
+    * @return Whether to write to the depth buffer
+    */
+    bool DepthWrite() const;
 
 protected:
 
@@ -244,4 +274,7 @@ private:
     float m_radius = 0.0f;                ///< The radius of the sphere surrounding the mesh
     std::vector<Instance> m_instances;    ///< Instances of this mesh
     bool m_renderShadows = false;         ///< Whether to render a shadow of this mesh
+    bool m_renderWithLighting = true;     ///< Whether to render this mesh with lighting
+    bool m_alphaBlending = false;         ///< Whether to render this mesh with alpha blending
+    bool m_depthWrite = true;             ///< Whether to write to the depth buffer
 };

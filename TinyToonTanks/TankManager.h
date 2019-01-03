@@ -65,7 +65,7 @@ private:
     */
     void UpdateGunMovement(float physicsDeltaTime, Tank& tank);
 
-    PhysicsEngine& m_physics;   ///< The physics world to update from
-    GameData& m_gameData;       ///< Objects from the game to update
-    SceneData& m_sceneData;     ///< Meshes from the scene to update
+    PhysicsEngine& m_physics;    ///< The physics world to update from
+    GameData& m_gameData;        ///< Objects from the game to update
+    SceneData& m_sceneData;      ///< Meshes from the scene to update
 };

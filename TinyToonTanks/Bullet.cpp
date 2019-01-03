@@ -68,7 +68,7 @@ const glm::vec3& Bullet::GetGeneratedImpulseDirection() const
 void Bullet::SetIsAlive(bool alive)
 {
     m_alive = alive;
-    m_mesh.Visible(m_alive, m_instance);
+    m_mesh.SetVisible(m_alive, m_instance);
 }
 
 bool Bullet::IsAlive() const

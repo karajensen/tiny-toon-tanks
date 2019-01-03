@@ -8,6 +8,7 @@
 #include "PhysicsEngine.h"
 #include "Common.h"
 #include "ToonText.h"
+#include "MeshFile.h"
 
 namespace
 {
@@ -28,7 +29,7 @@ bool SceneBuilder::Initialise(SceneData& data, PhysicsEngine& physics)
            InitialiseShaderConstants(data) &&
            InitialiseShaders(data) &&
            InitialiseMeshes(data) &&
-           InitialiseQuads(data) &&
+           InitialiseEffects(data) &&
            InitialiseHulls(data, physics);
 }
 
@@ -72,8 +73,9 @@ bool SceneBuilder::InitialiseShaders(SceneData& data)
     success &= Initialise("proxy", ShaderID::PROXY);
     success &= Initialise("shadow", ShaderID::SHADOW);
     success &= Initialise("toon", ShaderID::TOON);
-    success &= Initialise("quad", ShaderID::QUAD);
+    success &= Initialise("texture", ShaderID::TEXTURE);
     success &= Initialise("post", ShaderID::POST);
+    success &= Initialise("gradient", ShaderID::GRADIENT);
 
     return success;
 }
@@ -90,7 +92,6 @@ bool SceneBuilder::InitialiseTextures(SceneData& data)
         return data.textures[ID]->Initialise();
     };
 
-    success &= Initialise("backdrop.png", TextureID::BACKDROP, Texture::NEAREST);
     success &= Initialise("border.png", TextureID::BORDER, Texture::NEAREST);
     success &= Initialise("boxUV.png", TextureID::BOX, Texture::ANISOTROPIC);
     success &= Initialise("buthigh.png", TextureID::BUTTON_HIGH, Texture::NEAREST);
@@ -120,24 +121,25 @@ bool SceneBuilder::InitialiseTextures(SceneData& data)
     return true;
 }
 
-bool SceneBuilder::InitialiseQuads(SceneData& data)
+bool SceneBuilder::InitialiseEffects(SceneData& data)
 {
     bool success = true;
 
-    data.quads.resize(QuadID::MAX);
+    data.effects.resize(EffectID::MAX);
 
     // Initialise the toon text
     const int toonTextCount = 10;
-    auto toonTextQuad = std::make_unique<ToonText>("toontext", ShaderID::QUAD);
-    toonTextQuad->BackfaceCull(false);
-
-    success &= toonTextQuad->Initialise(toonTextCount);
+    auto toonText = std::make_unique<ToonText>("toontext", ShaderID::TEXTURE);
+    toonText->SetBackfaceCull(false);
+    toonText->SetDepthWrite(false);
+    toonText->SetAlphaBlending(true);
+    success &= toonText->Initialise(toonTextCount);
     for (int i = 0; i < toonTextCount; ++i)
     {
-        toonTextQuad->SetTexture(TextureID::TOON_TEXT, i);
-        toonTextQuad->Visible(false, i);
+        toonText->SetTexture(TextureID::TOON_TEXT, i);
+        toonText->SetVisible(false, i);
     }
-    data.quads[QuadID::TOONTEXT] = std::move(toonTextQuad);
+    data.effects[EffectID::TOONTEXT] = std::move(toonText);
 
     return success;
 }
@@ -155,19 +157,19 @@ bool SceneBuilder::InitialiseMeshes(SceneData& data)
                                           int instances, 
                                           bool shadows) -> bool
     {
-        data.meshes[meshID] = std::make_unique<MeshFile>(name, shaderID);
-        data.meshes[meshID]->SetRenderShadows(shadows);
-
-        if (data.meshes[meshID]->InitialiseFromFile(
+        auto mesh = std::make_unique<MeshFile>(name, shaderID);
+        mesh->SetRenderShadows(shadows);
+        if (mesh->InitialiseFromFile(
             ASSETS_PATH + name + ".obj", true, true, instances))
         {
             if (textureID != NO_TEXTURE)
             {
                 for (int i = 0; i < instances; ++i)
                 {
-                    data.meshes[meshID]->SetTexture(textureID, i);
+                    mesh->SetTexture(textureID, i);
                 }            
             }
+            data.meshes[meshID] = std::move(mesh);
             return true;
         }
         return false;
@@ -183,6 +185,14 @@ bool SceneBuilder::InitialiseMeshes(SceneData& data)
     success &= Initialise("tankp2", MeshID::TANKP2, ShaderID::TOON, TextureID::TANK_NPC_BODY, Instance::TANKS, true);
     success &= Initialise("tankp3", MeshID::TANKP3, ShaderID::TOON, TextureID::TANK_NPC_BODY, Instance::TANKS, true);
     success &= Initialise("tankp4", MeshID::TANKP4, ShaderID::TOON, TextureID::TANK_NPC_GUN, Instance::TANKS, true);
+
+    // Initialise the backdrop
+    data.meshes[MeshID::BACKDROP] = std::make_unique<Quad>("backdrop", ShaderID::GRADIENT);
+    success &= data.meshes[MeshID::BACKDROP]->Initialise();
+    data.meshes[MeshID::BACKDROP]->SetBackfaceCull(false);
+    data.meshes[MeshID::BACKDROP]->SetAlphaBlending(true);
+    data.meshes[MeshID::BACKDROP]->SetDepthWrite(false);
+    data.meshes[MeshID::BACKDROP]->SetRenderWithLights(false);
 
     // Player has different texture to enemies
     data.meshes[MeshID::TANK]->SetTexture(TextureID::TANK_BODY, Instance::PLAYER);
@@ -205,13 +215,12 @@ bool SceneBuilder::InitialiseHulls(SceneData& data, PhysicsEngine& physics)
                                         ShaderID::ID shaderID, ShapeID::ID shapeID, 
                                         int instances) -> bool
     {
-        auto& hull = data.hulls[hullID];
-        hull = std::make_unique<MeshFile>(name, shaderID);
-
+        auto hull = std::make_unique<MeshFile>(name, shaderID);
         if (hull->InitialiseFromFile(ASSETS_PATH + name + ".obj", false, false, instances))
         {
             hull->SetShouldRender(false);
             data.shapes[shapeID] = physics.LoadConvexShape(hull->VertexPositions());
+            data.hulls[hullID] = std::move(hull);
             return true;
         }
         return false;

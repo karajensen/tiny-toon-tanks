@@ -16,11 +16,11 @@ void ToonText::Show(const glm::vec3& position)
 {
     for (int i = 0; i < Instances(); ++i)
     {
-        if (!IsVisible(i))
+        if (Visible(i))
         {
             Scale(glm::vec3(0.0f, 0.0f, 0.0f), i);
             Position(position.x, position.y, position.z, i);
-            Visible(true, i);
+            SetVisible(true, i);
             return;
         }
     }
@@ -38,7 +38,7 @@ void ToonText::Tick(const Camera& camera, float deltatime)
 
     for (int i = 0; i < Instances(); ++i)
     {
-        if (IsVisible(i))
+        if (Visible(i))
         {
             auto scale = Scale(i);
             scale.y = scale.y + (scale.z == 0.0f ? deltatime : -deltatime);
@@ -51,7 +51,7 @@ void ToonText::Tick(const Camera& camera, float deltatime)
             }
             else if (scale.z != 0.0f && scale.x <= 0.0f)
             {
-                Visible(false, i);
+                SetVisible(false, i);
                 continue;
             }
 

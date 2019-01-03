@@ -8,6 +8,7 @@
 Quad::Quad(const std::string& name)
     : Quad(name, -1)
 {
+    SetRenderWithLights(false);
 }
 
 Quad::Quad(const std::string& name, int shaderID)

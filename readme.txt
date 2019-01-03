@@ -1,7 +1,5 @@
 
-- Add background rendering
-- Add AI movement for tanks
-
+- Add rendering sprites/border
 - Add original game health UI
 - Add original game menus and gameover screen0
 

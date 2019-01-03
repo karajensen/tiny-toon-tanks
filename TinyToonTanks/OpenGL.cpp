@@ -75,7 +75,7 @@ bool OpenGL::Initialise()
         return false;
     }
 
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+    glClearColor(0.24f, 0.24f, 0.24f, 1.0f);
     glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
     glClearDepth(1.0f);
     glDepthFunc(GL_LEQUAL);
@@ -158,7 +158,7 @@ void OpenGL::RenderMeshes()
 {
     for (const auto& mesh : m_scene.meshes)
     {
-        if (mesh->IsVisible() && UpdateShader(*mesh, true, false, true))
+        if (mesh->AnyInstanceVisible() && UpdateShader(*mesh))
         {
             mesh->PreRender();
             EnableSelectedShader();
@@ -171,7 +171,7 @@ void OpenGL::RenderMeshes()
 
     for (const auto& mesh : m_scene.meshes)
     {
-        if (mesh->IsVisible() && mesh->RenderShadows() && UpdateShadowShader())
+        if (mesh->AnyInstanceVisible() && mesh->RenderShadows() && UpdateShadowShader())
         {
             mesh->PreRender();
             EnableSelectedShader();
@@ -182,13 +182,13 @@ void OpenGL::RenderMeshes()
         }
     }
 
-    for (const auto& quad : m_scene.quads)
+    for (const auto& effect : m_scene.effects)
     {
-        if (quad->IsVisible() && UpdateShader(*quad, false, true, false))
+        if (effect->AnyInstanceVisible() && UpdateShader(*effect))
         {
-            quad->PreRender();
+            effect->PreRender();
             EnableSelectedShader();
-            quad->RenderTextured([this](const glm::mat4& world, int texture)
+            effect->RenderTextured([this](const glm::mat4& world, int texture)
             {
                 UpdateShader(world, texture);
             });
@@ -205,7 +205,10 @@ void OpenGL::EndRender()
 void OpenGL::UpdateShader(const glm::mat4& world, int texture)
 {
     UpdateShader(world);
-    SendTexture("DiffuseSampler", texture);
+    if (texture >= 0)
+    {
+        SendTexture("DiffuseSampler", texture);
+    }
 }
 
 void OpenGL::UpdateShadowShader(const glm::mat4& world)
@@ -233,7 +236,7 @@ void OpenGL::UpdateShader(const glm::mat4& world)
     m_scene.shaders[m_selectedShader]->SendUniform("world", world);
 }
 
-bool OpenGL::UpdateShader(const Mesh& mesh, bool sendLights, bool alphaBlending, bool depthWrite)
+bool OpenGL::UpdateShader(const Mesh& mesh)
 {
     const int index = mesh.ShaderID();
     if (index != NO_INDEX)
@@ -243,7 +246,7 @@ bool OpenGL::UpdateShader(const Mesh& mesh, bool sendLights, bool alphaBlending,
         {
             SetSelectedShader(index);
 
-            if (sendLights)
+            if (mesh.RenderWithLights())
             {
                 SendLights();
             }
@@ -252,8 +255,8 @@ bool OpenGL::UpdateShader(const Mesh& mesh, bool sendLights, bool alphaBlending,
         }
 
         EnableBackfaceCull(mesh.BackfaceCull());
-        EnableAlphaBlending(alphaBlending);
-        EnableDepthWrite(depthWrite);
+        EnableAlphaBlending(mesh.AlphaBlending());
+        EnableDepthWrite(mesh.DepthWrite());
         return true;
     }
     return false;

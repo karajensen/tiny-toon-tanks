@@ -152,7 +152,7 @@ bool Mesh::BackfaceCull() const
     return m_backfacecull;
 }
 
-void Mesh::BackfaceCull(bool value)
+void Mesh::SetBackfaceCull(bool value)
 {
     m_backfacecull = value;
 }
@@ -281,18 +281,18 @@ int Mesh::Instances() const
     return static_cast<int>(m_instances.size());
 }
 
-void Mesh::Visible(bool isVisible, int index)
+void Mesh::SetVisible(bool isVisible, int index)
 {
     m_instances[index].render = isVisible;
 }
 
-bool Mesh::IsVisible() const
+bool Mesh::AnyInstanceVisible() const
 {
     return std::find_if(m_instances.begin(), m_instances.end(), 
         [](const Instance& instance){ return instance.render; }) != m_instances.end();
 }
 
-bool Mesh::IsVisible(int index) const
+bool Mesh::Visible(int index) const
 {
     return m_instances[index].render;
 }
@@ -310,4 +310,34 @@ void Mesh::SetRenderShadows(bool render)
 bool Mesh::RenderShadows() const
 {
     return m_renderShadows;
+}
+
+void Mesh::SetRenderWithLights(bool render)
+{
+    m_renderWithLighting = render;
+}
+
+bool Mesh::RenderWithLights() const
+{
+    return m_renderWithLighting;
+}
+
+void Mesh::SetAlphaBlending(bool blending)
+{
+    m_alphaBlending = blending;
+}
+
+bool Mesh::AlphaBlending() const
+{
+    return m_alphaBlending;
+}
+
+void Mesh::SetDepthWrite(bool depthWrite)
+{
+    m_depthWrite = depthWrite;
+}
+
+bool Mesh::DepthWrite() const
+{
+    return m_depthWrite;
 }

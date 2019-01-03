@@ -72,12 +72,12 @@ private:
     bool InitialiseMeshes(SceneData& data);
 
     /**
-    * Initialises the quads for the scene
+    * Initialises the effects for the scene
     * @param data All information for the scene
     * @note relies on shaders initialised before
     * @return Whether the initialization was successful
     */
-    bool InitialiseQuads(SceneData& data);
+    bool InitialiseEffects(SceneData& data);
 
     /**
     * Initialises the convex hulls for the scene

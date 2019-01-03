@@ -11,6 +11,7 @@ namespace MeshID
 {
     enum ID
     {
+        BACKDROP,
         BULLET,
         TANK,
         TANKGUN,
@@ -26,9 +27,9 @@ namespace MeshID
 }
 
 /**
-* Avaliable quads in the game
+* Avaliable effects in the game
 */
-namespace QuadID
+namespace EffectID
 {
     enum ID
     {
@@ -68,8 +69,9 @@ namespace ShaderID
         NORMAL,
         PROXY,
         SHADOW,
-        QUAD,
+        TEXTURE,
         POST,
+        GRADIENT,
         MAX
     };
 }
@@ -114,7 +116,6 @@ namespace TextureID
 {
     enum ID
     {
-        BACKDROP,
         BORDER,
         BOX,
         BUTTON_HIGH,

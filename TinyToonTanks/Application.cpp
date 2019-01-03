@@ -35,10 +35,12 @@ void Application::Run()
         m_timer->UpdateTimer();
 
         const float deltaTime = m_timer->GetDeltaTime();
-        const float physicsDeltaTime = ConvertRange(std::min(std::max(
-            deltaTime, 0.2f), 20.0f), 0.2f, 20.0f, 0.02f, 0.4f);
-        const float physicsTimeStep = std::max(
-            std::min(physicsDeltaTime * 0.075f, 0.01f), 0.001f);
+
+        // These values are taken from the previous implementation of this game
+        const float physicsDeltaTime = ConvertRange(Clamp(
+            deltaTime, 0.2f, 20.0f), 0.2f, 20.0f, 0.02f, 0.4f);
+        const float physicsTimeStep = Clamp(
+            physicsDeltaTime * 0.075f, 0.001f, 0.01f);
 
         m_sound->Update();
         m_input->Update();       
