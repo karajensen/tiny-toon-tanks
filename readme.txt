@@ -11,7 +11,7 @@ www.KaraJensen.com
 ===========================================================================
 
 RELEASE REQUIREMENTS: Windows 10+, OpenGL
-BUILD REQUIREMENTS: Windows 10+, Visual Studio 2017
+BUILD REQUIREMENTS: Windows 10+, Visual Studio 2019
 LIBRARIES: bullet3-2.83.7, Anttweakbar, Assimp 3.0, FMOD, GLFW, Glm, SOIL
 
 F1      Reset game
