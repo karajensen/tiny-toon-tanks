@@ -1,0 +1,15 @@
+////////////////////////////////////////////////////////////////////////////////////////
+// Kara Jensen - mail@karajensen.com - Player.cpp
+////////////////////////////////////////////////////////////////////////////////////////
+
+#include "Player.h"
+
+Player::Player(MeshGroup& tankmesh, int instance) :
+    Tank(tankmesh, instance)
+{  
+}
+
+void Player::AddToTweaker(Tweaker& tweaker)
+{
+    Tank::AddToTweaker(tweaker);
+}
