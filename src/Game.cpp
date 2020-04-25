@@ -12,11 +12,11 @@
 #include "Tweaker.h"
 #include "Camera.h"
 
-Game::Game(Camera& camera, PhysicsEngine& physicsEngine) :
-    m_camera(camera),
-    m_physicsEngine(physicsEngine),
-    m_data(std::make_unique<GameData>()),
-    m_builder(std::make_unique<GameBuilder>())
+Game::Game(Camera& camera, PhysicsEngine& physicsEngine)
+    : m_camera(camera)
+    , m_physicsEngine(physicsEngine)
+    , m_data(std::make_unique<GameData>())
+    , m_builder(std::make_unique<GameBuilder>())
 {
 }
 

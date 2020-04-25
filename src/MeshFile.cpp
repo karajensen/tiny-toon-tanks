@@ -5,13 +5,13 @@
 #include "MeshFile.h"
 #include "Tweaker.h"
 #include "Common.h"
+
 #include "assimp/include/scene.h"
 #include "assimp/include/Importer.hpp"
 #include "assimp/include/postprocess.h"
 
-MeshFile::MeshFile(const std::string& name, int shaderID) :
-
-    Mesh(name, shaderID)
+MeshFile::MeshFile(const std::string& name, int shaderID)
+    : Mesh(name, shaderID)
 {
 }
 

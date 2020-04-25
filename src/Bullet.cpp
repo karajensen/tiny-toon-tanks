@@ -15,9 +15,9 @@ namespace
     const int DRAW_COUNTER_MAX = 3;      ///< Maximum queries before bullet can be drawn
 }
 
-Bullet::Bullet(Mesh& mesh, int instance) :
-    m_mesh(mesh),
-    m_instance(instance)
+Bullet::Bullet(Mesh& mesh, int instance)
+    : m_mesh(mesh)
+    , m_instance(instance)
 {  
     Reset();
 }

@@ -4,11 +4,13 @@
 
 #pragma once
 
+#include "Glcommon.h"
+
+#include "glm/glm.hpp"
+
 #include <string>
 #include <vector>
 #include <unordered_map>
-#include "Glcommon.h"
-#include "glm/glm.hpp"
 
 class RenderTarget;
 
@@ -277,6 +279,8 @@ private:
 
     typedef std::unordered_map<std::string, UniformData> UniformMap;
     typedef std::unordered_map<std::string, SamplerData> SamplerMap;
+
+private:
 
     UniformMap m_uniforms;                    ///< Vertex and fragment non-attribute uniform data
     SamplerMap m_samplers;                    ///< Fragment shader sampler locations

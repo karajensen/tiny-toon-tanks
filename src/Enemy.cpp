@@ -10,8 +10,8 @@ const float DISTANCE_TO_MOVE_FORWARD = 10.0f;
 const float MAX_DISTANCE_TO_SHOOT = 20.0f;
 const float MIN_DISTANCE_TO_SHOOT = 5.0f;
 
-Enemy::Enemy(MeshGroup& tankmesh, int instance) :
-    Tank(tankmesh, instance)
+Enemy::Enemy(MeshGroup& tankmesh, int instance)
+    : Tank(tankmesh, instance)
 {  
 }
 

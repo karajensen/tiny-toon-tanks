@@ -6,11 +6,12 @@
 #include "Tweaker.h"
 #include "Glcommon.h"
 #include "Conversions.h"
+
 #include <algorithm>
 
-Mesh::Mesh(const std::string& name, int shaderID) :
-    m_name(name),
-    m_shaderIndex(shaderID)
+Mesh::Mesh(const std::string& name, int shaderID)
+    : m_name(name)
+    , m_shaderIndex(shaderID)
 { 
 }
 

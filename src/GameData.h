@@ -4,12 +4,13 @@
 
 #pragma once
 
-#include <vector>
-#include <memory>
 #include "Player.h"
 #include "Enemy.h"
 #include "Bullet.h"
 #include "ToonText.h"
+
+#include <vector>
+#include <memory>
 
 /**
 * Internal data for the game

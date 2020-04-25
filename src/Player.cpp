@@ -4,8 +4,8 @@
 
 #include "Player.h"
 
-Player::Player(MeshGroup& tankmesh, int instance) :
-    Tank(tankmesh, instance)
+Player::Player(MeshGroup& tankmesh, int instance)
+    : Tank(tankmesh, instance)
 {  
 }
 

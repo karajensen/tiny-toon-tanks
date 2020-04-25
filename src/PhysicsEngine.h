@@ -4,11 +4,13 @@
 
 #pragma once
 
-#include <vector>
-#include <memory>
 #include "glm/glm.hpp"
+
 #include "bullet/include/btBulletCollisionCommon.h"
 #include "bullet/include/btBulletDynamicsCommon.h"
+
+#include <vector>
+#include <memory>
 
 struct RigidBody;
 struct CollisionEvent;
@@ -308,10 +310,11 @@ private:
     PhysicsEngine(const PhysicsEngine&) = delete;
     PhysicsEngine& operator=(const PhysicsEngine&) = delete;
 
-    float m_sleepvalue = 0.0f;      ///< Threshold before a body is asleep
-    int m_iterations = 1;           ///< Number of iterations for the world
-    static const int NO_MASK = -1;  ///< No collision masking
+private:
 
+    float m_sleepvalue = 0.0f;                                           ///< Threshold before a body is asleep
+    int m_iterations = 1;                                                ///< Number of iterations for the world
+    static const int NO_MASK = -1;                                       ///< No collision masking
     std::vector<std::unique_ptr<btConvexHullShape>> m_shapes;            ///< Collision shapes avaliable
     std::vector<std::unique_ptr<RigidBody>> m_bodies;                    ///< Rigid bodies that exist in the scene
     std::vector<std::unique_ptr<btHingeConstraint>> m_hinges;            ///< Hinges that exist between rigid bodies

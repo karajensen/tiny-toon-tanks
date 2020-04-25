@@ -3,8 +3,11 @@
 ////////////////////////////////////////////////////////////////////////////////////////    
 
 #pragma once
+
 #include "matrix.h"
+
 #include "boost/algorithm/string.hpp"
+
 #include <sstream>
 #include <string>
 #include <iomanip>

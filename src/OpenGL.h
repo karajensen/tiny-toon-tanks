@@ -4,10 +4,11 @@
 
 #pragma once
 
+#include "glm/glm.hpp"
+
 #include <vector>
 #include <memory>
 #include <string>
-#include "glm/glm.hpp"
 
 struct GLFWwindow;
 struct SceneData;
@@ -147,6 +148,8 @@ private:
     * Sets the shader at the given index as selected
     */
     void SetSelectedShader(int index);
+
+private:
 
     GLFWwindow* m_window = nullptr;  ///< Handle to the application window
     const Camera& m_camera;          ///< The viewable camera

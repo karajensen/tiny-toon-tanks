@@ -68,6 +68,8 @@ private:
     PostProcessing(const PostProcessing&) = delete;
     PostProcessing& operator=(const PostProcessing&) = delete;
 
+private:
+
     std::array<float, MAX_MAPS> m_masks;  ///< Visibility of post maps
     Map m_selectedMap;                    ///< The currently rendered post map
 };

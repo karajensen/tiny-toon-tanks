@@ -88,6 +88,8 @@ private:
     */
     bool LoadTexture(int type, const std::string& path);
 
+private:
+
     Filter m_filter;             ///< The type of filtering for this texture
     bool m_initialised = false;  ///< Whether this texture is initialised
     unsigned int m_id = 0;       ///< Unique id for the texture

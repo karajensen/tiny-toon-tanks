@@ -8,6 +8,7 @@
 #include <string>
 #include <memory>
 #include <functional>
+
 #include "Postprocessing.h"
 
 class Camera;
@@ -74,6 +75,8 @@ private:
     */
     Scene(const Scene&) = delete;
     Scene& operator=(const Scene&) = delete;
+
+private:
 
     std::unique_ptr<SceneData> m_data;  ///< Elements of the scene
     int m_selectedLight = 0;            ///< Currently selected light in the tweak bar

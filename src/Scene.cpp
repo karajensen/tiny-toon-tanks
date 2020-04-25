@@ -7,8 +7,8 @@
 #include "SceneData.h"
 #include "Tweaker.h"
 
-Scene::Scene() :
-    m_data(std::make_unique<SceneData>())
+Scene::Scene()
+    : m_data(std::make_unique<SceneData>())
 {
 }
 

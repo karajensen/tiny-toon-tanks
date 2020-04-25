@@ -5,8 +5,8 @@
 #include "light.h"
 #include "tweaker.h"
 
-Light::Light(const std::string& name) :
-    m_name(name)
+Light::Light(const std::string& name)
+    : m_name(name)
 {
 }
 

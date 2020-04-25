@@ -6,6 +6,7 @@
 
 #include "fmod/include/fmod.h"
 #include "fmod/include/fmod.hpp"
+
 #include <vector>
 
 class SoundEngine
@@ -14,17 +15,17 @@ public:
 
     /**
     * Constructor
-    **/
+    */
     SoundEngine();
 
     /**
     * Destructor
-    **/
+    */
     ~SoundEngine();
 
     /**
     * Avaliable sounds to play
-    **/
+    */
     enum Sound
     { 
         NOTRACK = -1,
@@ -70,6 +71,8 @@ private:
     * Plays the next music track
     */
     void PlayMusic();
+
+private:
 
     static SoundEngine* sm_engine;                 ///< Sound engine singleton
     FMOD::System* m_system = nullptr;              ///< FMOD System controller

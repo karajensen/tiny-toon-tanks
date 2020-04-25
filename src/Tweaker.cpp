@@ -54,14 +54,11 @@ namespace
     };
 }
 
-Tweaker::Tweaker(CTwBar* tweakbar) :
-    m_tweakBar(tweakbar)
-{
-}
+Tweaker::~Tweaker() = default;
 
-Tweaker::~Tweaker()
+Tweaker::Tweaker(CTwBar* tweakbar)
+    : m_tweakBar(tweakbar)
 {
-
 }
 
 void Tweaker::Update()

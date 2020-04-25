@@ -11,17 +11,18 @@
 #include "Game.h"
 #include "Scene.h"
 #include "Glcommon.h"
+
 #include <sstream>
 
 Gui::Gui(Scene& scene,
          Game& game,
          Camera& camera,
          Input& input,
-         Timer& timer) :
-    m_game(game),
-    m_camera(camera),
-    m_scene(scene),
-    m_timer(timer)
+         Timer& timer)
+    : m_game(game)
+    , m_camera(camera)
+    , m_scene(scene)
+    , m_timer(timer)
 {
     TwInit(TW_OPENGL_CORE, nullptr);
     TwWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);

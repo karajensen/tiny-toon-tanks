@@ -5,6 +5,7 @@
 #pragma once
 
 #include "glm\glm.hpp"
+
 #include "DataIDs.h"
 
 class Tweaker;
@@ -59,13 +60,13 @@ public:
                   Mesh& p1,
                   Mesh& p2,
                   Mesh& p3,
-                  Mesh& p4) :
-            Body(body),
-            Gun(gun),
-            P1(p1),
-            P2(p2),
-            P3(p3),
-            P4(p4)
+                  Mesh& p4)
+            : Body(body)
+            , Gun(gun)
+            , P1(p1)
+            , P2(p2)
+            , P3(p3)
+            , P4(p4)
         {
         }
 
@@ -262,6 +263,8 @@ protected:
     */
     Tank(const Tank&) = delete;
     Tank& operator=(const Tank&) = delete;
+
+protected:
 
     PhysicsIDs m_physicsIDs;                       ///< IDs for the physics elements
     MeshGroup& m_tankmesh;                         ///< Holds each piece of the tank

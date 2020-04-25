@@ -5,8 +5,8 @@
 #include "input.h"
 #include "Glcommon.h"
 
-Input::Input(GLFWwindow& window) :
-    m_window(window)
+Input::Input(GLFWwindow& window)
+    : m_window(window)
 {
 }
 

@@ -4,16 +4,16 @@
 
 #include "Texture.h"
 #include "Glcommon.h"
-#include "soil/SOIL.h"
 #include "Tweaker.h"
+
+#include "soil/SOIL.h"
 
 Texture::Texture(const std::string& name, 
                  const std::string& path, 
-                 Filter filter) :
-
-    m_name(name),
-    m_path(path),
-    m_filter(filter)
+                 Filter filter)
+    : m_name(name)
+    , m_path(path)
+    , m_filter(filter)
 {
 }
 

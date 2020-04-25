@@ -5,9 +5,9 @@
 #include "rendertarget.h"
 #include "Common.h"
 
-RenderTarget::RenderTarget(const std::string& name) :
-    m_isBackBuffer(true),
-    m_name(name)
+RenderTarget::RenderTarget(const std::string& name)
+    : m_isBackBuffer(true)
+    , m_name(name)
 {
 }
 

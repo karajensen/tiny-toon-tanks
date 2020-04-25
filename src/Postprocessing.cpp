@@ -12,7 +12,6 @@ PostProcessing::PostProcessing()
 
 void PostProcessing::AddToTweaker(Tweaker& tweaker)
 {
-
 }
 
 std::string PostProcessing::GetPostMap() const

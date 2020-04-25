@@ -4,11 +4,12 @@
 
 #pragma once
 
+#include "anttweakbar/AntTweakBar.h"
+
 #include <string>
 #include <functional>
 #include <vector>
 #include <memory>
-#include "anttweakbar/AntTweakBar.h"
 
 /**
 * Holds information for creating an entry in the tweak bar
@@ -310,6 +311,8 @@ private:
     * @param clientData Address of the button to call
     */
     static void TW_CALL GetCallback(void *value, void *clientData);
+
+private:
 
     int m_count = 0;                                    ///< Number of entries added
     std::string m_group;                                ///< Global group currently set

@@ -5,6 +5,7 @@
 #include "Tank.h"
 #include "Mesh.h"
 #include "Tweaker.h"
+
 #include <algorithm>
 
 namespace
@@ -13,15 +14,13 @@ namespace
     const int INITIAL_TANK_HEALTH = 2;     ///< Amount of initial tank health
 }
 
-Tank::Tank(MeshGroup& tankmesh, int instance) :
-    m_instance(instance),
-    m_tankmesh(tankmesh)
+Tank::Tank(MeshGroup& tankmesh, int instance)
+    : m_instance(instance)
+    , m_tankmesh(tankmesh)
 {
 }
 
-Tank::~Tank()
-{
-}
+Tank::~Tank() = default;
 
 void Tank::Reset()
 {

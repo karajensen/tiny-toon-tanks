@@ -8,6 +8,7 @@
 #include "Common.h"
 #include "Rendertarget.h"
 #include "Conversions.h"
+
 #include <string>
 #include <fstream>
 #include <algorithm>
@@ -34,11 +35,10 @@ void Shader::InitialiseConstants(const ShaderConstants& constants)
 }
 
 Shader::Shader(const std::string& name, 
-               const std::string& path) :
-
-    m_name(name),
-    m_fragmentFile(path + FRAGMENT_SHADER),
-    m_vertexFile(path + VERTEX_SHADER)
+               const std::string& path)
+    : m_name(name)
+    , m_fragmentFile(path + FRAGMENT_SHADER)
+    , m_vertexFile(path + VERTEX_SHADER)
 {
 }
 

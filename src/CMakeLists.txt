@@ -75,12 +75,15 @@ set(SRC_LIST
     ToonText.h
     Tweaker.cpp
     Tweaker.h
+)
+
+set(OPENGL_LIST
     opengl/GL.h
     opengl/gl_core_4_4.c
     opengl/gl_core_4_4.h
 )
 
-add_executable(TinyToonTanks ${SRC_LIST})
+add_executable(TinyToonTanks ${SRC_LIST} ${OPENGL_LIST})
 
 target_link_libraries(TinyToonTanks ${CMAKE_CURRENT_SOURCE_DIR}/assimp/assimp.lib)
 target_link_libraries(TinyToonTanks ${CMAKE_CURRENT_SOURCE_DIR}/anttweakbar/AntTweakBar.lib)
@@ -92,5 +95,7 @@ target_link_libraries(TinyToonTanks debug ${CMAKE_CURRENT_SOURCE_DIR}/bullet/deb
 target_link_libraries(TinyToonTanks optimized ${CMAKE_CURRENT_SOURCE_DIR}/bullet/release/Bullet.lib)
 target_link_libraries(TinyToonTanks debug ${CMAKE_CURRENT_SOURCE_DIR}/soil/debug/soil.lib)
 target_link_libraries(TinyToonTanks optimized ${CMAKE_CURRENT_SOURCE_DIR}/soil/release/soil.lib)
+
+source_group("OpenGL" FILES ${OPENGL_LIST})
 
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/bin/ DESTINATION ${CMAKE_CURRENT_BINARY_DIR})

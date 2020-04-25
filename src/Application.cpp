@@ -15,12 +15,12 @@
 #include "Glcommon.h"
 #include "Scene.h"
 
-Application::Application() :
-    m_sound(std::make_unique<SoundEngine>()),
-    m_camera(std::make_unique<Camera>()),
-    m_timer(std::make_unique<Timer>()),
-    m_physics(std::make_unique<PhysicsEngine>()),
-    m_game(std::make_unique<Game>(*m_camera, *m_physics))
+Application::Application()
+    : m_sound(std::make_unique<SoundEngine>())
+    , m_camera(std::make_unique<Camera>())
+    , m_timer(std::make_unique<Timer>())
+    , m_physics(std::make_unique<PhysicsEngine>())
+    , m_game(std::make_unique<Game>(*m_camera, *m_physics))
 {
 }
 

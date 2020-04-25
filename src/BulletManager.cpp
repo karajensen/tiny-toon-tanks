@@ -21,10 +21,10 @@ namespace
 
 BulletManager::BulletManager(PhysicsEngine& physics,
                              GameData& gameData,
-                             SceneData& sceneData) :
-    m_physics(physics),
-    m_gameData(gameData),
-    m_sceneData(sceneData)
+                             SceneData& sceneData)
+    : m_physics(physics)
+    , m_gameData(gameData)
+    , m_sceneData(sceneData)
 {
 }
 

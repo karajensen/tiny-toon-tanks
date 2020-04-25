@@ -4,12 +4,14 @@
 
 #pragma once
 
+#include "Postprocessing.h"
+
+#include "glm/glm.hpp"
+
 #include <vector>
 #include <string>
 #include <memory>
 #include <functional>
-#include "Postprocessing.h"
-#include "glm/glm.hpp"
 
 class CollisionManager;
 class TankManager;
@@ -103,6 +105,8 @@ private:
     */
     Game(const Game&) = delete;
     Game& operator=(const Game&) = delete;
+
+private:
 
     Camera& m_camera;                                      ///< Main camera
     PhysicsEngine& m_physicsEngine;                        ///< Controls the game physics

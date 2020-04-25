@@ -3,16 +3,18 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 
 #include "PhysicsEngine.h"
-#include "bullet/include/linearMath/btTransform.h"
 #include "CollisionEvent.h"
 #include "Conversions.h"
+
+#include "bullet/include/linearMath/btTransform.h"
+
 #include <algorithm>
 
-PhysicsEngine::PhysicsEngine() :
-    m_collisionConfig(std::make_unique<btDefaultCollisionConfiguration>()),
-    m_overlappingPairCache(std::make_unique<btDbvtBroadphase>()),
-    m_solver(std::make_unique<btSequentialImpulseConstraintSolver>()),
-    m_filterCallback(std::make_unique<CollisionFilterCallback>())
+PhysicsEngine::PhysicsEngine()
+    : m_collisionConfig(std::make_unique<btDefaultCollisionConfiguration>())
+    , m_overlappingPairCache(std::make_unique<btDbvtBroadphase>())
+    , m_solver(std::make_unique<btSequentialImpulseConstraintSolver>())
+    , m_filterCallback(std::make_unique<CollisionFilterCallback>())
 {
     m_dispatcher = std::make_unique<btCollisionDispatcher>(m_collisionConfig.get());
 
@@ -59,13 +61,13 @@ bool PhysicsEngine::CollisionFilterCallback::needBroadphaseCollision(btBroadphas
 {
     if(proxy0->m_collisionFilterGroup == proxy1->m_collisionFilterGroup)
     {
-        //groups: members of a group don't collide with each other
+        // Groups: members of a group don't collide with each other
         return false;
     } 
     else if(proxy0->m_collisionFilterMask != PhysicsEngine::NO_MASK ||
             proxy1->m_collisionFilterMask != PhysicsEngine::NO_MASK)
     {
-        //mask: objects with a mask only collide with the corresponding group
+        // Mask: objects with a mask only collide with the corresponding group
         return proxy0->m_collisionFilterMask == proxy1->m_collisionFilterGroup ||
                proxy1->m_collisionFilterMask == proxy0->m_collisionFilterGroup;
     }
@@ -80,7 +82,7 @@ bool PhysicsEngine::GenerateCollisionEvent(int collisionIndex, CollisionEvent& c
     RigidBody* rbA = static_cast<RigidBody*>(obA->getUserPointer());
     RigidBody* rbB = static_cast<RigidBody*>(obB->getUserPointer());
 
-    // check if any of the bodies don't want events
+    // Check if any of the bodies don't want events
     if(rbA->ProcessEvents && rbB->ProcessEvents)
     {
         collision.BodyA.MeshID = rbA->MeshID;
@@ -357,7 +359,7 @@ int PhysicsEngine::LoadRigidBody(const glm::mat4& matrix,
 {
     btTransform transform = Conversion::Convert(matrix);
 
-    //Rigidbody is dynamic if and only if mass is non zero, otherwise static
+    // Rigidbody is dynamic if and only if mass is non zero, otherwise static
     const bool isDynamic = mass != 0.0f;
     btVector3 localInertia(Conversion::Convert(inertia));
     if (isDynamic)
@@ -368,7 +370,7 @@ int PhysicsEngine::LoadRigidBody(const glm::mat4& matrix,
     const int index = m_bodies.size();
     m_bodies.push_back(std::unique_ptr<RigidBody>(new RigidBody()));
 
-    //Motionstate provides interpolation capabilities, and only synchronizes 'active' objects
+    // Motionstate provides interpolation capabilities, and only synchronizes 'active' objects
     m_bodies[index]->State.reset(new btDefaultMotionState(transform));
 
     btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, 

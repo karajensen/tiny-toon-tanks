@@ -4,15 +4,15 @@
 
 #pragma once
 
-#include <vector>
-#include <memory>
-
 #include "DataIDs.h"
 #include "Postprocessing.h"
 #include "Shader.h"
 #include "Light.h"
 #include "Mesh.h"
 #include "Texture.h"
+
+#include <vector>
+#include <memory>
 
 /**
 * Internal data for the scene

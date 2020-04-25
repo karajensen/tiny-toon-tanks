@@ -4,11 +4,12 @@
 
 #pragma once
 
+#include "glm/glm.hpp"
+
 #include <string>
 #include <vector>
 #include <memory>
 #include <functional>
-#include "glm/glm.hpp"
 
 class Tweaker;
 
@@ -263,6 +264,8 @@ private:
     * This is the based on the furthest vertex from the mesh center
     */
     void GenerateRadius();
+
+private:
 
     bool m_backfacecull = true;           ///< Whether backface culling is enabled
     const std::string m_name;             ///< Name of the mesh

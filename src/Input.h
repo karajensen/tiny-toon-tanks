@@ -4,9 +4,10 @@
 
 #pragma once
 
+#include "glm/glm.hpp"
+
 #include <unordered_map>
 #include <functional>
-#include "glm/glm.hpp"
 
 struct GLFWwindow;
 
@@ -139,6 +140,8 @@ private:
         RELEASED = 2,
         MOVED = 4
     };
+
+private:
 
     std::vector<Key> m_keys;              ///< Key states and callbacks
     GLFWwindow& m_window;                 ///< The window to get input from

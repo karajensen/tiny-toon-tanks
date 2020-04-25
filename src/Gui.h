@@ -69,6 +69,8 @@ private:
     */
     void FillTweakBar();
 
+private:
+
     Game& m_game;                          ///< Holds and manages game data
     Scene& m_scene;                        ///< Holds and manages scene data
     Camera& m_camera;                      ///< Allows modifying the view

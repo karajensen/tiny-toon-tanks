@@ -4,9 +4,10 @@
 
 #pragma once
 
+#include "Glcommon.h"
+
 #include <vector>
 #include <string>
-#include "Glcommon.h"
 
 /**
 * Render target with optional attached depth buffer
@@ -84,6 +85,8 @@ private:
     * @return whether create was successful
     */
     bool CreateTexture(GLuint& id, unsigned int type);
+
+private:
 
     bool m_initialised = false;         ///< Whether the buffer is initialised or not
     const int m_count = 0;              ///< Number of textures attached to this buffer

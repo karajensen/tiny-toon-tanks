@@ -35,6 +35,7 @@ public:
     float GetDeltaTime() const;
 
 private:
+
     float m_deltaTime = 0.0f;
     long double m_elapsedMilliseconds = 0.0;
     long double m_previousElapsedMilliseconds = 0.0;

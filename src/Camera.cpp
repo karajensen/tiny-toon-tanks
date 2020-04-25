@@ -7,6 +7,7 @@
 #include "Tweaker.h"
 #include "Input.h"
 #include "GLMHelper.h"
+
 #include "glm/ext.hpp"
 
 namespace
@@ -17,18 +18,18 @@ namespace
     const float RATIO = WINDOW_WIDTH / static_cast<float>(WINDOW_HEIGHT);
 }
 
-Camera::Camera() :
-    m_initialPos(0.0f, 20.0f, 0.0f),
-    m_position(m_initialPos),
-    m_target(0.0f, 0.0f, 0.0f),
-    m_rotationSpeed(0.005f),
-    m_translateSpeed(0.005f),
-    m_forwardSpeed(0.005f),
-    m_pitch(0.0f),
-    m_yaw(0.0f),
-    m_roll(0.0f),
-    m_requiresUpdate(true),
-    m_useFlyCamera(false)
+Camera::Camera()
+    : m_initialPos(0.0f, 20.0f, 0.0f)
+    , m_position(m_initialPos)
+    , m_target(0.0f, 0.0f, 0.0f)
+    , m_rotationSpeed(0.005f)
+    , m_translateSpeed(0.005f)
+    , m_forwardSpeed(0.005f)
+    , m_pitch(0.0f)
+    , m_yaw(0.0f)
+    , m_roll(0.0f)
+    , m_requiresUpdate(true)
+    , m_useFlyCamera(false)
 {
     m_projection = glm::perspective(FIELD_OF_VIEW, RATIO, FRUSTRUM_NEAR, FRUSTRUM_FAR);
 }

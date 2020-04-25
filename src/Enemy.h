@@ -5,6 +5,7 @@
 #pragma once
 
 #include "Tank.h"
+
 #include "glm/matrix.hpp"
 
 /**
@@ -44,6 +45,8 @@ private:
     * Creates movement for the AI to use
     */
     void CreateAIMovement();
+
+private:
 
     float m_aiTimePassed = 0.0f; ///< Time passed to generate next ai mov
 };

@@ -4,8 +4,9 @@
 
 #pragma once
 
-#include <string>
 #include "glm\glm.hpp"
+
+#include <string>
 
 class Tweaker;
 
@@ -70,6 +71,8 @@ private:
     */
     Light(const Light&) = delete;
     Light& operator=(const Light&) = delete;
+
+private:
                                  
     const std::string m_name;     ///< Name of the light
     glm::vec3 m_diffuse;          ///< Colour of the light

@@ -4,8 +4,9 @@
 
 #pragma once
 
-#include <memory>
 #include "glm/glm.hpp"
+
+#include <memory>
 
 class Tweaker;
 class Input;
@@ -137,6 +138,8 @@ private:
     */
     Camera(const Camera&) = delete;
     Camera& operator=(const Camera&) = delete;
+
+private:
 
     glm::mat4 m_projection;              ///< Projection glm::mat4 for the camera
     glm::mat4 m_view;                    ///< View glm::mat4 for the camera

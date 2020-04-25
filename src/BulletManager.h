@@ -23,7 +23,7 @@ public:
     * @param gameData Objects from the game to update
     * @param sceneData Meshes from the scene to update
     */
-	BulletManager(PhysicsEngine& physics,
+    BulletManager(PhysicsEngine& physics,
                   GameData& gameData,
                   SceneData& sceneData);
 
@@ -37,18 +37,18 @@ public:
     */
     void PrePhysicsTick();
 
-	/**
-	* Ticks the updater after physics has been updated
-	*/
-	void PostPhysicsTick();
+    /**
+    * Ticks the updater after physics has been updated
+    */
+    void PostPhysicsTick();
 
 private:
 
     /**
     * Prevent copying
     */
-	BulletManager(const BulletManager&) = delete;
-	BulletManager& operator=(const BulletManager&) = delete;
+    BulletManager(const BulletManager&) = delete;
+    BulletManager& operator=(const BulletManager&) = delete;
 
     /**
     * Fires a bullet from the tank if requested
@@ -60,10 +60,12 @@ private:
     */
     void MoveBullet(Bullet& bullet);
 
-	/**
-	* Updates the bullet position from the physics engine
-	*/
-	void UpdateButtonPosition(Bullet& bullet);
+    /**
+    * Updates the bullet position from the physics engine
+    */
+    void UpdateButtonPosition(Bullet& bullet);
+
+private:
 
     PhysicsEngine& m_physics;  ///< The physics world to update from
     GameData& m_gameData;      ///< Objects from the game to update

@@ -5,14 +5,16 @@
 #pragma once
 
 #define _USE_MATH_DEFINES
+
+#include "RandomGenerator.h"
+#include "Logger.h"
+
 #include <math.h>
 #include <string>
 #include <iostream>
 #include <memory>
 #include <algorithm>
 #include <functional>
-#include "RandomGenerator.h"
-#include "Logger.h"
 
 const int WINDOW_WIDTH = 800;
 const int WINDOW_HEIGHT = 600;

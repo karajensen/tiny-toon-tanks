@@ -110,6 +110,8 @@ private:
     Bullet(const Bullet&) = delete;
     Bullet& operator=(const Bullet&) = delete;
 
+private:
+
     Mesh& m_mesh;                         ///< The graphical mesh for a bullet
     glm::vec3 m_firePosition;             ///< Position the bullet was initially fired from
     glm::vec3 m_generateImpulseDirection; ///< Direction to generate the impulse from

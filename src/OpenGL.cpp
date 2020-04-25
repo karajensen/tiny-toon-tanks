@@ -16,10 +16,10 @@ namespace
     const int NO_INDEX = -1;
 }
 
-OpenGL::OpenGL(const SceneData& scene, const Camera& camera) :
-    m_camera(camera),
-    m_scene(scene),
-    m_quad(std::make_unique<Quad>("PostQuad"))
+OpenGL::OpenGL(const SceneData& scene, const Camera& camera)
+    : m_camera(camera)
+    , m_scene(scene)
+    , m_quad(std::make_unique<Quad>("PostQuad"))
 {
 }
 

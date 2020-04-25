@@ -4,9 +4,10 @@
 
 #pragma once
 
+#include "mesh.h"
+
 #include <string>
 #include <vector>
-#include "mesh.h"
 
 /**
 * Mesh loaded from file to be rendered in the scene
