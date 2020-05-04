@@ -5,9 +5,9 @@
 #pragma once
 
 #include "Shader.h"
-#include "Common.h"
 #include "Rendertarget.h"
 #include "Conversions.h"
+#include "Utils.h"
 
 #include <string>
 #include <fstream>

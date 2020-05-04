@@ -5,26 +5,19 @@
 #pragma once
 
 #define _USE_MATH_DEFINES
-
-#include "RandomGenerator.h"
-#include "Logger.h"
-
 #include <math.h>
 #include <string>
-#include <iostream>
-#include <memory>
 #include <algorithm>
-#include <functional>
 
-const int WINDOW_WIDTH = 800;
-const int WINDOW_HEIGHT = 600;
+constexpr int WINDOW_WIDTH = 800;
+constexpr int WINDOW_HEIGHT = 600;
 
 /**
 * Converts degrees to radians
 */
 template<typename T> T DegToRad(T degrees)
 {
-    return static_cast<T>(M_PI/180.0)*degrees;
+    return static_cast<T>(M_PI / 180.0) * degrees;
 }
 
 /**
@@ -32,7 +25,7 @@ template<typename T> T DegToRad(T degrees)
 */
 template<typename T> T RadToDeg(T radians)
 {
-    return static_cast<T>(180.0/M_PI)*radians;
+    return static_cast<T>(180.0 / M_PI)*radians;
 }
 
 /**
@@ -52,8 +45,8 @@ template<typename T> T ConvertRange(T value,
                                     T newInner, 
                                     T newOuter)
 {
-    return ((value-currentInner)*((newOuter-newInner)/
-        (currentOuter-currentInner)))+newInner;
+    return ((value-currentInner) * ((newOuter - newInner) /
+        (currentOuter-currentInner))) + newInner;
 }
 
 /**

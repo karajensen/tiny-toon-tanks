@@ -15,7 +15,6 @@ set(SRC_LIST
     CollisionEvent.h
     CollisionManager.cpp
     CollisionManager.h
-    Common.h
     Conversions.h
     DataIDs.h
     Enemy.cpp
@@ -25,7 +24,6 @@ set(SRC_LIST
     GameBuilder.cpp
     GameBuilder.h
     GameData.h
-    Glcommon.h
     GlmHelper.h
     Gui.cpp
     Gui.h
@@ -39,8 +37,9 @@ set(SRC_LIST
     Mesh.h
     MeshFile.cpp
     MeshFile.h
-    OpenGL.cpp
     OpenGL.h
+    OpenGLEngine.cpp
+    OpenGLEngine.h
     OutputHelper.h
     PhysicsEngine.cpp
     PhysicsEngine.h
@@ -75,6 +74,7 @@ set(SRC_LIST
     ToonText.h
     Tweaker.cpp
     Tweaker.h
+    Utils.h
 )
 
 set(OPENGL_LIST

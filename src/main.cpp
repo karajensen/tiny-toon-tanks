@@ -2,8 +2,10 @@
 // Kara Jensen - mail@karajensen.com - main.cpp
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#include "common.h"
+#include "RandomGenerator.h"
 #include "Application.h"
+
+#include <iostream>
 
 #ifndef _DEBUG
     // Disable console window

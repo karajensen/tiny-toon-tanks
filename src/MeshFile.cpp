@@ -4,7 +4,7 @@
 
 #include "MeshFile.h"
 #include "Tweaker.h"
-#include "Common.h"
+#include "Logger.h"
 
 #include "assimp/include/scene.h"
 #include "assimp/include/Importer.hpp"

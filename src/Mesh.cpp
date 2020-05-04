@@ -4,7 +4,7 @@
 
 #include "mesh.h"
 #include "Tweaker.h"
-#include "Glcommon.h"
+#include "OpenGL.h"
 #include "Conversions.h"
 
 #include <algorithm>

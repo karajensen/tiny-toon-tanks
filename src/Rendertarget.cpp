@@ -1,9 +1,9 @@
 ////////////////////////////////////////////////////////////////////////////////////////
-// Kara Jensen - mail@karajensen.com - rendertarget.cpp
+// Kara Jensen - mail@karajensen.com - Rendertarget.cpp
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#include "rendertarget.h"
-#include "Common.h"
+#include "Rendertarget.h"
+#include "Utils.h"
 
 RenderTarget::RenderTarget(const std::string& name)
     : m_isBackBuffer(true)

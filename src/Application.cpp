@@ -4,6 +4,7 @@
 
 #include "Application.h"
 #include "OpenGL.h"
+#include "OpenGLEngine.h"
 #include "PhysicsEngine.h"
 #include "SoundEngine.h"
 #include "Input.h"
@@ -11,9 +12,9 @@
 #include "Game.h"
 #include "Gui.h"
 #include "Timer.h"
-#include "Common.h"
-#include "Glcommon.h"
 #include "Scene.h"
+#include "Utils.h"
+#include "Logger.h"
 
 Application::Application()
     : m_sound(std::make_unique<SoundEngine>())
@@ -71,7 +72,7 @@ void Application::Release()
 bool Application::Initialise()
 {
     m_scene = std::make_unique<Scene>();
-    m_engine = std::make_unique<OpenGL>(
+    m_engine = std::make_unique<OpenGLEngine>(
         m_scene->GetSceneData(), *m_camera);
 
     if (!m_engine->Initialise())

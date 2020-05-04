@@ -3,14 +3,14 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 
 #include "Gui.h"
-#include "Common.h"
 #include "Tweaker.h"
 #include "Input.h"
 #include "Camera.h"
 #include "Timer.h"
 #include "Game.h"
 #include "Scene.h"
-#include "Glcommon.h"
+#include "Utils.h"
+#include "OpenGL.h"
 
 #include <sstream>
 

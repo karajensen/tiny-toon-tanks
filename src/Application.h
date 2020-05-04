@@ -8,7 +8,7 @@
 
 class PhysicsEngine;
 class SoundEngine;
-class OpenGL;
+class OpenGLEngine;
 class Camera;
 class Input;
 class Timer;
@@ -61,7 +61,7 @@ private:
     std::unique_ptr<SoundEngine> m_sound;           ///< Controller for sound
     std::unique_ptr<Camera> m_camera;               ///< The camera viewing the scene
     std::unique_ptr<Input> m_input;                 ///< Manages input from the window
-    std::unique_ptr<OpenGL> m_engine;               ///< Render engine to use for application
+    std::unique_ptr<OpenGLEngine> m_engine;         ///< Render engine to use for application
     std::unique_ptr<Gui> m_gui;                     ///< Manipulates the scene
     std::unique_ptr<Timer> m_timer;                 ///< Keeps track of time between ticks and simulation
     std::unique_ptr<Scene> m_scene;                 ///< Manager of game objects

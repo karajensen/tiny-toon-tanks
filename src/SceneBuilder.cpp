@@ -1,14 +1,14 @@
 ////////////////////////////////////////////////////////////////////////////////////////
-// Kara Jensen - mail@karajensen.com - sceneBuilder.cpp
+// Kara Jensen - mail@karajensen.com - SceneBuilder.cpp
 ////////////////////////////////////////////////////////////////////////////////////////
 
 #include "SceneBuilder.h"
 #include "SceneData.h"
 #include "Shader.h"
 #include "PhysicsEngine.h"
-#include "Common.h"
 #include "ToonText.h"
 #include "MeshFile.h"
+#include "Utils.h"
 
 namespace
 {

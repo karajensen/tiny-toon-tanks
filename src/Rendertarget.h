@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "Glcommon.h"
+#include "OpenGL.h"
 
 #include <vector>
 #include <string>

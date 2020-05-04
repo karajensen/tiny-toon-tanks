@@ -2,8 +2,8 @@
 // Kara Jensen - mail@karajensen.com - Input.cpp
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#include "input.h"
-#include "Glcommon.h"
+#include "Input.h"
+#include "OpenGL.h"
 
 Input::Input(GLFWwindow& window)
     : m_window(window)

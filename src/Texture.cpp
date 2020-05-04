@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 
 #include "Texture.h"
-#include "Glcommon.h"
+#include "OpenGL.h"
 #include "Tweaker.h"
 
 #include "soil/SOIL.h"

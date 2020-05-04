@@ -3,10 +3,10 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 
 #include "Camera.h"
-#include "Common.h"
 #include "Tweaker.h"
 #include "Input.h"
 #include "GLMHelper.h"
+#include "Utils.h"
 
 #include "glm/ext.hpp"
 

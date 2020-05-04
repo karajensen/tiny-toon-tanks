@@ -1,34 +1,33 @@
 ////////////////////////////////////////////////////////////////////////////////////////
-// Kara Jensen - mail@karajensen.com - OpenGL.cpp
+// Kara Jensen - mail@karajensen.com - OpenGLEngine.cpp
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#include "OpenGL.h"
-#include "Common.h"
-#include "Glcommon.h"
+#include "OpenGLEngine.h"
 #include "Camera.h"
 #include "Quad.h"
 #include "SceneData.h"
 #include "Rendertarget.h"
 #include "GlmHelper.h"
+#include "Utils.h"
 
 namespace
 {
     const int NO_INDEX = -1;
 }
 
-OpenGL::OpenGL(const SceneData& scene, const Camera& camera)
+OpenGLEngine::OpenGLEngine(const SceneData& scene, const Camera& camera)
     : m_camera(camera)
     , m_scene(scene)
     , m_quad(std::make_unique<Quad>("PostQuad"))
 {
 }
 
-OpenGL::~OpenGL()
+OpenGLEngine::~OpenGLEngine()
 {
     Release();
 }
 
-void OpenGL::Release()
+void OpenGLEngine::Release()
 {
     // All resources must be destroyed before the engine
     m_quad.reset();
@@ -44,13 +43,13 @@ void OpenGL::Release()
     glfwTerminate();
 }
 
-bool OpenGL::IsRunning() const
+bool OpenGLEngine::IsRunning() const
 {
     return !glfwWindowShouldClose(m_window) && 
           glfwGetKey(m_window, GLFW_KEY_ESCAPE) != GLFW_PRESS;
 }
 
-bool OpenGL::Initialise()
+bool OpenGLEngine::Initialise()
 {
     if (!glfwInit())
     {
@@ -113,13 +112,13 @@ bool OpenGL::Initialise()
     return true;
 }
 
-GLFWwindow& OpenGL::GetWindow() const
+GLFWwindow& OpenGLEngine::GetWindow() const
 {
     assert(m_window);
     return *m_window;
 }
 
-void OpenGL::RenderScene()
+void OpenGLEngine::RenderScene()
 {
     m_sceneTarget->SetActive();
     RenderMeshes();
@@ -128,7 +127,7 @@ void OpenGL::RenderScene()
     RenderPostProcessing();
 }
 
-void OpenGL::RenderPostProcessing()
+void OpenGLEngine::RenderPostProcessing()
 {
     EnableBackfaceCull(false);
     EnableAlphaBlending(false);
@@ -154,7 +153,7 @@ void OpenGL::RenderPostProcessing()
     shader.ClearTexture("NormalSampler", *m_sceneTarget);
 }
 
-void OpenGL::RenderMeshes()
+void OpenGLEngine::RenderMeshes()
 {
     for (const auto& mesh : m_scene.meshes)
     {
@@ -196,13 +195,13 @@ void OpenGL::RenderMeshes()
     }
 }
 
-void OpenGL::EndRender()
+void OpenGLEngine::EndRender()
 {
     glfwSwapBuffers(m_window);
     glfwPollEvents();
 }
 
-void OpenGL::UpdateShader(const glm::mat4& world, int texture)
+void OpenGLEngine::UpdateShader(const glm::mat4& world, int texture)
 {
     UpdateShader(world);
     if (texture >= 0)
@@ -211,7 +210,7 @@ void OpenGL::UpdateShader(const glm::mat4& world, int texture)
     }
 }
 
-void OpenGL::UpdateShadowShader(const glm::mat4& world)
+void OpenGLEngine::UpdateShadowShader(const glm::mat4& world)
 {
     UpdateShader(world);
 
@@ -231,12 +230,12 @@ void OpenGL::UpdateShadowShader(const glm::mat4& world)
     shader.SendUniform("planeNormal", normal);
 }
 
-void OpenGL::UpdateShader(const glm::mat4& world)
+void OpenGLEngine::UpdateShader(const glm::mat4& world)
 {
     m_scene.shaders[m_selectedShader]->SendUniform("world", world);
 }
 
-bool OpenGL::UpdateShader(const Mesh& mesh)
+bool OpenGLEngine::UpdateShader(const Mesh& mesh)
 {
     const int index = mesh.ShaderID();
     if (index != NO_INDEX)
@@ -262,7 +261,7 @@ bool OpenGL::UpdateShader(const Mesh& mesh)
     return false;
 }
 
-bool OpenGL::UpdateShadowShader()
+bool OpenGLEngine::UpdateShadowShader()
 {
     if (m_selectedShader != ShaderID::SHADOW)
     {
@@ -279,7 +278,7 @@ bool OpenGL::UpdateShadowShader()
     return true;
 }
 
-void OpenGL::SendLights()
+void OpenGLEngine::SendLights()
 {
     auto& shader = *m_scene.shaders[m_selectedShader];
     const auto& lights = m_scene.lights;
@@ -292,7 +291,7 @@ void OpenGL::SendLights()
     }
 }
 
-void OpenGL::SendTexture(std::string sampler, int ID)
+void OpenGLEngine::SendTexture(std::string sampler, int ID)
 {
     if (ID != NO_INDEX)
     {
@@ -301,7 +300,7 @@ void OpenGL::SendTexture(std::string sampler, int ID)
     }
 }
 
-void OpenGL::EnableAlphaBlending(bool enable)
+void OpenGLEngine::EnableAlphaBlending(bool enable)
 {
     if (enable != m_isAlphaBlend)
     {
@@ -311,7 +310,7 @@ void OpenGL::EnableAlphaBlending(bool enable)
     }
 }
 
-void OpenGL::EnableBackfaceCull(bool enable)
+void OpenGLEngine::EnableBackfaceCull(bool enable)
 {
     if(enable != m_isBackfaceCull)
     {
@@ -320,7 +319,7 @@ void OpenGL::EnableBackfaceCull(bool enable)
     }
 }
 
-void OpenGL::EnableDepthWrite(bool enable)
+void OpenGLEngine::EnableDepthWrite(bool enable)
 {
     if (enable != m_isDepthWrite)
     {
@@ -329,12 +328,12 @@ void OpenGL::EnableDepthWrite(bool enable)
     }
 }
 
-void OpenGL::EnableSelectedShader()
+void OpenGLEngine::EnableSelectedShader()
 {
     m_scene.shaders[m_selectedShader]->EnableShader();
 }
 
-void OpenGL::SetSelectedShader(int index)
+void OpenGLEngine::SetSelectedShader(int index)
 {
     m_selectedShader = index;
     m_scene.shaders[m_selectedShader]->SetActive();
