@@ -4,6 +4,7 @@ project(TinyToonTanks)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(SRC_LIST
+    ../readme.txt
     Application.cpp
     Application.h
     Bullet.cpp
